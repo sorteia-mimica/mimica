@@ -127,8 +127,8 @@ test/*.test.js     # node --test
 - **`jogo.js`** — estado da partida como objeto serializável. Funções puras:
   - `criarPartida(config) → estado`
   - `vezAtual(estado) → { quemFaz, quemAdivinha?, time }`
-  - `registrarAcertos(estado, acertos) → estado` (acertos = lista de `{ item, acertouId? }`)
-  - `avancar(estado) → estado`
+  - `sortear(estado, temas) → estado` (preenche os itens da vez)
+  - `registrarVez(estado, resultados) → estado` (resultados = lista de `{ acertou, acertouTime? }`; soma pontos e avança para a próxima vez)
   - `terminou(estado) → boolean`, `placar(estado) → ranking`
 - **Telas** — recebem estado e callbacks; não contêm regra de jogo.
 - **`app.js`** — carrega `temas.json`, guarda `estado` e última configuração no `localStorage` a cada mudança, troca de tela.
