@@ -5,7 +5,13 @@ let audio = null;
 export async function manterTelaAcesa() {
   querTelaAcesa = true;
   try {
-    wakeLock = (await navigator.wakeLock?.request('screen')) ?? null;
+    const lock = (await navigator.wakeLock?.request('screen')) ?? null;
+    if (!querTelaAcesa) {
+      // a tela foi liberada enquanto o pedido estava no ar: solta já
+      lock?.release().catch(() => {});
+      return;
+    }
+    wakeLock = lock;
   } catch {
     wakeLock = null;
   }

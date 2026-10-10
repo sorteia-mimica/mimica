@@ -6,6 +6,7 @@ import { FRASES, escolher } from '../frases.js';
 export function telaLeitura(el, { itens, segundos, aoFim }) {
   el.classList.add('leitura');
   el.innerHTML = `
+    <h1 class="sr-only">Hora de decorar</h1>
     <p class="centro"><b>${esc(escolher(FRASES.leitura))}</b></p>
     <div class="card relogio">
       <div class="cronometro" data-tempo role="timer" aria-live="off">${formatarTempo(segundos)}</div>
@@ -17,13 +18,14 @@ export function telaLeitura(el, { itens, segundos, aoFim }) {
   const tempo = el.querySelector('[data-tempo]');
   const barra = el.querySelector('[data-barra]');
   let encerrado = false;
+  let parar = () => {}; // declarado antes do cronômetro: um aoFim síncrono não pode cair na TDZ
   const encerrar = () => {
     if (encerrado) return;
     encerrado = true;
     parar();
     aoFim();
   };
-  const parar = iniciarCronometro(segundos, {
+  parar = iniciarCronometro(segundos, {
     aoTick: (r) => {
       tempo.textContent = formatarTempo(r);
       barra.style.transform = `translateX(${(r / segundos) * 100}%)`;
