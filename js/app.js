@@ -13,6 +13,9 @@ import { telaMimica } from './telas/mimica.js';
 import { telaResultado } from './telas/resultado.js';
 import { telaFinal } from './telas/final.js';
 
+// Ignora toques logo após trocar de tela: um toque duplo não pode cair no botão da tela seguinte.
+const BLOQUEIO_TOQUE_MS = 400;
+
 const raiz = document.getElementById('app');
 let storage = null;
 try {
@@ -30,6 +33,8 @@ function mostrar(tela, props) {
   limparTela?.();
   const el = document.createElement('section');
   el.className = 'tela';
+  el.style.pointerEvents = 'none';
+  setTimeout(() => { el.style.pointerEvents = ''; }, BLOQUEIO_TOQUE_MS);
   raiz.replaceChildren(el);
   limparTela = tela(el, props) ?? null;
   window.scrollTo(0, 0);
