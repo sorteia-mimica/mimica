@@ -61,7 +61,7 @@ Abre, além do Padrão:
 
 ## Temas
 
-Sete temas iniciais, cada um com ~20 itens por dificuldade (~60 por tema), em `data/temas.json`:
+Sete temas iniciais, cada um com 50 itens por dificuldade (150 por tema), em `data/temas.json`:
 
 | Tema | Notas / exemplos |
 |---|---|
@@ -73,7 +73,7 @@ Sete temas iniciais, cada um com ~20 itens por dificuldade (~60 por tema), em `d
 | Ações do dia a dia | Fácil: escovar os dentes, lavar louça. Médio: perder o ônibus, procurar a chave, pisar em Lego. Difícil: montar móvel sem manual |
 | Famosos | Fácil: Neymar, Xuxa, Silvio Santos. Médio: Anitta, Faustão, Ayrton Senna. Difícil: Einstein, Chaves, Gretchen |
 
-**Critério de dificuldade** — conta o esforço de fazer a mímica e ser adivinhado, não o quão rara é a palavra (20–25 itens por dificuldade em cada tema):
+**Critério de dificuldade** — conta o esforço de fazer a mímica e ser adivinhado, não o quão rara é a palavra (50 itens por dificuldade em cada tema):
 - **Fácil:** 1 gesto/movimento óbvio e icônico que quase todo mundo acerta em segundos (sinuca = taco + giz; nadar; escovar os dentes).
 - **Médio:** precisa de 2–3 gestos ou de uma pequena cena, ou o gesto se confunde com outras coisas e pede contexto.
 - **Difícil:** conceito abstrato, história com várias etapas, ou muito difícil de diferenciar de itens parecidos mesmo com cena (marcação por zona, montar móvel sem manual).

@@ -12,12 +12,12 @@ test('sete temas na ordem certa', () => {
   assert.deepEqual(temas.map((t) => t.id), ['filmes-series', 'profissao', 'animal', 'esportes', 'futebol', 'dia-a-dia', 'famosos']);
 });
 
-test('cada tema: nome, emoji e 20+ itens por dificuldade sem repetição', () => {
+test('cada tema: nome, emoji e exatamente 50 itens por dificuldade sem repetição', () => {
   for (const t of temas) {
     assert.ok(t.nome.trim() && t.emoji.trim(), t.id);
     const todos = [];
     for (const d of ['facil', 'medio', 'dificil']) {
-      assert.ok(t.itens[d].length >= 20, `${t.id}/${d} tem ${t.itens[d].length}`);
+      assert.equal(t.itens[d].length, 50, `${t.id}/${d} tem ${t.itens[d].length}`);
       for (const texto of t.itens[d]) {
         assert.equal(typeof texto, 'string');
         assert.equal(texto, texto.trim());
