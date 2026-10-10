@@ -10,6 +10,7 @@ import { telaConfiguracao } from './telas/configuracao.js';
 import { telaVez } from './telas/vez.js';
 import { telaLeitura } from './telas/leitura.js';
 import { telaMimica } from './telas/mimica.js';
+import { telaConferencia } from './telas/conferencia.js';
 import { telaResultado } from './telas/resultado.js';
 import { telaFinal } from './telas/final.js';
 
@@ -100,21 +101,36 @@ function irLeitura() {
 }
 
 function irMimica() {
+  mostrar(telaMimica, {
+    itens: estado.itensDaVez,
+    segundos: estado.config.tempoMimica,
+    aoTerminar: (marcados) => {
+      liberarTela();
+      if (estado.config.modo === 'duplas') {
+        registrar(marcados.map((acertou) => ({ acertou, acertouTime: null })));
+      } else {
+        irConferencia(marcados);
+      }
+    },
+  });
+}
+
+function irConferencia(marcados) {
   const vez = vezAtual(estado);
   const jogadores = estado.config.times
     .map((time, i) => ({ time: i, nome: nomeDoTime(time) }))
     .filter((j) => j.time !== vez.time);
-  mostrar(telaMimica, {
+  mostrar(telaConferencia, {
     itens: estado.itensDaVez,
-    segundos: estado.config.tempoMimica,
-    modo: estado.config.modo,
+    marcados,
     jogadores,
-    aoTerminar: (resultados) => {
-      liberarTela();
-      atualizar(registrarVez(estado, resultados));
-      irResultado();
-    },
+    aoConfirmar: registrar,
   });
+}
+
+function registrar(resultados) {
+  atualizar(registrarVez(estado, resultados));
+  irResultado();
 }
 
 function irResultado() {

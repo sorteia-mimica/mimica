@@ -299,8 +299,12 @@ p { margin: 0; text-wrap: pretty; }
 .item.acertou .check { background: var(--cor); color: var(--on-cor); }
 .marca { font-size: 1.4rem; font-weight: 900; color: var(--cor); }
 .item:not(.acertou) .marca { color: var(--muted); }
-.escolher-quem { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.escolher-quem .muted { font-weight: 700; margin-right: 4px; }
+.escolher-quem { flex-basis: 100%; display: flex; flex-direction: column; gap: 10px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.escolher-quem .muted { display: block; width: 100%; font-weight: 700; font-size: .95rem; }
+.quem-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.quem-chips .chip { min-height: 44px; max-width: 100%; border-radius: 22px; overflow-wrap: anywhere; }
+.quem-chips .chip[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: var(--primary-text); }
+.quem-chips .chip[aria-pressed="true"]::before { content: "✓ "; }
 
 /* Cronômetro */
 .relogio { padding: 14px 18px 18px; display: flex; flex-direction: column; gap: 12px; }

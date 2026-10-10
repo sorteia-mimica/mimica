@@ -3,9 +3,8 @@ import { formatarTempo, iniciarCronometro } from '../tempo.js';
 import { bip, vibrar } from '../efeitos.js';
 import { FRASES, escolher } from '../frases.js';
 
-export function telaMimica(el, { itens, segundos, modo, jogadores, aoTerminar }) {
-  const resultados = itens.map(() => ({ acertou: false, acertouTime: null }));
-  let escolhendo = null; // índice do item esperando "quem acertou?" (modo individual)
+export function telaMimica(el, { itens, segundos, aoTerminar }) {
+  const marcados = itens.map(() => false);
 
   el.innerHTML = `
     <div class="card relogio">
@@ -21,23 +20,13 @@ export function telaMimica(el, { itens, segundos, modo, jogadores, aoTerminar })
   const barra = el.querySelector('[data-barra]');
   const aviso = el.querySelector('[data-aviso]');
   const botaoTerminar = el.querySelector('[data-acao="terminar"]');
-  const nomeDe = (time) => jogadores.find((j) => j.time === time)?.nome ?? '';
 
   function renderItens() {
-    lista.innerHTML = itens.map((item, i) => {
-      const r = resultados[i];
-      const escolha = escolhendo === i
-        ? `<div class="escolher-quem"><span class="muted">Quem matou a charada?</span>${jogadores
-          .map((j) => `<button class="chip" data-acao="quem" data-item="${i}" data-time="${j.time}">${esc(j.nome)}</button>`)
-          .join('')}</div>`
-        : '';
-      return itemHtml(item, {
-        animar: false,
-        acertou: r.acertou,
-        nota: r.acertouTime !== null ? `· ${nomeDe(r.acertouTime)}` : '',
-        extra: `<button class="check" data-acao="marcar" data-item="${i}" aria-pressed="${r.acertou}" aria-label="Acertou: ${esc(item.texto)}">✓</button>${escolha}`,
-      });
-    }).join('');
+    lista.innerHTML = itens.map((item, i) => itemHtml(item, {
+      animar: false,
+      acertou: marcados[i],
+      extra: `<button class="check" data-acao="marcar" data-item="${i}" aria-pressed="${marcados[i]}" aria-label="Acertou: ${esc(item.texto)}">✓</button>`,
+    })).join('');
   }
 
   const parar = iniciarCronometro(segundos, {
@@ -60,24 +49,12 @@ export function telaMimica(el, { itens, segundos, modo, jogadores, aoTerminar })
   ligar(el, {
     marcar: (b) => {
       const i = Number(b.dataset.item);
-      if (resultados[i].acertou) {
-        resultados[i] = { acertou: false, acertouTime: null };
-        escolhendo = null;
-      } else if (modo === 'individual') {
-        escolhendo = escolhendo === i ? null : i;
-      } else {
-        resultados[i] = { acertou: true, acertouTime: null };
-      }
-      renderItens();
-    },
-    quem: (b) => {
-      resultados[Number(b.dataset.item)] = { acertou: true, acertouTime: Number(b.dataset.time) };
-      escolhendo = null;
+      marcados[i] = !marcados[i];
       renderItens();
     },
     terminar: () => {
       parar();
-      aoTerminar(resultados);
+      aoTerminar([...marcados]);
     },
   });
 
