@@ -112,6 +112,7 @@ p { margin: 0; text-wrap: pretty; }
 .dica { margin: -4px 0 12px; font-size: .95rem; }
 
 :focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+[tabindex="-1"]:focus { outline: none; }
 
 .card {
   background: var(--surface);

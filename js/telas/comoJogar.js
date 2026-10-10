@@ -10,7 +10,7 @@ export function telaComoJogar(el, { aoVoltar }) {
       <ol class="lista">
         <li><b>Duplas:</b> um faz a mímica e o parceiro adivinha. Na vez seguinte da dupla, troca quem faz.</li>
         <li><b>Individual:</b> um faz e todo mundo chuta. Ganham pontos quem fez e quem acertou.</li>
-        <li>Cada item da vez vem de um tema diferente — pode (e deve) dizer o tema em voz alta.</li>
+        <li>Os itens da vez vêm de temas diferentes sempre que der — pode (e deve) dizer o tema em voz alta.</li>
         <li>Na sua vez, toque em <b>Sortear</b> e decore os itens sem deixar ninguém espiar.</li>
         <li>Vale gesto, careta e dancinha. Falar, não vale 🤐</li>
         <li>Durante a mímica, toque no ✓ de cada item que a galera acertar. No Individual, depois vem a conferência: quem matou a charada?</li>

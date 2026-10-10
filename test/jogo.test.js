@@ -133,3 +133,9 @@ test('partidaCompativel rejeita estado inválido', () => {
   assert.equal(partidaCompativel(criarPartida(duplas({ temas: ['sumiu'] })), TEMAS), false);
   assert.equal(partidaCompativel({ ...ok, config: { ...ok.config, times: [] } }, TEMAS), false);
 });
+
+test('partidaCompativel não estoura com estado corrompido', () => {
+  const ok = criarPartida(duplas());
+  assert.equal(partidaCompativel({ ...ok, config: { ...ok.config, times: [null] } }, TEMAS), false);
+  assert.equal(partidaCompativel({ ...ok, vezIndice: -1 }, TEMAS), false);
+});

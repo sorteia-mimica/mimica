@@ -92,15 +92,24 @@ export function placar(estado) {
 // Ao retomar, a vez em andamento recomeça do sorteio (o cronômetro não sobrevive).
 export const retomar = (estado) => ({ ...estado, itensDaVez: null });
 
+// O estado vem do localStorage (pode estar corrompido): qualquer surpresa vira "incompatível", nunca exceção.
 export function partidaCompativel(estado, temas) {
-  return Boolean(
-    estado
-    && estado.versao === VERSAO_ESTADO
-    && estado.config
-    && validarConfig(estado.config).length === 0
-    && estado.config.temas.every((id) => temas.some((t) => t.id === id))
-    && Array.isArray(estado.pontos)
-    && estado.pontos.length === estado.config.times.length
-    && Number.isInteger(estado.vezIndice),
-  );
+  try {
+    const { config } = estado ?? {};
+    return Boolean(
+      estado
+      && estado.versao === VERSAO_ESTADO
+      && config
+      && Array.isArray(config.times)
+      && config.times.every((t) => t && typeof t === 'object' && Array.isArray(t.membros))
+      && validarConfig(config).length === 0
+      && config.temas.every((id) => temas.some((t) => t.id === id))
+      && Array.isArray(estado.pontos)
+      && estado.pontos.length === config.times.length
+      && Number.isInteger(estado.vezIndice)
+      && estado.vezIndice >= 0,
+    );
+  } catch {
+    return false;
+  }
 }

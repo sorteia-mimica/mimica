@@ -10,4 +10,5 @@ Jogo de mímica para jogar num celular só: escolha os temas, sorteie, encene e 
 - Testes: `npm test` (Node 22+).
 - Temas: edite `data/temas.json` (mínimo 20 itens por dificuldade) e rode os testes.
 - Ao adicionar um arquivo servido, inclua-o em `ARQUIVOS` no `sw.js` (o teste avisa).
+- A cada deploy, suba o `CACHE` no `sw.js` (ex. `mimica-v5` → `mimica-v6`): é isso que faz a atualização chegar de uma vez só.
 - Ícones: `python3 tools/gerar_icones.py` (requer Pillow).

@@ -39,6 +39,12 @@ function mostrar(tela, props) {
   raiz.replaceChildren(el);
   limparTela = tela(el, props) ?? null;
   window.scrollTo(0, 0);
+  // Leitor de tela: anuncia a tela nova pelo título (sem live region no <main>, que lia tudo a cada re-render).
+  const titulo = el.querySelector('h1, h2');
+  if (titulo) {
+    titulo.tabIndex = -1;
+    titulo.focus({ preventScroll: true });
+  }
 }
 
 function atualizar(novo) {
@@ -47,15 +53,24 @@ function atualizar(novo) {
 }
 
 function partidaSalva() {
-  const salvo = armazenamento.carregarPartida();
-  return partidaCompativel(salvo, temas) ? salvo : null;
+  try {
+    const salvo = armazenamento.carregarPartida();
+    if (partidaCompativel(salvo, temas)) return salvo;
+  } catch {
+    // estado ilegível: cai no descarte abaixo
+  }
+  armazenamento.limparPartida();
+  return null;
 }
 
 function irInicio() {
   liberarTela();
   mostrar(telaInicio, {
     temPartidaSalva: Boolean(partidaSalva()),
-    aoJogar: irConfiguracao,
+    aoJogar: () => {
+      if (partidaSalva() && !window.confirm('Começar outra? A partida salva vai pro beleléu.')) return;
+      irConfiguracao();
+    },
     aoComoJogar: () => mostrar(telaComoJogar, { aoVoltar: irInicio }),
     aoContinuar: () => {
       const salvo = partidaSalva();
@@ -161,10 +176,11 @@ async function iniciar() {
     const resposta = await fetch('data/temas.json');
     if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
     temas = await resposta.json();
-    irInicio();
   } catch {
     mostrar(telaErro, { mensagem: 'Não foi possível carregar os temas.', aoTentar: iniciar });
+    return;
   }
+  irInicio();
 }
 
 if ('serviceWorker' in navigator) {

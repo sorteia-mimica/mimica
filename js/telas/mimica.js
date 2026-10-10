@@ -11,7 +11,7 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
       <div class="cronometro" data-tempo role="timer" aria-live="off">${formatarTempo(segundos)}</div>
       <div class="barra" aria-hidden="true"><div data-barra style="transform:translateX(100%)"></div></div>
     </div>
-    <p class="muted centro" data-aviso>${esc(escolher(FRASES.mimica))} Toca no ✓ quando acertarem.</p>
+    <p class="muted centro" data-aviso aria-live="polite">${esc(escolher(FRASES.mimica))} Toca no ✓ quando acertarem.</p>
     <div class="lista-itens" data-itens></div>
     <div class="rodape fixo"><button class="btn btn-primario" data-acao="terminar">Encerrar a vez</button></div>`;
 

@@ -26,7 +26,7 @@ Sucesso = um grupo consegue configurar uma partida em menos de 1 minuto (modo Pa
 ### Individual
 - Mínimo 2 jogadores.
 - Um faz a mímica, todos os outros tentam adivinhar.
-- Item acertado → quem fez **e** quem acertou ganham os pontos do item. Ao marcar ✓, o app pede para tocar no nome de quem acertou.
+- Item acertado → quem fez **e** quem acertou ganham os pontos do item. Durante a mímica só se marca ✓; depois do tempo (ou ao encerrar a vez) abre a **conferência**, onde dá para corrigir os ✓ e escolher quem acertou cada item.
 
 ### Volta e fim da partida
 - **Uma volta** = todos os jogadores fizeram mímica uma vez.
@@ -101,9 +101,10 @@ Formato:
 2. **Configuração** — modo, nomes, temas, Padrão/Personalizado.
 3. **Vez de jogar** — "Vez de Ana (faz) → Beto (adivinha)" ou "Vez de Ana"; placar resumido; botão **Sortear**.
 4. **Leitura** — itens visíveis só para quem faz, contagem regressiva do tempo de leitura.
-5. **Mímica** — cronômetro; itens na tela; quem faz marca ✓ em cada item (no Individual, escolhe quem acertou; dá para desmarcar). Botão "Terminar" encerra antes. No fim: vibração + som.
-6. **Resultado da vez** — itens acertados/errados, pontos ganhos; "Próximo".
-7. **Placar final** — ranking com 🏆; "Jogar de novo" (mesma configuração) e "Início".
+5. **Mímica** — cronômetro; itens na tela; quem faz marca só ✓ em cada item (dá para desmarcar). Botão "Terminar" encerra antes. No fim: vibração + som.
+6. **Conferência** (só no Individual) — após o tempo ou o fim da vez: corrige os ✓ e escolhe quem acertou cada item. No Duplas, a mímica vai direto para o resultado.
+7. **Resultado da vez** — itens acertados/errados, pontos ganhos; "Próximo".
+8. **Placar final** — ranking com 🏆; "Jogar de novo" (mesma configuração) e "Início".
 
 ## Arquitetura
 
