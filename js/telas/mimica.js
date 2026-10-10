@@ -7,6 +7,7 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
   const marcados = itens.map(() => false);
 
   el.innerHTML = `
+    <h1 class="sr-only">Mímica rolando</h1>
     <div class="card relogio">
       <div class="cronometro" data-tempo role="timer" aria-live="off">${formatarTempo(segundos)}</div>
       <div class="barra" aria-hidden="true"><div data-barra style="transform:translateX(100%)"></div></div>

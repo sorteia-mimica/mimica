@@ -11,6 +11,7 @@ export function telaResultado(el, { registro, placar, ultimaVez, nomeQuemAcertou
     ? ['😅', FRASES.zero]
     : acertos === registro.itens.length ? ['🔥', FRASES.gabaritou] : ['🎉', FRASES.alguns];
   el.innerHTML = `
+    <h1 class="sr-only">Resultado da vez</h1>
     <section class="card capa entrar">
       <div class="emoji" aria-hidden="true">${emoji}</div>
       <div class="destaque">+${registro.ganhos} ${registro.ganhos === 1 ? 'ponto' : 'pontos'}</div>

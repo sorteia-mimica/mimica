@@ -107,6 +107,10 @@ h1 { font-size: 1.9rem; margin: 0; line-height: 1.12; font-weight: 850; letter-s
 h2 { font-size: .8rem; margin: 0 0 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 800; }
 p { margin: 0; text-wrap: pretty; }
 .muted { color: var(--muted); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
 .centro { text-align: center; }
 .sub { margin-top: 6px; }
 .dica { margin: -4px 0 12px; font-size: .95rem; }
