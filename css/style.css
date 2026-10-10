@@ -206,9 +206,20 @@ p { margin: 0; text-wrap: pretty; }
   position: sticky;
   bottom: 0;
   z-index: 2;
-  margin: 0 -16px calc(-1 * max(24px, env(safe-area-inset-bottom)));
+  margin: auto -16px calc(-1 * max(24px, env(safe-area-inset-bottom)));
   padding: 20px 16px max(16px, env(safe-area-inset-bottom));
-  background: linear-gradient(to bottom, transparent, var(--fundo-tela) 22px);
+}
+/* Sem cor chapada: o fundo da página tem manchas de cor, então o rodapé só desfoca o que passa por baixo. */
+.rodape.fixo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22px);
+  mask-image: linear-gradient(to bottom, transparent, #000 22px);
 }
 
 .linha { display: flex; gap: 8px; align-items: center; }
@@ -417,9 +428,10 @@ p { margin: 0; text-wrap: pretty; }
 .destaque { font-size: 2.6rem; font-weight: 900; line-height: 1.05; letter-spacing: -.02em; color: var(--destaque); }
 .titulo-resultado { font-size: 1.25rem; font-weight: 800; }
 .vez { font-size: 1.7rem; }
+.vez { overflow-wrap: anywhere; }
 .vez b { color: var(--destaque); }
 .seta { display: block; font-size: 1.1rem; color: var(--muted); font-weight: 700; margin: 2px 0; }
-.capa .frase { margin-top: 10px; }
+.capa .frase { margin-top: 10px; overflow-wrap: anywhere; }
 .pilula {
   display: inline-block;
   padding: 4px 12px;
@@ -483,10 +495,13 @@ p { margin: 0; text-wrap: pretty; }
       0 30px 80px -24px rgb(60 30 120 / .35);
   }
   .rodape.fixo {
-    margin: 0 -28px -32px;
+    margin: auto -28px -32px;
     padding: 20px 28px 28px;
     border-radius: 0 0 32px 32px;
+    /* O cartão é chapado em --fundo-tela: aqui o degradê até essa cor emenda sem corte. */
+    background: linear-gradient(to bottom, transparent, var(--fundo-tela) 22px);
   }
+  .rodape.fixo::before { display: none; }
   /* No PC não há polegar para alcançar: capa e botões juntos no centro, assinatura no pé. */
   .inicio .capa { margin-top: auto; }
   .inicio .rodape { margin-top: 28px; }

@@ -27,14 +27,14 @@ const botaoSegmento = (grupo, valor, rotulo, ativo) =>
   `<button data-acao="${grupo}" data-valor="${valor}" aria-pressed="${ativo}">${rotulo}</button>`;
 
 export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }) {
-  let form = configSalva ? formDeConfig(configSalva) : formVazio();
+  let form = configSalva ? formDeConfig(configSalva) : formVazio(temas.map((t) => t.id));
   form.temas = form.temas.filter((id) => temas.some((t) => t.id === id));
 
   function timeHtml(time, i) {
     const individual = form.modo === 'individual';
     const campos = time.membros.map((nome, j) => `
       <input class="campo" data-time="${i}" data-membro="${j}" value="${esc(nome)}"
-        placeholder="Ex.: ${EXEMPLOS[(i * time.membros.length + j) % EXEMPLOS.length]}" maxlength="20" autocomplete="off"
+        placeholder="Ex.: ${EXEMPLOS[(i * time.membros.length + j) % EXEMPLOS.length]}" maxlength="24" autocomplete="off"
         aria-label="${individual ? `Nome do jogador ${i + 1}` : `Dupla ${i + 1}, pessoa ${j + 1}`}">`).join('');
     const podeRemover = form.times.length > 2;
     if (individual) {

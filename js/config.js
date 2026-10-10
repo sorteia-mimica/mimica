@@ -55,11 +55,12 @@ export function validarConfig(config) {
   return erros;
 }
 
-export function formVazio() {
+// `idsTemas`: na primeira partida todos os temas já vêm marcados (o grupo desmarca o que não quiser).
+export function formVazio(idsTemas = []) {
   return {
     modo: 'duplas',
     times: [{ membros: ['', ''] }, { membros: ['', ''] }],
-    temas: [],
+    temas: [...idsTemas],
     personalizado: false,
     extras: structuredClone(PADRAO),
   };

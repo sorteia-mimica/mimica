@@ -74,6 +74,19 @@ test('formVazio: duplas, 2 duplas vazias, extras independentes do PADRAO', () =>
   assert.equal(PADRAO.mix.facil, 1);
 });
 
+test('formVazio: pré-seleciona os temas recebidos (cópia) e sem argumento fica vazio', () => {
+  const ids = ['futebol', 'animal'];
+  const form = formVazio(ids);
+  assert.deepEqual(form.temas, ids);
+  form.temas.push('x');
+  assert.deepEqual(ids, ['futebol', 'animal']);
+  assert.deepEqual(formVazio().temas, []);
+});
+
+test('nome longo (24 caracteres) é válido', () => {
+  assert.deepEqual(validarConfig(valida({ modo: 'individual', times: [{ membros: ['Tio do Pavê Gonçalves'.padEnd(24, 'x')] }, { membros: ['Beto'] }] })), []);
+});
+
 test('formDeConfig detecta personalizado e faz ida e volta', () => {
   assert.equal(formDeConfig(valida()).personalizado, false);
   const custom = valida({ voltas: 5 });
