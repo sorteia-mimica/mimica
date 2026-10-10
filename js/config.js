@@ -65,6 +65,24 @@ export function formVazio() {
   };
 }
 
+// A config salva vem do localStorage: só serve se estiver bem formada e passar na validação (nunca lança).
+export function configUtilizavel(config) {
+  try {
+    return Boolean(
+      config
+      && typeof config === 'object'
+      && Array.isArray(config.times)
+      && config.times.every((t) => t && typeof t === 'object' && Array.isArray(t.membros))
+      && Array.isArray(config.temas)
+      && config.mix && typeof config.mix === 'object'
+      && config.pontos && typeof config.pontos === 'object'
+      && validarConfig(config).length === 0,
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function formDeConfig(config) {
   const extras = {
     voltas: config.voltas,

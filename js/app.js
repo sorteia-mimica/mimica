@@ -1,4 +1,5 @@
 import { criarArmazenamento } from './armazenamento.js';
+import { configUtilizavel } from './config.js';
 import {
   criarPartida, vezAtual, sortear, registrarVez, terminou, placar, nomeDoTime, retomar, partidaCompativel,
 } from './jogo.js';
@@ -63,6 +64,15 @@ function partidaSalva() {
   return null;
 }
 
+function configSalva() {
+  try {
+    const salva = armazenamento.carregarConfig();
+    return configUtilizavel(salva) ? salva : null;
+  } catch {
+    return null;
+  }
+}
+
 function irInicio() {
   liberarTela();
   mostrar(telaInicio, {
@@ -84,7 +94,7 @@ function irInicio() {
 function irConfiguracao() {
   mostrar(telaConfiguracao, {
     temas,
-    configSalva: armazenamento.carregarConfig(),
+    configSalva: configSalva(),
     aoVoltar: irInicio,
     aoComecar: (config) => {
       armazenamento.salvarConfig(config);

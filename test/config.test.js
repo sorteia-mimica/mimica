@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { PADRAO, validarConfig, montarConfig, formVazio, formDeConfig, trocarModo, lerCaminho, escreverCaminho } from '../js/config.js';
+import { PADRAO, validarConfig, montarConfig, formVazio, formDeConfig, configUtilizavel, trocarModo, lerCaminho, escreverCaminho } from '../js/config.js';
 
 const valida = (extra = {}) => ({
   modo: 'duplas',
@@ -97,4 +97,16 @@ test('lerCaminho / escreverCaminho', () => {
   assert.equal(lerCaminho(o, 'mix.facil'), 1);
   escreverCaminho(o, 'mix.facil', 2);
   assert.equal(o.mix.facil, 2);
+});
+
+test('configUtilizavel aceita config válida e rejeita lixo salvo', () => {
+  assert.equal(configUtilizavel(valida()), true);
+  assert.equal(configUtilizavel(null), false);
+  assert.equal(configUtilizavel('x'), false);
+  assert.equal(configUtilizavel({ modo: 'duplas' }), false);
+  assert.equal(configUtilizavel(valida({ mix: undefined })), false);
+  assert.equal(configUtilizavel(valida({ times: [null, null] })), false);
+  assert.equal(configUtilizavel(valida({ times: [{ membros: 'Ana' }, { membros: ['B'] }] })), false);
+  assert.equal(configUtilizavel(valida({ temas: 'futebol' })), false);
+  assert.equal(configUtilizavel(valida({ voltas: 99 })), false);
 });
