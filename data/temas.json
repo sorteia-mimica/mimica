@@ -4,9 +4,9 @@
     "nome": "Filmes/Séries",
     "emoji": "🎬",
     "itens": {
-      "facil": ["Titanic", "Homem-Aranha", "O Rei Leão", "Harry Potter", "Procurando Nemo", "Mulan", "Batman", "Superman", "Frozen", "Shrek", "Piratas do Caribe", "Star Wars", "Jurassic Park", "Toy Story", "Rocky", "Karatê Kid", "Hulk", "A Pequena Sereia", "Cinderela", "Branca de Neve", "King Kong", "Os Flintstones", "Peter Pan"],
-      "medio": ["Matrix", "Ghost", "Missão Impossível", "De Volta para o Futuro", "E.T.", "Indiana Jones", "Forrest Gump", "Tropa de Elite", "Velozes e Furiosos", "Round 6", "La Casa de Papel", "Stranger Things", "Avatar", "Up: Altas Aventuras", "Os Caça-Fantasmas", "Pantera Negra", "Edward Mãos de Tesoura", "O Máskara", "Esqueceram de Mim", "Todo Mundo Odeia o Chris", "O Senhor dos Anéis", "Pânico", "Mudança de Hábito", "Os Incríveis", "Barbie"],
-      "dificil": ["Cidade de Deus", "O Auto da Compadecida", "Divertida Mente", "O Poderoso Chefão", "Game of Thrones", "Breaking Bad", "Central do Brasil", "Se Eu Fosse Você", "Minha Mãe É uma Peça", "O Show de Truman", "A Origem", "Interestelar", "Clube da Luta", "O Sexto Sentido", "O Lobo de Wall Street", "Ainda Estou Aqui", "Oppenheimer", "Que Horas Ela Volta?", "Avenida Brasil", "Pantanal", "O Clone", "Friends", "A Vida É Bela", "O Diabo Veste Prada"]
+      "facil": ["Titanic", "Homem-Aranha", "O Rei Leão", "Harry Potter", "Batman", "Superman", "Frozen", "Piratas do Caribe", "Star Wars", "Jurassic Park", "Toy Story", "Rocky", "Karatê Kid", "Hulk", "A Pequena Sereia", "King Kong", "Matrix", "Ghost", "E.T.", "Indiana Jones", "Pantera Negra", "Edward Mãos de Tesoura", "Esqueceram de Mim"],
+      "medio": ["Missão Impossível", "Forrest Gump", "Tropa de Elite", "Velozes e Furiosos", "Round 6", "La Casa de Papel", "Stranger Things", "Avatar", "Up: Altas Aventuras", "Os Caça-Fantasmas", "O Máskara", "O Senhor dos Anéis", "Pânico", "Mudança de Hábito", "Os Incríveis", "Barbie", "Procurando Nemo", "Mulan", "Shrek", "Cinderela", "Branca de Neve", "Os Flintstones", "Peter Pan", "O Poderoso Chefão"],
+      "dificil": ["Cidade de Deus", "O Auto da Compadecida", "Divertida Mente", "Game of Thrones", "Breaking Bad", "Central do Brasil", "Se Eu Fosse Você", "Minha Mãe É uma Peça", "O Show de Truman", "A Origem", "Interestelar", "Clube da Luta", "O Sexto Sentido", "O Lobo de Wall Street", "Ainda Estou Aqui", "Oppenheimer", "Que Horas Ela Volta?", "Avenida Brasil", "Pantanal", "O Clone", "Friends", "A Vida É Bela", "O Diabo Veste Prada", "De Volta para o Futuro", "Todo Mundo Odeia o Chris"]
     }
   },
   {
@@ -14,9 +14,9 @@
     "nome": "Profissão",
     "emoji": "👷",
     "itens": {
-      "facil": ["Médico", "Bombeiro", "Policial", "Professor", "Cozinheiro", "Dentista", "Cabeleireiro", "Pintor", "Garçom", "Carteiro", "Piloto de avião", "Fotógrafo", "Mecânico", "Pedreiro", "Jardineiro", "Pescador", "Palhaço", "Bailarina", "Salva-vidas", "Taxista", "Enfermeira", "Astronauta", "Mágico"],
-      "medio": ["Maestro", "Juiz", "Advogado", "Cirurgião", "Veterinário", "Padeiro", "Açougueiro", "Costureira", "Eletricista", "Encanador", "Manicure", "Frentista", "Caixa de supermercado", "Segurança de balada", "Chaveiro", "Cientista", "Repórter", "Personal trainer", "Gari", "Tatuador", "Cobrador de ônibus", "Guarda de trânsito", "Marceneiro", "Babá"],
-      "dificil": ["Sommelier", "Ventríloquo", "Psicólogo", "Programador", "Contador", "Corretor de imóveis", "Arqueólogo", "Influenciador digital", "Dublador", "Controlador de voo", "Detetive particular", "Domador de leões", "Leiloeiro", "Apicultor", "Meteorologista", "Coach", "Entregador de aplicativo", "Escultor", "Mímico", "Tradutor", "Instrutor de autoescola", "Adestrador", "Engenheiro", "Hipnotizador"]
+      "facil": ["Médico", "Bombeiro", "Policial", "Professor", "Cozinheiro", "Dentista", "Cabeleireiro", "Pintor", "Garçom", "Piloto de avião", "Fotógrafo", "Mecânico", "Pedreiro", "Jardineiro", "Pescador", "Palhaço", "Bailarina", "Astronauta", "Mágico", "Maestro", "Juiz", "Costureira", "Frentista", "Caixa de supermercado", "Guarda de trânsito"],
+      "medio": ["Cirurgião", "Veterinário", "Padeiro", "Açougueiro", "Eletricista", "Encanador", "Manicure", "Segurança de balada", "Chaveiro", "Cientista", "Repórter", "Personal trainer", "Gari", "Tatuador", "Marceneiro", "Babá", "Carteiro", "Salva-vidas", "Taxista", "Enfermeira", "Sommelier", "Detetive particular", "Domador de leões", "Entregador de aplicativo", "Hipnotizador"],
+      "dificil": ["Psicólogo", "Programador", "Contador", "Corretor de imóveis", "Arqueólogo", "Influenciador digital", "Dublador", "Controlador de voo", "Leiloeiro", "Apicultor", "Meteorologista", "Coach", "Escultor", "Mímico", "Tradutor", "Instrutor de autoescola", "Adestrador", "Engenheiro", "Ventríloquo", "Advogado", "Cobrador de ônibus", "Político", "Farmacêutico"]
     }
   },
   {
@@ -24,9 +24,9 @@
     "nome": "Animal",
     "emoji": "🐾",
     "itens": {
-      "facil": ["Cachorro", "Gato", "Macaco", "Elefante", "Cobra", "Galinha", "Peixe", "Coelho", "Leão", "Cavalo", "Pato", "Sapo", "Canguru", "Vaca", "Porco", "Pinguim", "Tubarão", "Borboleta", "Girafa", "Urso", "Passarinho", "Jacaré", "Tartaruga"],
-      "medio": ["Polvo", "Caranguejo", "Morcego", "Bicho-preguiça", "Camaleão", "Gorila", "Flamingo", "Pavão", "Avestruz", "Tamanduá", "Golfinho", "Baleia", "Papagaio", "Coruja", "Escorpião", "Aranha", "Esquilo", "Camelo", "Foca", "Hipopótamo", "Rinoceronte", "Abelha", "Pica-pau", "Mosquito"],
-      "dificil": ["Água-viva", "Cavalo-marinho", "Ornitorrinco", "Tatu-bola", "Louva-a-deus", "Vaga-lume", "Caramujo", "Capivara", "Mico-leão-dourado", "Lhama", "Ouriço", "Tucano", "Urubu", "Joaninha", "Minhoca", "Gambá", "Baiacu", "Toupeira", "Bicho-pau", "Pulga", "Pelicano", "Coala", "Peixe-boi", "Estrela-do-mar"]
+      "facil": ["Cachorro", "Gato", "Macaco", "Elefante", "Cobra", "Galinha", "Peixe", "Coelho", "Leão", "Cavalo", "Sapo", "Canguru", "Vaca", "Porco", "Pinguim", "Tubarão", "Borboleta", "Girafa", "Passarinho", "Caranguejo", "Gorila", "Flamingo", "Aranha", "Foca", "Pica-pau"],
+      "medio": ["Polvo", "Morcego", "Bicho-preguiça", "Pavão", "Avestruz", "Golfinho", "Baleia", "Papagaio", "Coruja", "Escorpião", "Esquilo", "Camelo", "Hipopótamo", "Rinoceronte", "Abelha", "Mosquito", "Tartaruga", "Urso", "Jacaré", "Pato", "Tatu-bola", "Tucano", "Gambá", "Baiacu", "Coala"],
+      "dificil": ["Água-viva", "Cavalo-marinho", "Ornitorrinco", "Louva-a-deus", "Vaga-lume", "Caramujo", "Capivara", "Mico-leão-dourado", "Lhama", "Ouriço", "Urubu", "Joaninha", "Minhoca", "Toupeira", "Bicho-pau", "Pulga", "Pelicano", "Peixe-boi", "Estrela-do-mar", "Camaleão", "Tamanduá", "Hiena", "Suricato"]
     }
   },
   {
@@ -34,9 +34,9 @@
     "nome": "Esportes",
     "emoji": "🏅",
     "itens": {
-      "facil": ["Natação", "Vôlei", "Basquete", "Tênis", "Boxe", "Ciclismo", "Corrida", "Surfe", "Skate", "Judô", "Ginástica artística", "Golfe", "Esqui", "Pingue-pongue", "Boliche", "Karatê", "Patinação no gelo", "Musculação", "Arco e flecha", "Beisebol", "Remo", "Mergulho", "Capoeira"],
-      "medio": ["Hipismo", "Esgrima", "Polo aquático", "Futebol americano", "Handebol", "Levantamento de peso", "Salto com vara", "Arremesso de peso", "Lançamento de dardo", "Salto em distância", "Corrida com barreiras", "Nado sincronizado", "Rúgbi", "Hóquei no gelo", "Sinuca", "Dardos", "Badminton", "Canoagem", "Escalada", "Kitesurfe", "Snowboard", "Sumô", "Jiu-jítsu", "Vôlei de praia"],
-      "dificil": ["Curling", "Pentatlo moderno", "Triatlo", "Salto ornamental", "Ginástica rítmica", "Bobsled", "Paraquedismo", "Rapel", "Asa-delta", "Bungee jump", "Críquete", "Maratona", "Revezamento 4x100", "Polo", "Tiro ao prato", "Luta greco-romana", "Wakeboard", "Frescobol", "Peteca", "Kart", "Fórmula 1", "Rodeio", "Parkour", "Xadrez"]
+      "facil": ["Natação", "Vôlei", "Basquete", "Tênis", "Boxe", "Ciclismo", "Surfe", "Skate", "Golfe", "Esqui", "Pingue-pongue", "Boliche", "Karatê", "Patinação no gelo", "Musculação", "Arco e flecha", "Beisebol", "Capoeira", "Esgrima", "Corrida com barreiras", "Sinuca", "Dardos", "Escalada", "Sumô", "Rodeio"],
+      "medio": ["Futebol americano", "Handebol", "Levantamento de peso", "Salto com vara", "Arremesso de peso", "Lançamento de dardo", "Salto em distância", "Nado sincronizado", "Rúgbi", "Hóquei no gelo", "Badminton", "Canoagem", "Snowboard", "Jiu-jítsu", "Vôlei de praia", "Judô", "Ginástica artística", "Corrida", "Mergulho", "Remo", "Curling", "Ginástica rítmica", "Paraquedismo", "Bungee jump", "Tiro ao prato"],
+      "dificil": ["Pentatlo moderno", "Triatlo", "Salto ornamental", "Bobsled", "Rapel", "Asa-delta", "Críquete", "Maratona", "Revezamento 4x100", "Polo", "Luta greco-romana", "Wakeboard", "Frescobol", "Peteca", "Kart", "Fórmula 1", "Parkour", "Xadrez", "Polo aquático", "Kitesurfe", "Hipismo", "Taekwondo", "Stand up paddle"]
     }
   },
   {
@@ -44,9 +44,9 @@
     "nome": "Futebol",
     "emoji": "⚽",
     "itens": {
-      "facil": ["Marcação", "Pênalti", "Escanteio", "Cartão vermelho", "Lateral", "Gol contra", "Goleiro", "Tiro de meta", "Torcida", "Bandeirinha", "Zagueiro", "Messi", "Cristiano Ronaldo", "Ronaldinho Gaúcho", "Ronaldo Fenômeno", "Comemoração de gol", "Falta", "Substituição", "Apito final", "Copa do Mundo", "Embaixadinha", "Trave", "Hino nacional"],
-      "medio": ["Caneta", "Tesoura", "Pressionar", "Chapéu", "Elástico", "Bicicleta", "Cavar falta", "Impedimento", "VAR", "Pedalada", "Barreira", "Cera", "Gol de placa", "Contra-ataque", "Tabelinha", "Drible da vaca", "Disputa de pênaltis", "Prorrogação", "Gol olímpico", "Zico", "Romário", "Vini Jr.", "Mbappé", "Kaká", "Rogério Ceni"],
-      "dificil": ["Marcação por zona", "Finalizar no ângulo", "Campeonato Brasileiro", "Linha alta", "Libertadores", "Rabona", "Paradinha", "Folha seca", "Cavadinha", "Catimba", "Pressão pós-perda", "Falso 9", "Retranca", "Estacionar o ônibus", "Tiki-taka", "Lei do ex", "Garrincha", "Sócrates", "Pep Guardiola", "Mão de Deus", "Rebaixamento", "Mata-mata", "Virada nos acréscimos", "Zagueiro artilheiro", "Fair play"]
+      "facil": ["Marcação", "Pênalti", "Escanteio", "Cartão vermelho", "Lateral", "Goleiro", "Torcida", "Bandeirinha", "Cristiano Ronaldo", "Ronaldinho Gaúcho", "Comemoração de gol", "Substituição", "Apito final", "Embaixadinha", "Hino nacional", "Trave", "Bicicleta", "VAR", "Pedalada", "Barreira", "Gandula", "Ola na arquibancada"],
+      "medio": ["Caneta", "Tesoura", "Pressionar", "Chapéu", "Elástico", "Cavar falta", "Cera", "Disputa de pênaltis", "Romário", "Vini Jr.", "Mbappé", "Kaká", "Rogério Ceni", "Gol contra", "Tiro de meta", "Zagueiro", "Messi", "Ronaldo Fenômeno", "Falta", "Copa do Mundo", "Rabona", "Paradinha", "Cavadinha", "Mão de Deus"],
+      "dificil": ["Marcação por zona", "Finalizar no ângulo", "Campeonato Brasileiro", "Linha alta", "Libertadores", "Folha seca", "Catimba", "Retranca", "Estacionar o ônibus", "Tiki-taka", "Garrincha", "Sócrates", "Pep Guardiola", "Rebaixamento", "Mata-mata", "Virada nos acréscimos", "Fair play", "Prorrogação", "Gol olímpico", "Contra-ataque", "Tabelinha", "Drible da vaca", "Zico", "Gol de placa", "Impedimento"]
     }
   },
   {
@@ -54,9 +54,9 @@
     "nome": "Ações do dia a dia",
     "emoji": "🏠",
     "itens": {
-      "facil": ["Escovar os dentes", "Lavar louça", "Tomar banho", "Pentear o cabelo", "Varrer a casa", "Passar roupa", "Dirigir", "Fazer café", "Arrumar a cama", "Amarrar o tênis", "Fazer a barba", "Lavar o carro", "Regar as plantas", "Passear com o cachorro", "Tirar uma selfie", "Estender roupa", "Passar maquiagem", "Atender o telefone", "Lavar as mãos", "Fritar um ovo", "Trocar de roupa", "Abrir o guarda-chuva", "Assistir TV"],
-      "medio": ["Perder o ônibus", "Procurar a chave", "Pisar em Lego", "Acordar atrasado", "Apertar a soneca", "Pegar ônibus lotado", "Trocar fralda", "Trocar lâmpada", "Desentupir a pia", "Esperar o micro-ondas", "Matar um mosquito", "Trocar pneu", "Fazer churrasco", "Chorar cortando cebola", "Queimar a língua com café", "Levar choque", "Ficar preso no elevador", "Pedir um Uber", "Bater o dedinho na quina", "Descascar abacaxi", "Fazer baliza", "Lavar o banheiro", "Fazer as unhas"],
-      "dificil": ["Montar móvel sem manual", "Dobrar lençol de elástico", "Fazer Pix", "Esquecer a senha do banco", "Abrir pote de palmito", "Tentar dormir com pernilongo no ouvido", "Fingir que está trabalhando", "Esquecer o microfone ligado na reunião", "Desembaraçar fone de ouvido", "Procurar sinal de wi-fi", "Tirar foto de grupo com temporizador", "Esconder a bagunça quando chega visita", "Ver spoiler sem querer", "Esquecer o que veio fazer", "Fingir que não viu o vizinho", "Carregar todas as sacolas numa viagem só", "Ouvir áudio longo no WhatsApp", "Mandar mensagem no grupo errado", "Procurar tomada com 1% de bateria", "Pegar no sono vendo série", "Separar o lixo reciclável", "Fazer a declaração do imposto de renda", "Segurar o espirro", "Dividir a conta do bar"]
+      "facil": ["Escovar os dentes", "Lavar louça", "Tomar banho", "Pentear o cabelo", "Varrer a casa", "Passar roupa", "Dirigir", "Amarrar o tênis", "Fazer a barba", "Regar as plantas", "Passear com o cachorro", "Tirar uma selfie", "Estender roupa", "Passar maquiagem", "Atender o telefone", "Lavar as mãos", "Fritar um ovo", "Abrir o guarda-chuva", "Assistir TV", "Trocar de roupa", "Apertar a soneca", "Trocar lâmpada", "Desentupir a pia", "Matar um mosquito", "Fazer as unhas"],
+      "medio": ["Perder o ônibus", "Procurar a chave", "Pisar em Lego", "Acordar atrasado", "Pegar ônibus lotado", "Trocar fralda", "Trocar pneu", "Fazer churrasco", "Chorar cortando cebola", "Queimar a língua com café", "Levar choque", "Ficar preso no elevador", "Bater o dedinho na quina", "Descascar abacaxi", "Fazer baliza", "Lavar o banheiro", "Fazer café", "Arrumar a cama", "Lavar o carro", "Abrir pote de palmito", "Desembaraçar fone de ouvido", "Procurar sinal de wi-fi", "Carregar todas as sacolas numa viagem só", "Pegar no sono vendo série", "Segurar o espirro"],
+      "dificil": ["Montar móvel sem manual", "Dobrar lençol de elástico", "Fazer Pix", "Esquecer a senha do banco", "Tentar dormir com pernilongo no ouvido", "Fingir que está trabalhando", "Esquecer o microfone ligado na reunião", "Tirar foto de grupo com temporizador", "Esconder a bagunça quando chega visita", "Ver spoiler sem querer", "Esquecer o que veio fazer", "Fingir que não viu o vizinho", "Ouvir áudio longo no WhatsApp", "Mandar mensagem no grupo errado", "Procurar tomada com 1% de bateria", "Separar o lixo reciclável", "Fazer a declaração do imposto de renda", "Dividir a conta do bar", "Pedir um Uber", "Esperar o micro-ondas", "Ler os termos de uso", "Assaltar a geladeira de madrugada"]
     }
   },
   {
@@ -64,9 +64,9 @@
     "nome": "Famosos",
     "emoji": "⭐",
     "itens": {
-      "facil": ["Neymar", "Xuxa", "Silvio Santos", "Pelé", "Michael Jackson", "Elvis Presley", "Charlie Chaplin", "Usain Bolt", "Bruce Lee", "Galvão Bueno", "Ivete Sangalo", "Mr. Bean", "Renato Aragão", "Roberto Carlos", "Marilyn Monroe", "Freddie Mercury", "Bob Marley", "Gisele Bündchen", "Tiririca", "Ana Maria Braga", "Zeca Pagodinho", "Luciano Huck", "Joelma"],
-      "medio": ["Anitta", "Faustão", "Ayrton Senna", "Gusttavo Lima", "Pabllo Vittar", "Ludmilla", "Caetano Veloso", "Rita Lee", "Raul Seixas", "Beyoncé", "Lady Gaga", "Taylor Swift", "Shakira", "Fernanda Montenegro", "Datena", "Casimiro", "Carlinhos Brown", "Zezé Di Camargo", "Whindersson Nunes", "Marília Mendonça", "Hebe Camargo", "Rebeca Andrade", "Gugu"],
-      "dificil": ["Einstein", "Chaves", "Gretchen", "Napoleão", "Frida Kahlo", "Leonardo da Vinci", "Santos Dumont", "Tiradentes", "Dom Pedro I", "Freud", "Isaac Newton", "Gandhi", "Steve Jobs", "Cleópatra", "Van Gogh", "Salvador Dalí", "Beethoven", "Seu Madruga", "Chapolin Colorado", "Inês Brasil", "Nazaré Tedesco", "Carmen Miranda", "Ney Matogrosso", "Zé do Caixão"]
+      "facil": ["Neymar", "Xuxa", "Silvio Santos", "Pelé", "Michael Jackson", "Elvis Presley", "Charlie Chaplin", "Usain Bolt", "Bruce Lee", "Mr. Bean", "Roberto Carlos", "Marilyn Monroe", "Freddie Mercury", "Ana Maria Braga", "Joelma", "Shakira", "Tarzan", "John Travolta", "Popeye", "Pinóquio", "Papai Noel"],
+      "medio": ["Anitta", "Faustão", "Ayrton Senna", "Pabllo Vittar", "Beyoncé", "Datena", "Whindersson Nunes", "Hebe Camargo", "Rebeca Andrade", "Galvão Bueno", "Ivete Sangalo", "Renato Aragão", "Bob Marley", "Gisele Bündchen", "Tiririca", "Zeca Pagodinho", "Napoleão", "Frida Kahlo", "Dom Pedro I", "Isaac Newton", "Cleópatra", "Van Gogh", "Chapolin Colorado", "Carmen Miranda", "Zé do Caixão"],
+      "dificil": ["Einstein", "Chaves", "Gretchen", "Leonardo da Vinci", "Santos Dumont", "Tiradentes", "Freud", "Gandhi", "Steve Jobs", "Salvador Dalí", "Beethoven", "Seu Madruga", "Inês Brasil", "Nazaré Tedesco", "Ney Matogrosso", "Gusttavo Lima", "Caetano Veloso", "Rita Lee", "Raul Seixas", "Marília Mendonça", "Carlinhos Brown", "Casimiro", "Ludmilla", "Lady Gaga", "Taylor Swift"]
     }
   }
 ]
