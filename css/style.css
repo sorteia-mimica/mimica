@@ -42,7 +42,7 @@
     --surface-2: #2b2247;
     --text: #f3efff;
     --muted: #b2a9cc;
-    --primary: #8b5cf6;
+    --primary: #7c3aed;
     --primary-2: #c026d3;
     --destaque: #c4b5fd;
     --titulo-a: #a78bfa;
@@ -148,7 +148,7 @@ p { margin: 0; text-wrap: pretty; }
   padding-bottom: 2px;
 }
 .inicio .capa p { font-size: 1.1rem; }
-.assinatura { text-align: center; font-size: .75rem; color: var(--muted); opacity: .8; margin-top: -4px; }
+.assinatura { text-align: center; font-size: .78rem; color: var(--muted); margin-top: -4px; }
 
 /* Botões */
 .btn {
@@ -264,7 +264,7 @@ p { margin: 0; text-wrap: pretty; }
 }
 .chip:active { transform: scale(.95); }
 .chip[aria-pressed="true"] { border-color: var(--destaque); background: var(--surface-2); color: var(--destaque); }
-.chips .chip[aria-pressed="true"]::before { content: "✓ "; }
+.chip[aria-pressed="true"]::before { content: "✓ "; }
 
 .stepper { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; }
 .stepper + .stepper { border-top: 1px solid var(--border); }
@@ -344,7 +344,6 @@ p { margin: 0; text-wrap: pretty; }
 .quem-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .quem-chips .chip { max-width: 100%; border-radius: 22px; overflow-wrap: anywhere; text-align: left; }
 .quem-chips .chip[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: var(--primary-text); }
-.quem-chips .chip[aria-pressed="true"]::before { content: "✓ "; }
 
 /* Cronômetro */
 .relogio { padding: 14px 18px 18px; display: flex; flex-direction: column; gap: 12px; }

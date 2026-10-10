@@ -8,7 +8,7 @@ export function telaLeitura(el, { itens, segundos, aoFim }) {
   el.innerHTML = `
     <p class="centro"><b>${esc(escolher(FRASES.leitura))}</b></p>
     <div class="card relogio">
-      <div class="cronometro" data-tempo>${formatarTempo(segundos)}</div>
+      <div class="cronometro" data-tempo role="timer" aria-live="off">${formatarTempo(segundos)}</div>
       <div class="barra" aria-hidden="true"><div data-barra style="transform:translateX(100%)"></div></div>
     </div>
     <div class="lista-itens">${itens.map((item) => itemHtml(item)).join('')}</div>

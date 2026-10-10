@@ -8,7 +8,7 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
 
   el.innerHTML = `
     <div class="card relogio">
-      <div class="cronometro" data-tempo>${formatarTempo(segundos)}</div>
+      <div class="cronometro" data-tempo role="timer" aria-live="off">${formatarTempo(segundos)}</div>
       <div class="barra" aria-hidden="true"><div data-barra style="transform:translateX(100%)"></div></div>
     </div>
     <p class="muted centro" data-aviso>${esc(escolher(FRASES.mimica))} Toca no ✓ quando acertarem.</p>
@@ -22,11 +22,13 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
   const botaoTerminar = el.querySelector('[data-acao="terminar"]');
 
   function renderItens() {
+    const foco = lista.contains(document.activeElement) ? document.activeElement.dataset.item : undefined;
     lista.innerHTML = itens.map((item, i) => itemHtml(item, {
       animar: false,
       acertou: marcados[i],
       extra: `<button class="check" data-acao="marcar" data-item="${i}" aria-pressed="${marcados[i]}" aria-label="Acertou: ${esc(item.texto)}">✓</button>`,
     })).join('');
+    if (foco !== undefined) lista.querySelector(`[data-acao="marcar"][data-item="${foco}"]`)?.focus();
   }
 
   const parar = iniciarCronometro(segundos, {

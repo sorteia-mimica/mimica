@@ -4,6 +4,9 @@ import { FRASES, comNome, escolher } from '../frases.js';
 
 const MEDALHAS = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
+// "A", "A e B", "A, B e C" (nomes já escapados).
+const juntar = (nomes) => (nomes.length < 2 ? nomes.join('') : `${nomes.slice(0, -1).join(', ')} e ${nomes.at(-1)}`);
+
 export function telaFinal(el, { placar, aoJogarDeNovo, aoInicio }) {
   const vencedores = placar.filter((l) => l.posicao === 1).map((l) => esc(l.nome));
   const empate = vencedores.length > 1;
@@ -16,7 +19,7 @@ export function telaFinal(el, { placar, aoJogarDeNovo, aoInicio }) {
     <section class="card capa entrar">
       <div class="emoji" aria-hidden="true">${empate ? '🤝' : '🏆'}</div>
       <p class="muted"><b>${empate ? 'Empate entre' : 'Vitória de'}</b></p>
-      <h1>${vencedores.join(' e ')}</h1>
+      <h1>${juntar(vencedores)}</h1>
       <p>${esc(escolher(empate ? FRASES.empate : FRASES.vitoria))}</p>
     </section>
     <ol class="placar final">${placar.map((l) => `

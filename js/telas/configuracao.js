@@ -60,8 +60,19 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
       </div>
     </div>`;
 
+  // Re-renderizar troca os botões: devolve o foco ao equivalente (teclado e leitor de tela não se perdem).
+  function seletorDoFoco() {
+    const ativo = document.activeElement;
+    if (!ativo || !el.contains(ativo) || !ativo.dataset.acao) return null;
+    return ['acao', 'caminho', 'valor', 'time', 'id']
+      .filter((k) => ativo.dataset[k] !== undefined)
+      .map((k) => `[data-${k}="${CSS.escape(ativo.dataset[k])}"]`)
+      .join('');
+  }
+
   function render() {
     const individual = form.modo === 'individual';
+    const foco = seletorDoFoco();
     el.innerHTML = `
       <div class="linha topo"><button class="btn btn-pequeno" data-acao="voltar">‹ Voltar</button><h1>Nova partida</h1></div>
       <section class="card">
@@ -97,6 +108,10 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
         <button class="btn btn-primario" data-acao="comecar">Começar partida</button>
       </div>`;
     atualizarErros();
+    if (foco) {
+      const alvo = el.querySelector(foco) ?? (foco.includes('"remover"') ? el.querySelector('[data-acao="adicionar"]') : null);
+      alvo?.focus();
+    }
   }
 
   function atualizarErros() {

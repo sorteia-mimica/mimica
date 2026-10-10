@@ -13,7 +13,12 @@ export function telaConferencia(el, { itens, marcados, jogadores, aoConfirmar })
   const lista = el.querySelector('[data-itens]');
   const botao = el.querySelector('[data-acao="confirmar"]');
 
+  // A lista é refeita a cada toque: devolve o foco ao mesmo botão.
   function render() {
+    const ativo = document.activeElement;
+    const foco = ativo && lista.contains(ativo) && ativo.dataset.acao
+      ? `[data-acao="${ativo.dataset.acao}"][data-item="${ativo.dataset.item}"]${ativo.dataset.time !== undefined ? `[data-time="${ativo.dataset.time}"]` : ''}`
+      : null;
     lista.innerHTML = itens.map((item, i) => {
       const escolha = acertou[i]
         ? `<div class="escolher-quem"><span class="muted">Quem matou a charada?</span><div class="quem-chips">${jogadores
@@ -31,6 +36,7 @@ export function telaConferencia(el, { itens, marcados, jogadores, aoConfirmar })
     botao.textContent = pendentes > 0
       ? `Falta escolher quem acertou (${pendentes})`
       : 'Confirmar pontos';
+    if (foco) lista.querySelector(foco)?.focus();
   }
 
   ligar(el, {
