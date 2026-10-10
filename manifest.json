@@ -1,4 +1,5 @@
 {
+  "id": "./",
   "name": "Sorteia Mímica",
   "short_name": "Mímica",
   "description": "Sorteia itens de mímica por tema e dificuldade, marca o tempo e soma os pontos.",
@@ -10,7 +11,9 @@
   "background_color": "#f6f3ff",
   "theme_color": "#6d28d9",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

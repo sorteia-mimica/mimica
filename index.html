@@ -3,13 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#6d28d9">
+  <meta name="theme-color" content="#6d28d9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#110c1d" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Sorteia itens de mímica por tema e dificuldade, marca o tempo e soma os pontos.">
   <title>Sorteia Mímica</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="css/style.css">
+  <!-- Baixa todos os módulos em paralelo (sem cascata de imports) e os temas junto. -->
+  <link rel="modulepreload" href="js/app.js">
+  <link rel="modulepreload" href="js/armazenamento.js">
+  <link rel="modulepreload" href="js/config.js">
+  <link rel="modulepreload" href="js/dom.js">
+  <link rel="modulepreload" href="js/efeitos.js">
+  <link rel="modulepreload" href="js/frases.js">
+  <link rel="modulepreload" href="js/jogo.js">
+  <link rel="modulepreload" href="js/sorteio.js">
+  <link rel="modulepreload" href="js/tempo.js">
+  <link rel="modulepreload" href="js/telas/comoJogar.js">
+  <link rel="modulepreload" href="js/telas/configuracao.js">
+  <link rel="modulepreload" href="js/telas/erro.js">
+  <link rel="modulepreload" href="js/telas/final.js">
+  <link rel="modulepreload" href="js/telas/inicio.js">
+  <link rel="modulepreload" href="js/telas/leitura.js">
+  <link rel="modulepreload" href="js/telas/mimica.js">
+  <link rel="modulepreload" href="js/telas/resultado.js">
+  <link rel="modulepreload" href="js/telas/vez.js">
+  <link rel="preload" href="data/temas.json" as="fetch" crossorigin>
 </head>
 <body>
   <main id="app" class="app" aria-live="polite"></main>

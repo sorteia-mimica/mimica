@@ -1,4 +1,4 @@
-const CACHE = 'mimica-v1';
+const CACHE = 'mimica-v2';
 const ARQUIVOS = [
   "./",
   "index.html",
@@ -28,7 +28,9 @@ const ARQUIVOS = [
 ];
 
 self.addEventListener('install', (ev) => {
-  ev.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ARQUIVOS)));
+  // `cache: 'reload'` pula o cache HTTP: não pré-cacheia arquivo velho do GitHub Pages.
+  ev.waitUntil(caches.open(CACHE).then((cache) =>
+    cache.addAll(ARQUIVOS.map((a) => new Request(a, { cache: 'reload' })))));
   self.skipWaiting();
 });
 
@@ -39,16 +41,22 @@ self.addEventListener('activate', (ev) => {
 });
 
 // Responde do cache na hora e atualiza em segundo plano (a versão nova vale na próxima abertura).
+// A chave do cache é a URL sem query string, para `?utm=...` não duplicar o index.
 self.addEventListener('fetch', (ev) => {
   if (ev.request.method !== 'GET' || new URL(ev.request.url).origin !== self.location.origin) return;
-  ev.respondWith(caches.open(CACHE).then(async (cache) => {
-    const emCache = await cache.match(ev.request, { ignoreSearch: true });
+  const chave = new URL(ev.request.url);
+  chave.search = '';
+  const pronto = caches.open(CACHE).then(async (cache) => {
+    const emCache = await cache.match(chave.href);
+    let gravando = Promise.resolve();
     const daRede = fetch(ev.request)
       .then((resposta) => {
-        if (resposta.ok) cache.put(ev.request, resposta.clone());
+        if (resposta.ok) gravando = cache.put(chave.href, resposta.clone()).catch(() => {});
         return resposta;
       })
       .catch(() => emCache);
-    return emCache || daRede;
-  }));
+    return { emCache, daRede, atualizado: daRede.then(() => gravando) };
+  });
+  ev.respondWith(pronto.then(({ emCache, daRede }) => emCache || daRede));
+  ev.waitUntil(pronto.then(({ atualizado }) => atualizado).catch(() => {}));
 });
