@@ -95,3 +95,36 @@ test('sortearVez não altera o objeto usados recebido', () => {
   sortearVez({ temas: TEMAS, temasEscolhidos: ['a'], mix: { facil: 1, medio: 0, dificil: 0 }, usados, rng: rngSemente(6) });
   assert.deepEqual(usados, { 'a:facil': ['a-facil-0'] });
 });
+
+test('sortearVez: ao esgotar a lista no meio da vez, não repete item da mesma vez nem o último sorteado', () => {
+  const temas = [temaFalso('a', 4)];
+  for (let s = 1; s <= 200; s++) {
+    const rng = rngSemente(s);
+    let usados = {};
+    let anterior = null;
+    for (let vez = 0; vez < 30; vez++) {
+      const r = sortearVez({ temas, temasEscolhidos: ['a'], mix: { facil: 3, medio: 0, dificil: 0 }, usados, rng });
+      const textos = r.itens.map((i) => i.texto);
+      assert.equal(new Set(textos).size, textos.length, `seed ${s} vez ${vez}: repetiu na vez ${textos}`);
+      usados = r.usados;
+      anterior = textos;
+    }
+    assert.ok(anterior);
+  }
+});
+
+test('sortearVez: no reset, o primeiro item do novo ciclo não repete o último do ciclo anterior', () => {
+  const temas = [temaFalso('a', 3)];
+  const mix = { facil: 1, medio: 0, dificil: 0 };
+  for (let s = 1; s <= 100; s++) {
+    const rng = rngSemente(s);
+    let usados = {};
+    let ultimo = null;
+    for (let vez = 0; vez < 20; vez++) {
+      const r = sortearVez({ temas, temasEscolhidos: ['a'], mix, usados, rng });
+      assert.notEqual(r.itens[0].texto, ultimo, `seed ${s} vez ${vez}`);
+      ultimo = r.itens[0].texto;
+      usados = r.usados;
+    }
+  }
+});

@@ -28,18 +28,25 @@ export function sortearVez({ temas, temasEscolhidos, mix, usados = {}, rng = Mat
   const dificuldades = montarDificuldades(mix, rng);
   const ids = escolherTemas(temasEscolhidos, dificuldades.length, rng);
   const novosUsados = { ...usados };
+  const sorteadosNaVez = {};
 
   const itens = dificuldades.map((dificuldade, i) => {
     const tema = temas.find((t) => t.id === ids[i]);
     const chave = `${tema.id}:${dificuldade}`;
     const lista = tema.itens[dificuldade];
     let jaUsados = novosUsados[chave] ?? [];
-    let disponiveis = lista.filter((texto) => !jaUsados.includes(texto));
+    const daVez = sorteadosNaVez[chave] ?? [];
+    let disponiveis = lista.filter((texto) => !jaUsados.includes(texto) && !daVez.includes(texto));
     if (disponiveis.length === 0) {
+      // Ciclo esgotado: recomeça, mas sem repetir o que já saiu nesta vez nem o último do ciclo anterior
+      // (se a lista for pequena demais, relaxa primeiro o "último" e por fim a própria vez).
+      const ultimo = jaUsados.at(-1);
+      const sem = (...proibidos) => lista.filter((texto) => !proibidos.flat().includes(texto));
       jaUsados = [];
-      disponiveis = [...lista];
+      disponiveis = [sem(daVez, ultimo), sem(daVez), lista].find((l) => l.length > 0);
     }
     const texto = disponiveis[Math.floor(rng() * disponiveis.length)];
+    sorteadosNaVez[chave] = [...daVez, texto];
     novosUsados[chave] = [...jaUsados, texto];
     return { temaId: tema.id, temaNome: tema.nome, emoji: tema.emoji, dificuldade, texto };
   });
