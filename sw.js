@@ -12,6 +12,7 @@ const ARQUIVOS = [
   "js/config.js",
   "js/dom.js",
   "js/efeitos.js",
+  "js/frases.js",
   "js/jogo.js",
   "js/sorteio.js",
   "js/tempo.js",

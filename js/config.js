@@ -28,18 +28,18 @@ export function validarConfig(config) {
   const erros = [];
   const duplas = config.modo === 'duplas';
   const times = Array.isArray(config.times) ? config.times : [];
-  if (config.modo !== 'duplas' && config.modo !== 'individual') erros.push('Escolha o modo de jogo.');
-  if (times.length < 2) erros.push(duplas ? 'Adicione pelo menos 2 duplas.' : 'Adicione pelo menos 2 jogadores.');
+  if (config.modo !== 'duplas' && config.modo !== 'individual') erros.push('Escolhe o modo: duplas ou cada um por si?');
+  if (times.length < 2) erros.push(duplas ? 'Precisa de pelo menos 2 duplas — sem rival não tem graça.' : 'Precisa de pelo menos 2 jogadores — sozinho é só ensaio.');
 
   const tamanho = duplas ? 2 : 1;
   const nomes = times.flatMap((t) => t.membros ?? []).map((n) => String(n).trim());
   const incompleto = times.some((t) => (t.membros ?? []).length !== tamanho);
-  if (incompleto || nomes.some((n) => n === '')) erros.push('Preencha todos os nomes.');
+  if (incompleto || nomes.some((n) => n === '')) erros.push('Faltou nome aí — ninguém joga anônimo 🕵️');
   const normalizados = nomes.filter(Boolean).map((n) => n.toLocaleLowerCase('pt-BR'));
-  if (new Set(normalizados).size !== normalizados.length) erros.push('Há nomes repetidos.');
+  if (new Set(normalizados).size !== normalizados.length) erros.push('Tem nome repetido. Põe um sobrenome ou apelido pra diferenciar.');
 
-  if (!Array.isArray(config.temas) || config.temas.length === 0) erros.push('Escolha pelo menos 1 tema.');
-  if (fora(config.voltas, 1, 10)) erros.push('Voltas: de 1 a 10.');
+  if (!Array.isArray(config.temas) || config.temas.length === 0) erros.push('Escolhe pelo menos 1 tema pra gente ter o que sortear.');
+  if (fora(config.voltas, 1, 10)) erros.push('Voltas: de 1 a 10 (mais que isso ninguém aguenta).');
   if (fora(config.tempoMimica, 30, 300) || config.tempoMimica % 15 !== 0) erros.push('Tempo de mímica: de 30 s a 5 min, de 15 em 15 s.');
   if (fora(config.tempoLeitura, 5, 30)) erros.push('Tempo de leitura: de 5 a 30 s.');
 
@@ -48,7 +48,7 @@ export function validarConfig(config) {
     erros.push('Itens por dificuldade: de 0 a 3.');
   } else {
     const total = DIFICULDADES.reduce((soma, d) => soma + mix[d], 0);
-    if (total < 1 || total > 6) erros.push('Total de itens por vez: de 1 a 6.');
+    if (total < 1 || total > 6) erros.push('Itens por vez: de 1 a 6 — sem item não tem mímica.');
   }
   const pontos = config.pontos ?? {};
   if (DIFICULDADES.some((d) => fora(pontos[d], 1, 5))) erros.push('Pontos por dificuldade: de 1 a 5.');

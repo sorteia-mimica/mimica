@@ -24,32 +24,32 @@ test('config válida não tem erros', () => {
 });
 
 test('mínimo de 2 jogadores / 2 duplas', () => {
-  assert.ok(validarConfig(valida({ modo: 'individual', times: [{ membros: ['Ana'] }] })).includes('Adicione pelo menos 2 jogadores.'));
-  assert.ok(validarConfig(valida({ times: [{ membros: ['Ana', 'Beto'] }] })).includes('Adicione pelo menos 2 duplas.'));
+  assert.ok(validarConfig(valida({ modo: 'individual', times: [{ membros: ['Ana'] }] })).includes('Precisa de pelo menos 2 jogadores — sozinho é só ensaio.'));
+  assert.ok(validarConfig(valida({ times: [{ membros: ['Ana', 'Beto'] }] })).includes('Precisa de pelo menos 2 duplas — sem rival não tem graça.'));
 });
 
 test('nomes vazios ou dupla incompleta', () => {
-  assert.ok(validarConfig(valida({ times: [{ membros: ['Ana', '  '] }, { membros: ['Caio', 'Duda'] }] })).includes('Preencha todos os nomes.'));
-  assert.ok(validarConfig(valida({ times: [{ membros: ['Ana'] }, { membros: ['Caio', 'Duda'] }] })).includes('Preencha todos os nomes.'));
+  assert.ok(validarConfig(valida({ times: [{ membros: ['Ana', '  '] }, { membros: ['Caio', 'Duda'] }] })).includes('Faltou nome aí — ninguém joga anônimo 🕵️'));
+  assert.ok(validarConfig(valida({ times: [{ membros: ['Ana'] }, { membros: ['Caio', 'Duda'] }] })).includes('Faltou nome aí — ninguém joga anônimo 🕵️'));
 });
 
 test('nomes repetidos ignorando caixa e espaços', () => {
   const erros = validarConfig(valida({ modo: 'individual', times: [{ membros: ['Ana'] }, { membros: [' ana '] }] }));
-  assert.ok(erros.includes('Há nomes repetidos.'));
+  assert.ok(erros.includes('Tem nome repetido. Põe um sobrenome ou apelido pra diferenciar.'));
 });
 
 test('pelo menos 1 tema', () => {
-  assert.ok(validarConfig(valida({ temas: [] })).includes('Escolha pelo menos 1 tema.'));
+  assert.ok(validarConfig(valida({ temas: [] })).includes('Escolhe pelo menos 1 tema pra gente ter o que sortear.'));
 });
 
 test('limites do personalizado', () => {
-  assert.ok(validarConfig(valida({ voltas: 0 })).includes('Voltas: de 1 a 10.'));
-  assert.ok(validarConfig(valida({ voltas: 11 })).includes('Voltas: de 1 a 10.'));
+  assert.ok(validarConfig(valida({ voltas: 0 })).includes('Voltas: de 1 a 10 (mais que isso ninguém aguenta).'));
+  assert.ok(validarConfig(valida({ voltas: 11 })).includes('Voltas: de 1 a 10 (mais que isso ninguém aguenta).'));
   assert.ok(validarConfig(valida({ tempoMimica: 100 })).includes('Tempo de mímica: de 30 s a 5 min, de 15 em 15 s.'));
   assert.ok(validarConfig(valida({ tempoMimica: 315 })).includes('Tempo de mímica: de 30 s a 5 min, de 15 em 15 s.'));
   assert.ok(validarConfig(valida({ tempoLeitura: 4 })).includes('Tempo de leitura: de 5 a 30 s.'));
   assert.ok(validarConfig(valida({ mix: { facil: 4, medio: 0, dificil: 0 } })).includes('Itens por dificuldade: de 0 a 3.'));
-  assert.ok(validarConfig(valida({ mix: { facil: 0, medio: 0, dificil: 0 } })).includes('Total de itens por vez: de 1 a 6.'));
+  assert.ok(validarConfig(valida({ mix: { facil: 0, medio: 0, dificil: 0 } })).includes('Itens por vez: de 1 a 6 — sem item não tem mímica.'));
   assert.ok(validarConfig(valida({ pontos: { facil: 0, medio: 2, dificil: 3 } })).includes('Pontos por dificuldade: de 1 a 5.'));
   assert.deepEqual(validarConfig(valida({ voltas: 10, tempoMimica: 300, tempoLeitura: 30, mix: { facil: 3, medio: 0, dificil: 3 }, pontos: { facil: 5, medio: 5, dificil: 5 } })), []);
 });

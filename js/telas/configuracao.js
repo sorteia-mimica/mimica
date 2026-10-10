@@ -7,7 +7,7 @@ import { formatarTempo } from '../tempo.js';
 const AJUSTES = [
   { caminho: 'voltas', rotulo: 'Voltas', min: 1, max: 10, passo: 1, fmt: String },
   { caminho: 'tempoMimica', rotulo: 'Tempo de mímica', min: 30, max: 300, passo: 15, fmt: formatarTempo },
-  { caminho: 'tempoLeitura', rotulo: 'Tempo de leitura', min: 5, max: 30, passo: 5, fmt: (s) => `${s} s` },
+  { caminho: 'tempoLeitura', rotulo: 'Tempo pra decorar', min: 5, max: 30, passo: 5, fmt: (s) => `${s} s` },
   { caminho: 'mix.facil', rotulo: 'Itens fáceis', min: 0, max: 3, passo: 1, fmt: String },
   { caminho: 'mix.medio', rotulo: 'Itens médios', min: 0, max: 3, passo: 1, fmt: String },
   { caminho: 'mix.dificil', rotulo: 'Itens difíceis', min: 0, max: 3, passo: 1, fmt: String },
@@ -16,9 +16,12 @@ const AJUSTES = [
   { caminho: 'pontos.dificil', rotulo: 'Pontos — difícil', min: 1, max: 5, passo: 1, fmt: String },
 ];
 
-const RESUMO_PADRAO = `${PADRAO.voltas} voltas · 1 fácil, 1 médio e 1 difícil por vez · `
-  + `${PADRAO.tempoLeitura} s de leitura · ${formatarTempo(PADRAO.tempoMimica)} de mímica · `
-  + `pontos ${PADRAO.pontos.facil}/${PADRAO.pontos.medio}/${PADRAO.pontos.dificil}`;
+const RESUMO_PADRAO = `O clássico que nunca falha: ${PADRAO.voltas} voltas · 1 fácil, 1 médio e 1 difícil por vez · `
+  + `${PADRAO.tempoLeitura} s pra decorar · ${formatarTempo(PADRAO.tempoMimica)} de mímica · `
+  + `pontos ${PADRAO.pontos.facil}/${PADRAO.pontos.medio}/${PADRAO.pontos.dificil}.`;
+
+// Sugestões nos campos de nome, só para dar o tom (não viram nome de ninguém).
+const EXEMPLOS = ['Tia Cleide', 'Primo Jorge', 'Dona Neide', 'Seu Zé', 'Bia do 302', 'Juninho', 'Vó Lurdes', 'Tio do pavê'];
 
 const botaoSegmento = (grupo, valor, rotulo, ativo) =>
   `<button data-acao="${grupo}" data-valor="${valor}" aria-pressed="${ativo}">${rotulo}</button>`;
@@ -31,10 +34,10 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
     const individual = form.modo === 'individual';
     const campos = time.membros.map((nome, j) => `
       <input class="campo" data-time="${i}" data-membro="${j}" value="${esc(nome)}"
-        placeholder="${individual ? `Jogador ${i + 1}` : `Pessoa ${j + 1}`}" maxlength="20" autocomplete="off"
+        placeholder="Ex.: ${EXEMPLOS[(i * time.membros.length + j) % EXEMPLOS.length]}" maxlength="20" autocomplete="off"
         aria-label="${individual ? `Nome do jogador ${i + 1}` : `Dupla ${i + 1}, pessoa ${j + 1}`}">`).join('');
     const remover = form.times.length > 2
-      ? `<button class="btn btn-pequeno" data-acao="remover" data-time="${i}" aria-label="Remover">✕</button>`
+      ? `<button class="btn btn-pequeno" data-acao="remover" data-time="${i}" aria-label="Remover ${individual ? 'jogador' : 'dupla'} ${i + 1}">✕</button>`
       : '';
     return individual
       ? `<div class="linha">${campos}${remover}</div>`
@@ -54,15 +57,15 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
   function render() {
     const individual = form.modo === 'individual';
     el.innerHTML = `
-      <div class="linha"><button class="btn btn-pequeno" data-acao="voltar">‹ Voltar</button><h1>Nova partida</h1></div>
+      <div class="linha topo"><button class="btn btn-pequeno" data-acao="voltar">‹ Voltar</button><h1>Nova partida</h1></div>
       <section class="card">
         <h2>Modo</h2>
         <div class="segmentado">
           ${botaoSegmento('modo', 'duplas', 'Duplas', !individual)}${botaoSegmento('modo', 'individual', 'Individual', individual)}
         </div>
         <p class="muted">${individual
-          ? 'Um faz, todos adivinham. Pontuam quem fez e quem acertou.'
-          : 'Um faz, o parceiro adivinha. Os papéis invertem a cada vez.'}</p>
+          ? 'Cada um por si: um faz, todo mundo chuta. Ponto pra quem fez e pra quem acertou.'
+          : 'Um faz, o parceiro adivinha. Na vez seguinte da dupla, troca quem faz.'}</p>
       </section>
       <section class="card">
         <h2>${individual ? 'Jogadores' : 'Duplas'}</h2>
@@ -71,6 +74,7 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
       </section>
       <section class="card">
         <h2>Temas</h2>
+        <p class="muted dica">Toque nos que a galera topa.</p>
         <div class="chips">${temas.map((t) => `
           <button class="chip" data-acao="tema" data-id="${esc(t.id)}" aria-pressed="${form.temas.includes(t.id)}">${esc(t.emoji)} ${esc(t.nome)}</button>`).join('')}
         </div>
@@ -84,7 +88,7 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
       </section>
       <div class="rodape">
         <ul class="erros" data-erros></ul>
-        <button class="btn btn-primario" data-acao="comecar">Começar</button>
+        <button class="btn btn-primario" data-acao="comecar">Começar partida</button>
       </div>`;
     atualizarErros();
   }
