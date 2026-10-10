@@ -33,38 +33,36 @@
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #110c1d;
-    --bg-a: #2a1240;
-    --bg-b: #131a3d;
-    --surface: #1d1630;
-    --surface-2: #2b2247;
-    --text: #f3efff;
-    --muted: #b2a9cc;
-    --primary: #7c3aed;
-    --primary-2: #c026d3;
-    --destaque: #c4b5fd;
-    --titulo-a: #a78bfa;
-    --titulo-b: #e879f9;
-    --primary-borda: #4c1d95;
-    --border: #372c58;
-    --seg-ativo: #42356b;
-    --foco: #fbbf24;
-    --facil: #4ade80;
-    --medio: #fbbf24;
-    --dificil: #f87171;
-    --facil-bg: #143220;
-    --medio-bg: #3a2c0c;
-    --dificil-bg: #3d1717;
-    --on-cor: #120d1f;
-    --ouro: #6b5212;
-    --prata: #3d3b52;
-    --bronze: #5f3a1c;
-    --shadow: 0 1px 0 rgb(255 255 255 / .04) inset, 0 10px 28px -10px rgb(0 0 0 / .7);
-    --shadow-forte: 0 1px 0 rgb(255 255 255 / .06) inset, 0 20px 44px -14px rgb(0 0 0 / .85);
-    color-scheme: dark;
-  }
+:root[data-theme="dark"] {
+  --bg: #110c1d;
+  --bg-a: #2a1240;
+  --bg-b: #131a3d;
+  --surface: #1d1630;
+  --surface-2: #2b2247;
+  --text: #f3efff;
+  --muted: #b2a9cc;
+  --primary: #7c3aed;
+  --primary-2: #c026d3;
+  --destaque: #c4b5fd;
+  --titulo-a: #a78bfa;
+  --titulo-b: #e879f9;
+  --primary-borda: #4c1d95;
+  --border: #372c58;
+  --seg-ativo: #42356b;
+  --foco: #fbbf24;
+  --facil: #4ade80;
+  --medio: #fbbf24;
+  --dificil: #f87171;
+  --facil-bg: #143220;
+  --medio-bg: #3a2c0c;
+  --dificil-bg: #3d1717;
+  --on-cor: #120d1f;
+  --ouro: #6b5212;
+  --prata: #3d3b52;
+  --bronze: #5f3a1c;
+  --shadow: 0 1px 0 rgb(255 255 255 / .04) inset, 0 10px 28px -10px rgb(0 0 0 / .7);
+  --shadow-forte: 0 1px 0 rgb(255 255 255 / .06) inset, 0 20px 44px -14px rgb(0 0 0 / .85);
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -153,6 +151,15 @@ p { margin: 0; text-wrap: pretty; }
   padding-bottom: 2px;
 }
 .inicio .capa p { font-size: 1.1rem; }
+.capa { position: relative; }
+.btn-tema {
+  position: absolute; top: 10px; right: 10px;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+  font-size: 1.25rem; line-height: 1; cursor: pointer;
+  display: grid; place-items: center;
+}
+.btn-tema:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
 .assinatura { text-align: center; font-size: .78rem; color: var(--muted); margin-top: -4px; }
 
 /* Botões */
@@ -485,9 +492,9 @@ p { margin: 0; text-wrap: pretty; }
   h1 { font-size: 2rem; }
   .inicio h1 { font-size: 2.9rem; }
 }
-@media (min-width: 768px) and (prefers-color-scheme: dark) {
-  :root { --fundo-tela: #160f26; }
-  .app { box-shadow: 0 1px 0 rgb(255 255 255 / .05) inset, 0 30px 80px -20px rgb(0 0 0 / .8); }
+@media (min-width: 768px) {
+  :root[data-theme="dark"] { --fundo-tela: #160f26; }
+  [data-theme="dark"] .app { box-shadow: 0 1px 0 rgb(255 255 255 / .05) inset, 0 30px 80px -20px rgb(0 0 0 / .8); }
 }
 /* Tela baixa (notebook 1280×800): o cartão não precisa de tanta margem. */
 @media (min-width: 768px) and (max-height: 860px) {
