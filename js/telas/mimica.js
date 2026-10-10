@@ -1,6 +1,7 @@
 import { esc, itemHtml, ligar } from '../dom.js';
-import { formatarTempo, iniciarCronometro } from '../tempo.js';
-import { bip, vibrar } from '../efeitos.js';
+import { criarAnunciadorDeSegundos, formatarTempo, iniciarCronometro } from '../tempo.js';
+import { vibrar } from '../efeitos.js';
+import { ligarBotaoSom, tocarAcerto, tocarBuzina, tocarDesmarcar, tocarTique } from '../sons.js';
 import { FRASES, escolher } from '../frases.js';
 
 export function telaMimica(el, { itens, segundos, aoTerminar }) {
@@ -9,6 +10,7 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
   el.innerHTML = `
     <h1 class="sr-only">Mímica rolando</h1>
     <div class="card relogio">
+      <button class="btn-tema btn-som-mimica" data-som></button>
       <div class="cronometro" data-tempo role="timer" aria-live="off">${formatarTempo(segundos)}</div>
       <div class="barra" aria-hidden="true"><div data-barra style="transform:translateX(100%)"></div></div>
     </div>
@@ -16,6 +18,8 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
     <div class="lista-itens" data-itens></div>
     <div class="rodape fixo"><button class="btn btn-primario" data-acao="terminar">Encerrar a vez</button></div>`;
 
+  ligarBotaoSom(el.querySelector('[data-som]'));
+  const anunciar = criarAnunciadorDeSegundos(10); // tique nos 10 últimos segundos; urgente nos 5 finais
   const lista = el.querySelector('[data-itens]');
   const tempo = el.querySelector('[data-tempo]');
   const barra = el.querySelector('[data-barra]');
@@ -37,6 +41,8 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
       tempo.textContent = formatarTempo(r);
       barra.style.transform = `translateX(${(r / segundos) * 100}%)`;
       tempo.classList.toggle('alerta', r > 0 && r <= 10);
+      const s = anunciar(r);
+      if (s !== null) tocarTique({ urgente: s <= 5 });
     },
     aoFim: () => {
       tempo.textContent = 'Tempo!';
@@ -45,7 +51,7 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
       aviso.textContent = escolher(FRASES.tempoEsgotado);
       botaoTerminar.textContent = 'Ver resultado';
       vibrar([300, 100, 300]);
-      bip({ vezes: 3 });
+      tocarBuzina();
     },
   });
 
@@ -53,6 +59,7 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
     marcar: (b) => {
       const i = Number(b.dataset.item);
       marcados[i] = !marcados[i];
+      (marcados[i] ? tocarAcerto : tocarDesmarcar)();
       renderItens();
     },
     terminar: () => {

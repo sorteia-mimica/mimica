@@ -14,6 +14,7 @@ export function telaComoJogar(el, { aoVoltar }) {
         <li>Na sua vez, toque em <b>Sortear</b> e decore os itens sem deixar ninguém espiar.</li>
         <li>Vale gesto, careta e dancinha. Falar, não vale 🤐</li>
         <li>Durante a mímica, toque no ✓ de cada item que a galera acertar. No Individual, depois vem a conferência: quem matou a charada?</li>
+        <li>Sons demais? O botão 🔊/🔇 na tela inicial e na mímica liga e desliga tudo.</li>
         <li>Pontos: fácil 1, médio 2, difícil 4 (dá pra mudar no Personalizado).</li>
       </ol>
     </section>

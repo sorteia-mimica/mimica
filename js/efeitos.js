@@ -50,24 +50,8 @@ export function desbloquearAudio() {
   }
 }
 
-export function bip({ frequencia = 880, duracao = 0.15, vezes = 1 } = {}) {
-  if (!audio) return;
-  try {
-    for (let i = 0; i < vezes; i++) {
-      const inicio = audio.currentTime + i * (duracao + 0.08);
-      const osc = audio.createOscillator();
-      const ganho = audio.createGain();
-      osc.frequency.value = frequencia;
-      ganho.gain.setValueAtTime(0.2, inicio);
-      ganho.gain.exponentialRampToValueAtTime(0.001, inicio + duracao);
-      osc.connect(ganho).connect(audio.destination);
-      osc.start(inicio);
-      osc.stop(inicio + duracao);
-    }
-  } catch {
-    // sem som
-  }
-}
+// O contexto de áudio (null até o primeiro toque); quem sintetiza som usa este.
+export const contextoAudio = () => audio;
 
 // Confete leve (só CSS transform/opacity). Some sozinho em ~2,5 s; nada com movimento reduzido.
 const CORES_CONFETE = ['#8b5cf6', '#c026d3', '#f59e0b', '#22c55e', '#3b82f6', '#ef4444'];

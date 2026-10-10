@@ -24,3 +24,16 @@ export function iniciarCronometro(duracaoSeg, { aoTick, aoFim, agora = () => Dat
   tick();
   return parar;
 }
+
+// Decide quando o "tique" toca: uma vez por segundo inteiro, só nos últimos `ate` segundos.
+// Guarda o último segundo anunciado: os ticks de 200 ms e re-renders não repetem o som.
+// Devolve o segundo (ceil do restante) a anunciar, ou null se não é hora.
+export function criarAnunciadorDeSegundos(ate) {
+  let ultimo = Infinity;
+  return (restante) => {
+    const s = Math.ceil(restante);
+    if (s < 1 || s > ate || s >= ultimo) return null;
+    ultimo = s;
+    return s;
+  };
+}

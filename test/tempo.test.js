@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { formatarTempo, iniciarCronometro } from '../js/tempo.js';
+import { criarAnunciadorDeSegundos, formatarTempo, iniciarCronometro } from '../js/tempo.js';
 
 test('formatarTempo', () => {
   assert.equal(formatarTempo(90), '1:30');
@@ -38,4 +38,26 @@ test('parar interrompe o cronômetro', (t) => {
   agora = 5000;
   t.mock.timers.tick(1000);
   assert.equal(ticks, 1);
+});
+
+test('anunciador toca uma vez por segundo inteiro, só nos últimos N', () => {
+  const anunciar = criarAnunciadorDeSegundos(3);
+  assert.equal(anunciar(5), null);
+  assert.equal(anunciar(3.4), null); // ceil = 4: fora da janela
+  assert.equal(anunciar(3), 3);
+  assert.equal(anunciar(2.8), null); // ainda é o segundo 3 (ceil)
+  assert.equal(anunciar(2.2), null);
+  assert.equal(anunciar(1.8), 2);
+  assert.equal(anunciar(1.2), null);
+  assert.equal(anunciar(0.4), 1);
+  assert.equal(anunciar(0), null); // no zero quem toca é a buzina
+});
+
+test('anunciador não repete nem volta atrás (re-render, resume)', () => {
+  const anunciar = criarAnunciadorDeSegundos(10);
+  assert.equal(anunciar(7.5), 8);
+  assert.equal(anunciar(8.9), null); // relógio "voltou": não repete
+  assert.equal(anunciar(7.1), null);
+  assert.equal(anunciar(2.5), 3); // saltou do 8 pro 3 em segundo plano: toca só uma vez
+  assert.equal(anunciar(2.4), null);
 });

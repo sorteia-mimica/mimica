@@ -1,4 +1,5 @@
 import { esc, itemHtml, ligar, placarHtml } from '../dom.js';
+import { tocarTada, tocarWahWah } from '../sons.js';
 import { FRASES, escolher } from '../frases.js';
 
 export function telaResultado(el, { registro, placar, ultimaVez, nomeQuemAcertou, aoProximo }) {
@@ -27,5 +28,6 @@ export function telaResultado(el, { registro, placar, ultimaVez, nomeQuemAcertou
     <div class="rodape">
       <button class="btn btn-primario" data-acao="proximo">${ultimaVez ? 'Ver placar final 🏆' : 'Próxima vez'}</button>
     </div>`;
+  (registro.ganhos > 0 ? tocarTada : tocarWahWah)();
   ligar(el, { proximo: aoProximo });
 }

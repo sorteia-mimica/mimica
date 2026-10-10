@@ -159,6 +159,8 @@ p { margin: 0; text-wrap: pretty; }
   font-size: 1.25rem; line-height: 1; cursor: pointer;
   display: grid; place-items: center;
 }
+.btn-som { right: 62px; }
+.btn-som-mimica { top: 6px; right: 6px; background: transparent; border-color: transparent; color: var(--muted); font-size: 1.1rem; }
 .btn-tema:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
 .assinatura { text-align: center; font-size: .78rem; color: var(--muted); margin-top: -4px; }
 

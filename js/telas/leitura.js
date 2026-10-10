@@ -1,6 +1,7 @@
 import { esc, itemHtml, ligar } from '../dom.js';
-import { formatarTempo, iniciarCronometro } from '../tempo.js';
-import { bip, vibrar } from '../efeitos.js';
+import { criarAnunciadorDeSegundos, formatarTempo, iniciarCronometro } from '../tempo.js';
+import { vibrar } from '../efeitos.js';
+import { tocarTique, tocarValendo } from '../sons.js';
 import { FRASES, escolher } from '../frases.js';
 
 export function telaLeitura(el, { itens, segundos, aoFim }) {
@@ -17,21 +18,23 @@ export function telaLeitura(el, { itens, segundos, aoFim }) {
 
   const tempo = el.querySelector('[data-tempo]');
   const barra = el.querySelector('[data-barra]');
+  const anunciar = criarAnunciadorDeSegundos(3); // tique suave nos 3 últimos segundos
   let encerrado = false;
   let parar = () => {}; // declarado antes do cronômetro: um aoFim síncrono não pode cair na TDZ
   const encerrar = () => {
     if (encerrado) return;
     encerrado = true;
     parar();
+    tocarValendo();
     aoFim();
   };
   parar = iniciarCronometro(segundos, {
     aoTick: (r) => {
       tempo.textContent = formatarTempo(r);
       barra.style.transform = `translateX(${(r / segundos) * 100}%)`;
+      if (anunciar(r) !== null) tocarTique();
     },
     aoFim: () => {
-      bip();
       vibrar(100);
       encerrar();
     },

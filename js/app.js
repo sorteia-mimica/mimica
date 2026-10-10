@@ -4,6 +4,7 @@ import {
   criarPartida, vezAtual, sortear, registrarVez, terminou, placar, nomeDoTime, retomar, partidaCompativel,
 } from './jogo.js';
 import { manterTelaAcesa, liberarTela, desbloquearAudio } from './efeitos.js';
+import { tocarSorteio } from './sons.js';
 import { telaInicio } from './telas/inicio.js';
 import { telaComoJogar } from './telas/comoJogar.js';
 import { telaErro } from './telas/erro.js';
@@ -138,6 +139,7 @@ function irVez() {
     aoSortear: () => {
       try {
         desbloquearAudio();
+        tocarSorteio();
         manterTelaAcesa();
         atualizar(sortear(estado, temas));
         irLeitura();
@@ -224,5 +226,8 @@ async function iniciar() {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
+
+// Destrava o áudio no primeiro toque em qualquer lugar (ex.: depois de continuar uma partida salva).
+document.addEventListener('pointerdown', desbloquearAudio, { once: true });
 
 iniciar();

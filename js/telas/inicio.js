@@ -1,10 +1,12 @@
 import { esc, ligar } from '../dom.js';
+import { ligarBotaoSom } from '../sons.js';
 import { FRASES, escolher } from '../frases.js';
 
 export function telaInicio(el, { temPartidaSalva, aoJogar, aoContinuar, aoComoJogar }) {
   el.classList.add('inicio');
   el.innerHTML = `
     <header class="card capa entrar">
+      <button class="btn-tema btn-som" data-som></button>
       <button class="btn-tema" data-acao="tema"></button>
       <div class="emoji" aria-hidden="true">🎭</div>
       <h1>Sorteia Mímica</h1>
@@ -23,6 +25,7 @@ export function telaInicio(el, { temPartidaSalva, aoJogar, aoContinuar, aoComoJo
     botaoTema.setAttribute('aria-label', escuro ? 'Mudar para o modo claro' : 'Mudar para o modo escuro');
   };
   pintarBotaoTema();
+  ligarBotaoSom(el.querySelector('[data-som]'));
   ligar(el, {
     jogar: aoJogar,
     continuar: aoContinuar,

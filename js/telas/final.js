@@ -1,5 +1,6 @@
 import { esc, ligar } from '../dom.js';
 import { confete } from '../efeitos.js';
+import { tocarFanfarra } from '../sons.js';
 import { FRASES, comNome, escolher } from '../frases.js';
 
 const MEDALHAS = { 1: '🥇', 2: '🥈', 3: '🥉' };
@@ -31,5 +32,6 @@ export function telaFinal(el, { placar, aoJogarDeNovo, aoInicio }) {
       <button class="btn" data-acao="inicio">Voltar ao início</button>
     </div>`;
   ligar(el, { denovo: aoJogarDeNovo, inicio: aoInicio });
+  tocarFanfarra();
   return confete();
 }
