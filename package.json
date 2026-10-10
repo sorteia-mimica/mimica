@@ -1,0 +1,8 @@
+{
+  "name": "sorteia-mimica",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-concurrency=4"
+  }
+}
