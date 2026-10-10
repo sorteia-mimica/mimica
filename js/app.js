@@ -31,8 +31,31 @@ let temas = [];
 let estado = null;
 let limparTela = null;
 
+// Voltar do Android (botão ou gesto de borda) fecharia o PWA e perderia a vez em andamento.
+// Enquanto a vez roda (leitura, mímica, conferência), seguramos o "voltar" com uma entrada extra no histórico.
+const TELAS_DA_VEZ = [telaLeitura, telaMimica, telaConferencia];
+let emVez = false;
+let entradaExtra = false;
+
+function segurarVoltar() {
+  if (entradaExtra) return;
+  history.pushState({ vez: true }, '');
+  entradaExtra = true;
+}
+
+window.addEventListener('popstate', () => {
+  if (emVez) {
+    history.pushState({ vez: true }, '');
+    entradaExtra = true;
+  } else {
+    entradaExtra = false; // voltar numa tela comum só gasta a entrada extra; o próximo voltar sai normalmente
+  }
+});
+
 function mostrar(tela, props) {
   limparTela?.();
+  emVez = TELAS_DA_VEZ.includes(tela);
+  if (emVez) segurarVoltar();
   const el = document.createElement('section');
   el.className = 'tela';
   el.style.pointerEvents = 'none';
@@ -113,10 +136,15 @@ function irVez() {
     placar: placar(estado),
     aoSair: irInicio,
     aoSortear: () => {
-      desbloquearAudio();
-      manterTelaAcesa();
-      atualizar(sortear(estado, temas));
-      irLeitura();
+      try {
+        desbloquearAudio();
+        manterTelaAcesa();
+        atualizar(sortear(estado, temas));
+        irLeitura();
+      } catch {
+        liberarTela();
+        mostrar(telaErro, { mensagem: 'Deu tilt no sorteio. Tenta de novo?', aoTentar: irVez });
+      }
     },
   });
 }
