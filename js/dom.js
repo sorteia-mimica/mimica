@@ -3,14 +3,15 @@ export const ROTULO_DIFICULDADE = { facil: 'Fácil', medio: 'Médio', dificil: '
 const ENTIDADES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 export const esc = (texto) => String(texto).replace(/[&<>"']/g, (c) => ENTIDADES[c]);
 
-// `extra` é HTML confiável montado pela tela; `nota` é texto e é escapado aqui.
+// `extra` é HTML confiável montado pela tela; `nota` é texto (linha abaixo do item) e é escapado aqui.
 export function itemHtml(item, { extra = '', acertou = false, nota = '', animar = true } = {}) {
   const classes = ['item', acertou && 'acertou', animar && 'entrar'].filter(Boolean).join(' ');
   return `
     <div class="${classes}" data-dificuldade="${esc(item.dificuldade)}">
       <div class="item-corpo">
-        <div class="meta">${esc(item.emoji)} ${esc(item.temaNome)} · <span class="selo">${ROTULO_DIFICULDADE[item.dificuldade]}</span>${nota ? ` <span class="nota">${esc(nota)}</span>` : ''}</div>
-        <div class="texto">${esc(item.texto)}</div>
+        <div class="meta">${esc(item.emoji)} ${esc(item.temaNome)} · <span class="selo">${ROTULO_DIFICULDADE[item.dificuldade]}</span></div>
+        <div class="texto">${esc(item.texto)}</div>${nota ? `
+        <div class="nota">${esc(nota)}</div>` : ''}
       </div>
       ${extra}
     </div>`;

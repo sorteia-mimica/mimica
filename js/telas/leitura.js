@@ -12,7 +12,7 @@ export function telaLeitura(el, { itens, segundos, aoFim }) {
       <div class="barra" aria-hidden="true"><div data-barra style="transform:translateX(100%)"></div></div>
     </div>
     <div class="lista-itens">${itens.map((item) => itemHtml(item)).join('')}</div>
-    <div class="rodape"><button class="btn" data-acao="pular">Já decorei, valendo!</button></div>`;
+    <div class="rodape fixo"><button class="btn" data-acao="pular">Já decorei, valendo!</button></div>`;
 
   const tempo = el.querySelector('[data-tempo]');
   const barra = el.querySelector('[data-barra]');

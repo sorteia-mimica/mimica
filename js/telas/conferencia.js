@@ -3,13 +3,12 @@ import { esc, itemHtml, ligar } from '../dom.js';
 export function telaConferencia(el, { itens, marcados, jogadores, aoConfirmar }) {
   const acertou = [...marcados];
   const quem = itens.map(() => null); // time de quem acertou, por item
-  const nomeDe = (time) => jogadores.find((j) => j.time === time)?.nome ?? '';
 
   el.innerHTML = `
     <header class="topo"><h1>Hora da verdade 🕵️</h1></header>
     <p class="muted">Confere os ✓ e diz quem matou a charada em cada item.</p>
     <div class="lista-itens" data-itens></div>
-    <div class="rodape"><button class="btn btn-primario" data-acao="confirmar">Confirmar pontos</button></div>`;
+    <div class="rodape fixo"><button class="btn btn-primario" data-acao="confirmar">Confirmar pontos</button></div>`;
 
   const lista = el.querySelector('[data-itens]');
   const botao = el.querySelector('[data-acao="confirmar"]');
@@ -24,7 +23,6 @@ export function telaConferencia(el, { itens, marcados, jogadores, aoConfirmar })
       return itemHtml(item, {
         animar: false,
         acertou: acertou[i],
-        nota: acertou[i] && quem[i] !== null ? `· ${nomeDe(quem[i])}` : '',
         extra: `<button class="check" data-acao="marcar" data-item="${i}" aria-pressed="${acertou[i]}" aria-label="Acertou: ${esc(item.texto)}">✓</button>${escolha}`,
       });
     }).join('');

@@ -13,7 +13,7 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
     </div>
     <p class="muted centro" data-aviso>${esc(escolher(FRASES.mimica))} Toca no ✓ quando acertarem.</p>
     <div class="lista-itens" data-itens></div>
-    <div class="rodape"><button class="btn btn-primario" data-acao="terminar">Encerrar a vez</button></div>`;
+    <div class="rodape fixo"><button class="btn btn-primario" data-acao="terminar">Encerrar a vez</button></div>`;
 
   const lista = el.querySelector('[data-itens]');
   const tempo = el.querySelector('[data-tempo]');

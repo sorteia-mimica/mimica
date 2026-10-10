@@ -36,12 +36,18 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
       <input class="campo" data-time="${i}" data-membro="${j}" value="${esc(nome)}"
         placeholder="Ex.: ${EXEMPLOS[(i * time.membros.length + j) % EXEMPLOS.length]}" maxlength="20" autocomplete="off"
         aria-label="${individual ? `Nome do jogador ${i + 1}` : `Dupla ${i + 1}, pessoa ${j + 1}`}">`).join('');
-    const remover = form.times.length > 2
-      ? `<button class="btn btn-pequeno" data-acao="remover" data-time="${i}" aria-label="Remover ${individual ? 'jogador' : 'dupla'} ${i + 1}">✕</button>`
+    const podeRemover = form.times.length > 2;
+    if (individual) {
+      const remover = podeRemover
+        ? `<button class="btn btn-pequeno icone" data-acao="remover" data-time="${i}" aria-label="Remover jogador ${i + 1}">✕</button>`
+        : '';
+      return `<div class="linha">${campos}${remover}</div>`;
+    }
+    // Na dupla o ✕ sobe para o título: os dois campos ficam com a largura toda (nomes longos cabem).
+    const remover = podeRemover
+      ? `<button class="btn btn-pequeno btn-remover" data-acao="remover" data-time="${i}" aria-label="Remover dupla ${i + 1}">✕ Remover</button>`
       : '';
-    return individual
-      ? `<div class="linha">${campos}${remover}</div>`
-      : `<div class="dupla"><div class="muted">Dupla ${i + 1}</div><div class="linha">${campos}${remover}</div></div>`;
+    return `<div class="dupla"><div class="dupla-topo"><span class="muted">Dupla ${i + 1}</span>${remover}</div><div class="linha">${campos}</div></div>`;
   }
 
   const stepperHtml = (a) => `

@@ -3,8 +3,8 @@ import { FRASES, escolher } from '../frases.js';
 
 export function telaResultado(el, { registro, placar, ultimaVez, nomeQuemAcertou, aoProximo }) {
   const nota = (item) => {
-    if (!item.acertou) return '· passou batido';
-    return item.acertouTime !== null ? `· ${nomeQuemAcertou(item.acertouTime)} acertou` : '· acertou';
+    if (!item.acertou) return 'Passou batido';
+    return item.acertouTime !== null ? `${nomeQuemAcertou(item.acertouTime)} acertou` : 'Acertou';
   };
   const acertos = registro.itens.filter((i) => i.acertou).length;
   const [emoji, frases] = acertos === 0

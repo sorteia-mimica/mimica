@@ -1,6 +1,7 @@
 import { esc, ligar } from '../dom.js';
 
 export function telaErro(el, { mensagem, aoTentar }) {
+  el.classList.add('erro');
   el.innerHTML = `
     <section class="card capa entrar">
       <div class="emoji" aria-hidden="true">🙃</div>
