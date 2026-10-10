@@ -92,6 +92,8 @@ export function placar(estado) {
 // Ao retomar, a vez em andamento recomeça do sorteio (o cronômetro não sobrevive).
 export const retomar = (estado) => ({ ...estado, itensDaVez: null });
 
+const ehObjetoSimples = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+
 // O estado vem do localStorage (pode estar corrompido): qualquer surpresa vira "incompatível", nunca exceção.
 export function partidaCompativel(estado, temas) {
   try {
@@ -106,6 +108,11 @@ export function partidaCompativel(estado, temas) {
       && config.temas.every((id) => temas.some((t) => t.id === id))
       && Array.isArray(estado.pontos)
       && estado.pontos.length === config.times.length
+      && estado.pontos.every(Number.isInteger)
+      && Array.isArray(estado.historico)
+      && ehObjetoSimples(estado.usados)
+      && Object.values(estado.usados).every((l) => Array.isArray(l) && l.every((x) => typeof x === 'string'))
+      && (estado.itensDaVez === null || Array.isArray(estado.itensDaVez))
       && Number.isInteger(estado.vezIndice)
       && estado.vezIndice >= 0,
     );

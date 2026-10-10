@@ -139,3 +139,23 @@ test('partidaCompativel não estoura com estado corrompido', () => {
   assert.equal(partidaCompativel({ ...ok, config: { ...ok.config, times: [null] } }, TEMAS), false);
   assert.equal(partidaCompativel({ ...ok, vezIndice: -1 }, TEMAS), false);
 });
+
+test('partidaCompativel rejeita historico, pontos, usados e itensDaVez corrompidos', () => {
+  const ok = criarPartida(duplas());
+  const ruim = (extra) => assert.equal(partidaCompativel({ ...ok, ...extra }, TEMAS), false, JSON.stringify(extra));
+  ruim({ historico: null });
+  ruim({ historico: {} });
+  ruim({ historico: undefined });
+  ruim({ pontos: [0, 'x'] });
+  ruim({ pontos: [0, 1.5] });
+  ruim({ pontos: [0, null] });
+  ruim({ usados: null });
+  ruim({ usados: [] });
+  ruim({ usados: 'x' });
+  ruim({ usados: { 'a:facil': 'texto' } });
+  ruim({ usados: { 'a:facil': [1, 2] } });
+  ruim({ itensDaVez: {} });
+  ruim({ itensDaVez: 'x' });
+  assert.equal(partidaCompativel({ ...ok, itensDaVez: [] }, TEMAS), true);
+  assert.equal(partidaCompativel({ ...ok, usados: { 'a:facil': ['x'] } }, TEMAS), true);
+});
