@@ -14,7 +14,7 @@ test('PADRAO tem os valores da spec', () => {
   assert.deepEqual(PADRAO, {
     voltas: 3, tempoLeitura: 10, tempoMimica: 90,
     mix: { facil: 1, medio: 1, dificil: 1 },
-    pontos: { facil: 1, medio: 2, dificil: 3 },
+    pontos: { facil: 1, medio: 2, dificil: 4 },
   });
 });
 

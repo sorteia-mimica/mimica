@@ -49,7 +49,7 @@ Valores fixos:
 | Itens por vez | 3 — 1 fácil, 1 médio, 1 difícil |
 | Tempo de leitura | 10 s |
 | Tempo de mímica | 1 min 30 s |
-| Pontos | fácil 1, médio 2, difícil 3 |
+| Pontos | fácil 1, médio 2, difícil 4 |
 
 ### Personalizado
 Abre, além do Padrão:

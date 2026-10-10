@@ -66,9 +66,9 @@ test('duplas: alterna duplas e inverte quem faz', () => {
 
 test('duplas: pontos vão para a dupla de quem fez', () => {
   const e = registrarVez(comItens(criarPartida(duplas())), acertos(true, false, true));
-  assert.deepEqual(e.pontos, [4, 0]);
+  assert.deepEqual(e.pontos, [5, 0]);
   const reg = e.historico.at(-1);
-  assert.equal(reg.ganhos, 4);
+  assert.equal(reg.ganhos, 5);
   assert.equal(reg.quemFaz, 'Ana');
   assert.deepEqual(reg.itens.map((i) => i.acertou), [true, false, true]);
   assert.equal(e.itensDaVez, null);
