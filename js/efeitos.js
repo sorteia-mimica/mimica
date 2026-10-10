@@ -1,16 +1,19 @@
 let wakeLock = null;
 let querTelaAcesa = false;
+let pedido = 0;
 let audio = null;
 
 export async function manterTelaAcesa() {
   querTelaAcesa = true;
+  const meu = ++pedido;
   try {
     const lock = (await navigator.wakeLock?.request('screen')) ?? null;
-    if (!querTelaAcesa) {
-      // a tela foi liberada enquanto o pedido estava no ar: solta já
+    if (!querTelaAcesa || meu !== pedido) {
+      // a tela foi liberada (ou outro pedido passou na frente) enquanto este estava no ar: solta já
       lock?.release().catch(() => {});
       return;
     }
+    wakeLock?.release().catch(() => {});
     wakeLock = lock;
   } catch {
     wakeLock = null;
@@ -19,6 +22,7 @@ export async function manterTelaAcesa() {
 
 export function liberarTela() {
   querTelaAcesa = false;
+  pedido++;
   wakeLock?.release().catch(() => {});
   wakeLock = null;
 }
