@@ -29,3 +29,8 @@ test('comNome escapa a frase e o nome e destaca o nome', () => {
   assert.equal(comNome('Valeu, {nome}!', '<Ana>'), 'Valeu, <b>&lt;Ana&gt;</b>!');
   assert.equal(comNome('Sem nome & sem placeholder', 'Ana'), 'Sem nome &amp; sem placeholder');
 });
+
+test('comNome não interpreta padrões especiais de replace no nome', () => {
+  assert.equal(comNome('Oi, {nome}!', '$&'), 'Oi, <b>$&amp;</b>!');
+  assert.equal(comNome('Oi, {nome}!', "$'"), 'Oi, <b>$&#39;</b>!');
+});

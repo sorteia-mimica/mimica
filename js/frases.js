@@ -75,5 +75,5 @@ export function escolher(lista, rng = Math.random) {
 
 // Frase escapada com o nome escapado e em negrito no lugar de `{nome}`.
 export function comNome(frase, nome) {
-  return esc(frase).replace('{nome}', `<b>${esc(nome)}</b>`);
+  return esc(frase).replace('{nome}', () => `<b>${esc(nome)}</b>`);
 }
