@@ -203,6 +203,7 @@ p { margin: 0; text-wrap: pretty; }
 }
 
 .linha { display: flex; gap: 8px; align-items: center; }
+.linha-temas { margin-bottom: 14px; }
 .entre { justify-content: space-between; }
 .dupla + .dupla, .linha + .linha { margin-top: 10px; }
 .dupla + .linha, .linha + .linha:has(> [data-acao="adicionar"]) { margin-top: 14px; }

@@ -92,6 +92,10 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
       <section class="card">
         <h2>Temas</h2>
         <p class="muted dica">Toque nos que a galera topa.</p>
+        <div class="linha linha-temas">
+          <button class="btn btn-pequeno" data-acao="todos-temas">Marcar todos</button>
+          <button class="btn btn-pequeno" data-acao="nenhum-tema">Desmarcar todos</button>
+        </div>
         <div class="chips">${temas.map((t) => `
           <button class="chip" data-acao="tema" data-id="${esc(t.id)}" aria-pressed="${form.temas.includes(t.id)}">${esc(t.emoji)} ${esc(t.nome)}</button>`).join('')}
         </div>
@@ -118,6 +122,12 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
     const erros = validarConfig(montarConfig(form));
     el.querySelector('[data-erros]').innerHTML = erros.map((e) => `<li>${esc(e)}</li>`).join('');
     el.querySelector('[data-acao="comecar"]').disabled = erros.length > 0;
+  }
+
+  function marcarTemas(ids) {
+    form.temas = ids;
+    el.querySelectorAll('[data-acao="tema"]').forEach((b) => b.setAttribute('aria-pressed', String(ids.includes(b.dataset.id))));
+    atualizarErros();
   }
 
   function ajustar(caminho, direcao) {
@@ -155,6 +165,8 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
       b.setAttribute('aria-pressed', String(form.temas.includes(id)));
       atualizarErros();
     },
+    'todos-temas': () => marcarTemas(temas.map((t) => t.id)),
+    'nenhum-tema': () => marcarTemas([]),
     regras: (b) => {
       form.personalizado = b.dataset.valor === 'personalizado';
       render();
