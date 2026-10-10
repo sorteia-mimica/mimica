@@ -151,4 +151,8 @@ async function iniciar() {
   }
 }
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
 iniciar();
