@@ -54,3 +54,14 @@ test('esportes não tem futebol de campo', () => {
   const todos = Object.values(porId.esportes.itens).flat().map((x) => x.toLowerCase());
   assert.ok(todos.every((x) => !x.includes('futebol') || x.includes('americano')));
 });
+
+test('nenhum texto repete entre temas', () => {
+  const vistos = new Map();
+  for (const t of temas) {
+    for (const texto of Object.values(t.itens).flat()) {
+      const chave = texto.toLocaleLowerCase('pt-BR');
+      assert.ok(!vistos.has(chave), `"${texto}" em ${t.id} e ${vistos.get(chave)}`);
+      vistos.set(chave, t.id);
+    }
+  }
+});

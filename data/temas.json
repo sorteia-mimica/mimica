@@ -4,7 +4,7 @@
     "nome": "Filmes/Séries",
     "emoji": "🎬",
     "itens": {
-      "facil": ["Titanic", "Homem-Aranha", "O Rei Leão", "Harry Potter", "Procurando Nemo", "Tubarão", "Batman", "Superman", "Frozen", "Shrek", "Piratas do Caribe", "Star Wars", "Jurassic Park", "Toy Story", "Rocky", "Karatê Kid", "Hulk", "A Pequena Sereia", "Cinderela", "Branca de Neve", "King Kong", "Os Flintstones", "Pica-Pau"],
+      "facil": ["Titanic", "Homem-Aranha", "O Rei Leão", "Harry Potter", "Procurando Nemo", "Mulan", "Batman", "Superman", "Frozen", "Shrek", "Piratas do Caribe", "Star Wars", "Jurassic Park", "Toy Story", "Rocky", "Karatê Kid", "Hulk", "A Pequena Sereia", "Cinderela", "Branca de Neve", "King Kong", "Os Flintstones", "Peter Pan"],
       "medio": ["Matrix", "Ghost", "Missão Impossível", "De Volta para o Futuro", "E.T.", "Indiana Jones", "Forrest Gump", "Tropa de Elite", "Velozes e Furiosos", "Round 6", "La Casa de Papel", "Stranger Things", "Avatar", "Up: Altas Aventuras", "Os Caça-Fantasmas", "Pantera Negra", "Edward Mãos de Tesoura", "O Máskara", "Esqueceram de Mim", "Todo Mundo Odeia o Chris", "O Senhor dos Anéis", "Pânico", "Mudança de Hábito", "Os Incríveis", "Barbie"],
       "dificil": ["Cidade de Deus", "O Auto da Compadecida", "Divertida Mente", "O Poderoso Chefão", "Game of Thrones", "Breaking Bad", "Central do Brasil", "Se Eu Fosse Você", "Minha Mãe É uma Peça", "O Show de Truman", "A Origem", "Interestelar", "Clube da Luta", "O Sexto Sentido", "O Lobo de Wall Street", "Ainda Estou Aqui", "Oppenheimer", "Que Horas Ela Volta?", "Avenida Brasil", "Pantanal", "O Clone", "Friends", "A Vida É Bela", "O Diabo Veste Prada"]
     }
@@ -44,8 +44,8 @@
     "nome": "Futebol",
     "emoji": "⚽",
     "itens": {
-      "facil": ["Marcação", "Pênalti", "Escanteio", "Cartão vermelho", "Lateral", "Gol contra", "Goleiro", "Juiz", "Torcida", "Bandeirinha", "Pelé", "Messi", "Cristiano Ronaldo", "Ronaldinho Gaúcho", "Ronaldo Fenômeno", "Comemoração de gol", "Falta", "Substituição", "Apito final", "Copa do Mundo", "Embaixadinha", "Trave", "Hino nacional"],
-      "medio": ["Caneta", "Tesoura", "Pressionar", "Chapéu", "Elástico", "Bicicleta", "Cavar falta", "Impedimento", "VAR", "Pedalada", "Barreira", "Cera", "Gol de placa", "Contra-ataque", "Tabelinha", "Drible da vaca", "Disputa de pênaltis", "Prorrogação", "Gol olímpico", "Zico", "Romário", "Vini Jr.", "Mbappé", "Kaká", "Roberto Carlos"],
+      "facil": ["Marcação", "Pênalti", "Escanteio", "Cartão vermelho", "Lateral", "Gol contra", "Goleiro", "Tiro de meta", "Torcida", "Bandeirinha", "Zagueiro", "Messi", "Cristiano Ronaldo", "Ronaldinho Gaúcho", "Ronaldo Fenômeno", "Comemoração de gol", "Falta", "Substituição", "Apito final", "Copa do Mundo", "Embaixadinha", "Trave", "Hino nacional"],
+      "medio": ["Caneta", "Tesoura", "Pressionar", "Chapéu", "Elástico", "Bicicleta", "Cavar falta", "Impedimento", "VAR", "Pedalada", "Barreira", "Cera", "Gol de placa", "Contra-ataque", "Tabelinha", "Drible da vaca", "Disputa de pênaltis", "Prorrogação", "Gol olímpico", "Zico", "Romário", "Vini Jr.", "Mbappé", "Kaká", "Rogério Ceni"],
       "dificil": ["Marcação por zona", "Finalizar no ângulo", "Campeonato Brasileiro", "Linha alta", "Libertadores", "Rabona", "Paradinha", "Folha seca", "Cavadinha", "Catimba", "Pressão pós-perda", "Falso 9", "Retranca", "Estacionar o ônibus", "Tiki-taka", "Lei do ex", "Garrincha", "Sócrates", "Pep Guardiola", "Mão de Deus", "Rebaixamento", "Mata-mata", "Virada nos acréscimos", "Zagueiro artilheiro", "Fair play"]
     }
   },
