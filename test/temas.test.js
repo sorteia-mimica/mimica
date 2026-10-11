@@ -8,8 +8,17 @@ const contem = (id, dificuldade, ...textos) => {
   for (const texto of textos) assert.ok(porId[id].itens[dificuldade].includes(texto), `${id}/${dificuldade} sem "${texto}"`);
 };
 
-test('sete temas na ordem certa', () => {
-  assert.deepEqual(temas.map((t) => t.id), ['filmes-series', 'profissao', 'animal', 'esportes', 'futebol', 'dia-a-dia', 'famosos']);
+test('nove temas na ordem certa', () => {
+  assert.deepEqual(temas.map((t) => t.id), ['filmes-series', 'profissao', 'animal', 'comidas', 'esportes', 'futebol', 'dia-a-dia', 'situacoes', 'famosos']);
+});
+
+test('comidas e situações malucas: exemplos pedidos', () => {
+  contem('comidas', 'facil', 'Pizza', 'Pipoca', 'Picolé', 'Espaguete');
+  contem('comidas', 'medio', 'Hambúrguer', 'Brigadeiro', 'Pastel de feira', 'Miojo');
+  contem('comidas', 'dificil', 'Acarajé', 'Temaki', 'Risoto', 'Feijoada');
+  contem('situacoes', 'facil', 'Escorregar numa casca de banana', 'Desarmar uma bomba', 'Fugir de um urso');
+  contem('situacoes', 'medio', 'Pular do trem em movimento', 'Dirigir na contramão', 'Atravessar um campo de laser');
+  contem('situacoes', 'dificil', 'Pousar um avião sem piloto');
 });
 
 test('cada tema: nome, emoji e exatamente 50 itens por dificuldade sem repetição', () => {
