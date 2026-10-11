@@ -34,31 +34,39 @@ let temas = [];
 let estado = null;
 let limparTela = null;
 
-// Voltar do Android (botão ou gesto de borda) fecharia o PWA e perderia a vez em andamento.
-// Enquanto a vez roda (leitura, mímica, conferência), seguramos o "voltar" com uma entrada extra no histórico.
+// "Voltar" do navegador/Android (botão ou gesto de borda). Modelo simples: fora do Início há sempre UMA
+// entrada nossa no topo do histórico; o voltar gasta essa entrada e cada tela decide o que ele faz:
+// - leitura, mímica e conferência (vez rodando): fica onde está e repõe a entrada;
+// - config, como jogar, vez e resultado: vai ao Início (a partida fica salva);
+// - final: igual ao "Voltar ao início";
+// - Início: sai do site de verdade (um voltar só, mesmo com entradas velhas de antes de um reload).
+// O modal tem a própria entrada e o ouvinte dele (captura) roda antes deste: voltar com modal aberto só fecha o modal.
+const FICAR = Symbol('ficar');
+const SAIR = Symbol('sair');
 const TELAS_DA_VEZ = [telaLeitura, telaMimica, telaConferencia];
-let emVez = false;
 let entradaExtra = false;
+let aoVoltarNavegador = SAIR;
 
 function segurarVoltar() {
   if (entradaExtra) return;
-  history.pushState({ vez: true }, '');
+  history.pushState({ mimica: true }, '');
   entradaExtra = true;
 }
 
 window.addEventListener('popstate', () => {
-  if (emVez) {
-    history.pushState({ vez: true }, '');
-    entradaExtra = true;
-  } else {
-    entradaExtra = false; // voltar numa tela comum só gasta a entrada extra; o próximo voltar sai normalmente
-  }
+  entradaExtra = false; // o voltar gastou a nossa entrada (ou uma velha, de antes de recarregar)
+  if (aoVoltarNavegador === FICAR) segurarVoltar();
+  else if (aoVoltarNavegador === SAIR) history.back();
+  else aoVoltarNavegador();
 });
 
-function mostrar(tela, props) {
+// `voltar`: o que o voltar do navegador faz nesta tela (padrão: ir ao Início; ver o modelo acima).
+function mostrar(tela, props, { voltar } = {}) {
   limparTela?.();
-  emVez = TELAS_DA_VEZ.includes(tela);
-  if (emVez) segurarVoltar();
+  if (TELAS_DA_VEZ.includes(tela)) aoVoltarNavegador = FICAR;
+  else if (tela === telaInicio || tela === telaErro) aoVoltarNavegador = SAIR;
+  else aoVoltarNavegador = voltar ?? irInicio;
+  if (aoVoltarNavegador !== SAIR) segurarVoltar();
   const el = document.createElement('section');
   el.className = 'tela';
   el.style.pointerEvents = 'none';
@@ -112,8 +120,14 @@ function irInicio() {
     aoContinuar: () => {
       const salvo = partidaSalva();
       if (!salvo) return irInicio();
-      atualizar(retomar(salvo));
-      irVez();
+      try {
+        atualizar(retomar(salvo));
+        irVez();
+      } catch {
+        // Save que passou na validação mas não roda: descarta em vez de deixar o botão sem resposta.
+        armazenamento.limparPartida();
+        irInicio();
+      }
     },
   });
 }
@@ -172,7 +186,8 @@ function irMimica() {
     esconderItens: estado.config.esconderItens ?? true, // partida salva antes da opção: padrão
     aoTerminar: (marcados) => {
       liberarTela();
-      if (estado.config.modo === 'duplas') {
+      // No desempate só quem faz pontua: no Individual não tem "quem acertou" para conferir.
+      if (estado.config.modo === 'duplas' || vezAtual(estado).desempate) {
         registrar(marcados.map((acertou) => ({ acertou, acertouTime: null })));
       } else {
         irConferencia(marcados);
@@ -209,25 +224,41 @@ function irResultado() {
   });
 }
 
+// Prêmios saem do histórico: se algo nele surpreender, o final aparece sem prêmios (nunca trava).
+function premiosSeguros() {
+  try {
+    return premios(estado);
+  } catch {
+    return [];
+  }
+}
+
 function irFinal() {
-  armazenamento.limparPartida();
+  const podeDesempatar = !estado.desempate && empatadosNoTopo(estado).length > 1;
+  // Com a oferta de desempate na tela, a partida fica salva (recarregar não perde a oferta) até a escolha.
+  if (!podeDesempatar) armazenamento.limparPartida();
+  const irInicioDoFinal = () => {
+    armazenamento.limparPartida();
+    irInicio();
+  };
   mostrar(telaFinal, {
     placar: placar(estado),
     plural: estado.config.modo === 'duplas',
-    premios: premios(estado),
+    premios: premiosSeguros(),
     desempate: resultadoDesempate(estado),
-    podeDesempatar: !estado.desempate && empatadosNoTopo(estado).length > 1,
+    podeDesempatar,
     aoDesempate: () => {
       atualizar(iniciarDesempate(estado));
       irVez();
     },
-    aoInicio: irInicio,
+    aoFicaEmpatado: () => armazenamento.limparPartida(),
+    aoInicio: irInicioDoFinal,
     aoJogarDeNovo: () => {
       // Revanche com outra ordem: quem abriu (ou fechou) a última não repete a vantagem.
       atualizar(criarPartida(embaralharOrdem(estado.config), estado.usados));
       irVez();
     },
-  });
+  }, { voltar: irInicioDoFinal });
 }
 
 async function iniciar() {

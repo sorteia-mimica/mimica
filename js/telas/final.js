@@ -12,7 +12,7 @@ const MEDALHAS = { 1: '🥇', 2: '🥈', 3: '🥉' };
 // `desempate`: null ou { placar, vencedores } (resultadoDesempate); `podeDesempatar`: empate no topo sem desempate ainda.
 // `plural`: cada linha do placar é uma dupla (concordância: "ficaram").
 export function telaFinal(el, {
-  placar, plural = false, premios, desempate, podeDesempatar, aoDesempate, aoJogarDeNovo, aoInicio,
+  placar, plural = false, premios, desempate, podeDesempatar, aoDesempate, aoFicaEmpatado, aoJogarDeNovo, aoInicio,
 }) {
   const nomesDoDesempate = desempate
     ? desempate.vencedores.map((t) => desempate.placar.find((l) => l.time === t).nome)
@@ -90,6 +90,7 @@ export function telaFinal(el, {
     desempate: aoDesempate,
     compartilhar: () => compartilharResultado(resumo, imagem),
     ficaEmpatado: () => {
+      aoFicaEmpatado?.();
       el.querySelector('[data-oferta]')?.remove();
       el.querySelector('h1')?.focus({ preventScroll: true });
     },
