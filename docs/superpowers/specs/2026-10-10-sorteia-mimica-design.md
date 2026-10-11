@@ -97,7 +97,7 @@ Formato:
    - Temas escolhidos ≥ itens da vez → sorteia temas distintos sem repetição.
    - Temas escolhidos < itens da vez → usa todos e repete temas o mais equilibrado possível.
 3. Com 3 temas e 3 itens, sai sempre 1 de cada tema; qual tema fica com qual dificuldade é sorteado.
-4. Um item não se repete na mesma partida. Se uma lista (tema + dificuldade) esgotar, ela é reembaralhada e volta a ser usada.
+4. Um item não se repete na mesma partida **nem nas seguintes**: os itens usados (`usados`, por tema + dificuldade) ficam salvos e semeiam a próxima partida (nova ou revanche). Se uma lista esgotar, ela é reembaralhada e volta a ser usada.
 5. Cada item exibido mostra o tema (emoji + nome) e a dificuldade; quem faz pode anunciar o tema em voz alta.
 
 ## Fluxo de telas
@@ -109,7 +109,10 @@ Formato:
 5. **Mímica** — cronômetro; itens na tela; quem faz marca só ✓ em cada item (dá para desmarcar). Botão "Terminar" encerra antes. No fim: vibração + som.
 6. **Conferência** (só no Individual) — após o tempo ou o fim da vez: corrige os ✓ e escolhe quem acertou cada item. No Duplas, a mímica vai direto para o resultado.
 7. **Resultado da vez** — itens acertados/errados, pontos ganhos; "Próximo".
-8. **Placar final** — ranking com 🏆; "Jogar de novo" (mesma configuração) e "Início".
+8. **Placar final** — ranking com 🏆; "Revanche: jogar de novo" (mesma configuração), "Compartilhar resultado" e "Início".
+   - **Prêmios da noite** (`premios(estado)` em `js/premios.js`, puro, só do histórico; vezes de desempate não contam): 🥇 Mímica de ouro (mais pontos numa vez), 🧠 Leitor de mentes (só Individual: quem mais adivinhou), 💀 Item mais cabeludo (último difícil acertado, com quem fez e quem matou), 🐢 Travou geral (mais vezes zeradas), 🎯 Gabarito (vez com tudo certo, só com 2+ itens por vez). Nada de prêmio para ninguém, para todo mundo ou para mais de 3 empatados; no máximo 4, entrando um a um (sem animação com movimento reduzido).
+   - **Desempate** — com empate no 1º lugar, oferece "⚡ Desempate" ou "Fica empatado mesmo". No desempate cada empatado (ordem de cadastro; na dupla, o primeiro faz e o parceiro adivinha) faz 1 vez extra com **1 item difícil**, no fluxo normal (leitura → mímica → conferência) e **com os mesmos tempos da partida**. Só quem faz pontua, num placar à parte (o placar principal não muda). Quem fizer mais leva; se empatar de novo, a vitória é dividida. Só um desempate por partida.
+   - **Compartilhar** — `navigator.share` com texto (pódio, prêmios, link do jogo) e, se `navigator.canShare({ files })` aceitar, um PNG 1080×1350 desenhado em canvas (gerado ao abrir a tela, para o share sair no mesmo toque). Sem share nativo: copia o texto e avisa "Copiado! Cola no grupo 😉". Cancelar o share não copia; nada lança.
 
 ## Arquitetura
 
@@ -136,6 +139,7 @@ test/*.test.js     # node --test
   - `sortear(estado, temas) → estado` (preenche os itens da vez)
   - `registrarVez(estado, resultados) → estado` (resultados = lista de `{ acertou, acertouTime? }`; soma pontos e avança para a próxima vez)
   - `terminou(estado) → boolean`, `placar(estado) → ranking`
+  - `criarPartida(config, usados?)`, `usadosValidos(valor)`; desempate: `empatadosNoTopo`, `iniciarDesempate`, `placarDesempate`, `resultadoDesempate`
 - **Telas** — recebem estado e callbacks; não contêm regra de jogo.
 - **`app.js`** — carrega `temas.json`, guarda `estado` e última configuração no `localStorage` a cada mudança, troca de tela.
 
@@ -145,7 +149,7 @@ test/*.test.js     # node --test
 - Fim do tempo: `navigator.vibrate` (se disponível) + som curto gerado por Web Audio.
 
 ### Persistência
-- `localStorage`: última configuração e partida em andamento. Acesso envolto em try/catch; sem storage o jogo funciona, só não retoma.
+- `localStorage`: última configuração (`mimica:config`), partida em andamento (`mimica:partida`, inclusive durante o desempate — campo opcional `desempate`, saves antigos continuam válidos) e itens já sorteados (`mimica:usados`, sobrevive ao fim da partida; valor corrompido é ignorado). Acesso envolto em try/catch; sem storage o jogo funciona, só não retoma.
 
 ### Visual
 - Mobile-first, botões grandes, alto contraste.
