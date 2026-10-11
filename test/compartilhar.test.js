@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { textoDoResultado, LINK_DO_JOGO } from '../js/compartilhar.js';
+import { textoDoResultado, compartilharResultado, LINK_DO_JOGO } from '../js/compartilhar.js';
 
 const placar = [
   { time: 1, nome: 'Ana', pontos: 12, posicao: 1 },
@@ -37,4 +37,25 @@ test('empate, desempate decidido e vitória dividida', () => {
   assert.match(decidido, /⚡ Vitória de Beto no desempate/);
   const dividido = textoDoResultado({ placar: empate, premios: [], desempate: { vencedores: ['Ana', 'Beto'] } });
   assert.match(dividido, /🤝 Vitória dividida: Ana e Beto/);
+});
+
+test('compartilharResultado: segundo toque com o share aberto (InvalidStateError) não cai no "copiar"', async () => {
+  const original = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+  let copiou = false;
+  const erro = (name) => Object.assign(new Error(name), { name });
+  try {
+    for (const nome of ['AbortError', 'InvalidStateError']) {
+      Object.defineProperty(globalThis, 'navigator', {
+        configurable: true,
+        value: {
+          share: async () => { throw erro(nome); },
+          clipboard: { writeText: async () => { copiou = true; } },
+        },
+      });
+      assert.equal(await compartilharResultado({ placar, premios, desempate: null }), 'cancelado', nome);
+    }
+    assert.equal(copiou, false);
+  } finally {
+    Object.defineProperty(globalThis, 'navigator', original);
+  }
 });

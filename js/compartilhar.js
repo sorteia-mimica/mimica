@@ -149,7 +149,11 @@ function desenhar(ctx, resumo) {
   ctx.globalAlpha = 1;
 }
 
-// PNG do resultado; null se o navegador não souber desenhar (nunca lança).
+// Acima disso o PNG (degradê + confete pesam) vira JPEG: o share no 4G/WhatsApp fica leve e a diferença não aparece.
+const LIMITE_PNG = 1_000_000;
+const QUALIDADE_JPEG = 0.92;
+
+// Imagem do resultado (PNG, ou JPEG se o PNG passar de ~1 MB); null se o navegador não souber desenhar (nunca lança).
 export async function gerarImagem(resumo) {
   try {
     const canvas = document.createElement('canvas');
@@ -158,7 +162,11 @@ export async function gerarImagem(resumo) {
     const ctx = canvas.getContext('2d');
     if (!ctx?.roundRect) return null;
     desenhar(ctx, resumo);
-    return await new Promise((ok) => canvas.toBlob((blob) => ok(blob), 'image/png'));
+    const blob = (tipo, qualidade) => new Promise((ok) => canvas.toBlob((b) => ok(b), tipo, qualidade));
+    const png = await blob('image/png');
+    if (!png || png.size <= LIMITE_PNG) return png;
+    const jpeg = await blob('image/jpeg', QUALIDADE_JPEG);
+    return jpeg?.type === 'image/jpeg' && jpeg.size < png.size ? jpeg : png;
   } catch {
     return null;
   }
@@ -183,14 +191,17 @@ export async function compartilharResultado(resumo, imagem = null) {
     if (typeof navigator.share === 'function') {
       const dados = { title: 'Sorteia Mímica', text: texto };
       if (imagem) {
-        const arquivo = new File([imagem], 'sorteia-mimica.png', { type: 'image/png' });
+        const jpeg = imagem.type === 'image/jpeg';
+        const arquivo = new File([imagem], `sorteia-mimica.${jpeg ? 'jpg' : 'png'}`, { type: jpeg ? 'image/jpeg' : 'image/png' });
         if (navigator.canShare?.({ files: [arquivo] })) dados.files = [arquivo];
       }
       await navigator.share(dados);
       return 'compartilhado';
     }
   } catch (erro) {
-    if (erro?.name === 'AbortError') return 'cancelado'; // a pessoa desistiu: nada de copiar escondido
+    // AbortError: a pessoa desistiu. InvalidStateError: segundo toque com o share ainda aberto.
+    // Nos dois casos nada de copiar escondido.
+    if (erro?.name === 'AbortError' || erro?.name === 'InvalidStateError') return 'cancelado';
   }
   try {
     await navigator.clipboard.writeText(texto);
