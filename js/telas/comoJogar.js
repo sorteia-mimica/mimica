@@ -11,9 +11,9 @@ export function telaComoJogar(el, { aoVoltar }) {
         <li><b>Duplas:</b> um faz a mímica e o parceiro adivinha. Na vez seguinte da dupla, troca quem faz.</li>
         <li><b>Individual:</b> um faz e todo mundo chuta. Ganham pontos quem fez e quem acertou.</li>
         <li>Os itens da vez vêm de temas diferentes sempre que der — pode (e deve) dizer o tema em voz alta.</li>
-        <li>Na sua vez, toque em <b>Sortear</b> e decore os itens sem deixar ninguém espiar.</li>
+        <li>A tela da vez diz em letras garrafais com quem fica o celular 📱. Toque em <b>Sortear</b>, <b>segure o botão</b> pra revelar (só você olha 🙈) e decore os itens.</li>
         <li>Vale gesto, careta e dancinha. Falar, não vale 🤐</li>
-        <li>Durante a mímica, toque no ✓ de cada item que a galera acertar. No Individual, depois vem a conferência: quem matou a charada?</li>
+        <li>Na mímica os itens ficam escondidos: <b>segure o cartão</b> pra espiar. Toque no ✓ de cada item que a galera acertar. No Individual, depois vem a conferência: quem matou a charada?</li>
         <li>Sons demais? O botão 🔊/🔇 na tela inicial e na mímica liga e desliga tudo.</li>
         <li>Pontos: fácil 1, médio 2, difícil 4 (dá pra mudar no Personalizado).</li>
       </ol>

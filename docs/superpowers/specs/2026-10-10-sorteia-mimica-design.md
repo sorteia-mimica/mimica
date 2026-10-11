@@ -58,6 +58,7 @@ Abre, além do Padrão:
 - Tempo de leitura (5–30 s)
 - Quantidade de itens por dificuldade (0–3 cada, total entre 1 e 6)
 - Pontos por dificuldade (1–5 cada)
+- Itens na mímica: Escondidos (segura pra espiar, padrão) / À mostra
 
 ## Temas
 
@@ -104,9 +105,9 @@ Formato:
 
 1. **Início** — "Jogar", "Como jogar"; "Continuar partida" se houver uma salva.
 2. **Configuração** — modo, nomes, temas, Padrão/Personalizado.
-3. **Vez de jogar** — "Vez de Ana (faz) → Beto (adivinha)" ou "Vez de Ana"; placar resumido; botão **Sortear**.
-4. **Leitura** — itens visíveis só para quem faz, contagem regressiva do tempo de leitura.
-5. **Mímica** — cronômetro; itens na tela; quem faz marca só ✓ em cada item (dá para desmarcar). Botão "Terminar" encerra antes. No fim: vibração + som.
+3. **Vez de jogar** — bloco grande "📱 Celular com Ana" + "Ana faz → Beto adivinha" (Duplas) ou "Ana faz · o resto chuta" (Individual); frase engraçada menor; placar resumido; botão **Sortear**; "Sair" pede confirmação.
+4. **Leitura** — primeiro um passo de privacidade "Só Ana olha 🙈" com **Segura pra revelar** (~600 ms segurando, barra enchendo; Enter/Espaço segurados; leitor de tela revela direto). Só então aparecem os itens e começa a contagem regressiva do tempo de leitura.
+5. **Mímica** — cronômetro (cartão fica vermelho nos 10 s finais); itens **escondidos** por padrão (só tema, dificuldade e ✓; segura o cartão pra espiar, soltou some) — no Personalizado dá para deixar "À mostra"; quem faz marca só ✓ em cada item (dá para desmarcar). "Encerrar a vez" com tempo sobrando pede confirmação. No fim: tela pisca de vermelho (tom parado com movimento reduzido) + vibração + som.
 6. **Conferência** (só no Individual) — após o tempo ou o fim da vez: corrige os ✓ e escolhe quem acertou cada item. No Duplas, a mímica vai direto para o resultado.
 7. **Resultado da vez** — itens acertados/errados, pontos ganhos; "Próximo".
 8. **Placar final** — ranking com 🏆; "Jogar de novo" (mesma configuração) e "Início".
@@ -151,6 +152,7 @@ test/*.test.js     # node --test
 - Mobile-first, botões grandes, alto contraste.
 - Cores por dificuldade: fácil verde, médio amarelo, difícil vermelho.
 - Animações leves no sorteio e no cronômetro; respeita `prefers-reduced-motion`.
+- Confirmações usam um modal do próprio jogo (`js/modal.js`), nunca `window.confirm`.
 - Tema claro/escuro via `prefers-color-scheme`.
 
 ## Erros e casos de borda
