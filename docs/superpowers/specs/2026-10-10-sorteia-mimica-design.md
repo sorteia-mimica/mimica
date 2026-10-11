@@ -60,6 +60,8 @@ Abre, além do Padrão:
 - Pontos por dificuldade (1–5 cada)
 - Itens na mímica: Escondidos (segura pra espiar, padrão) / À mostra
 
+O card Regras (Padrão e Personalizado) mostra a estimativa ao vivo: "N vezes · ≈ X min de jogo" (`estimarDuracao(config)` em `js/config.js`: vezes × (leitura + mímica + 25 s de troca); até 15 min arredonda no minuto, acima de 5 em 5).
+
 ## Temas
 
 Sete temas iniciais, cada um com 50 itens por dificuldade (150 por tema), em `data/temas.json`:
@@ -105,12 +107,12 @@ Formato:
 
 1. **Início** — "Jogar", "Como jogar"; "Continuar partida" se houver uma salva.
 2. **Configuração** — modo, nomes, temas, Padrão/Personalizado.
-3. **Vez de jogar** — bloco grande "📱 Celular com Ana" + "Ana faz → Beto adivinha" (Duplas) ou "Ana faz · o resto chuta" (Individual); frase engraçada menor; placar resumido; botão **Sortear**; "Sair" pede confirmação.
+3. **Vez de jogar** — selo "Volta X de Y · vez N de M" (ou "⚡ Desempate", via `vez.desempate`); bloco grande "📱 Celular com Ana" + "Ana faz → Beto adivinha" (Duplas) ou "Ana faz · o resto chuta" (Individual); frase engraçada menor; placar resumido; botão **Sortear**; "Sair" pede confirmação.
 4. **Leitura** — primeiro um passo de privacidade "Só Ana olha 🙈" com **Segura pra revelar** (~600 ms segurando, barra enchendo; Enter/Espaço segurados; leitor de tela revela direto). Só então aparecem os itens e começa a contagem regressiva do tempo de leitura.
-5. **Mímica** — cronômetro (cartão fica vermelho nos 10 s finais); itens **escondidos** por padrão (só tema, dificuldade e ✓; segura o cartão pra espiar, soltou some) — no Personalizado dá para deixar "À mostra"; quem faz marca só ✓ em cada item (dá para desmarcar). "Encerrar a vez" com tempo sobrando pede confirmação. No fim: tela pisca de vermelho (tom parado com movimento reduzido) + vibração + som.
+5. **Mímica** — cronômetro (cartão fica vermelho nos 10 s finais); itens **escondidos** por padrão (só tema, dificuldade e ✓; segura o cartão pra espiar, soltou some) — no Personalizado dá para deixar "À mostra"; quem faz marca só ✓ em cada item (dá para desmarcar). "Encerrar a vez" com tempo sobrando pede confirmação. No fim: tela pisca de vermelho (tom parado com movimento reduzido) + vibração + som. **Gabarito**: marcou todos os ✓ com o relógio rodando → o relógio para, faixa verde "Gabarito! 🎯" (~1,2 s, som + vibração, sem animação com movimento reduzido, sem desfazer) e a vez segue sozinha (conferência no Individual, resultado no Duplas).
 6. **Conferência** (só no Individual) — após o tempo ou o fim da vez: corrige os ✓ e escolhe quem acertou cada item. No Duplas, a mímica vai direto para o resultado.
 7. **Resultado da vez** — itens acertados/errados, pontos ganhos; "Próximo".
-8. **Placar final** — ranking com 🏆; "Revanche: jogar de novo" (mesma configuração), "Compartilhar resultado" e "Início".
+8. **Placar final** — ranking com 🏆; frase da capa conforme a margem (`tipoDeVitoria`: apertada até 2 pontos ou 5% do líder → "Na raça!"/"Por um triz"; folgada com 6+ pontos e ≥ 1/4 dos pontos do líder → "Vitória incontestável"); lanterninha via `fraseLanterna` (só com um único último; perdeu por 1–2 pontos → frase de "quase"; dupla concorda no plural, "ficaram"). "Revanche: jogar de novo" (mesma configuração, placar zerado e **ordem sorteada** por `embaralharOrdem`: times embaralhados, na dupla sorteia quem começa fazendo, e quem abriu a partida anterior nunca abre a revanche), "Compartilhar resultado" e "Início".
    - **Prêmios da noite** (`premios(estado)` em `js/premios.js`, puro, só do histórico; vezes de desempate não contam): 🥇 Mímica de ouro (mais pontos numa vez), 🧠 Leitor de mentes (só Individual: quem mais adivinhou), 💀 Item mais cabeludo (último difícil acertado, com quem fez e quem matou), 🐢 Travou geral (mais vezes zeradas), 🎯 Gabarito (vez com tudo certo, só com 2+ itens por vez). Nada de prêmio para ninguém, para todo mundo ou para mais de 3 empatados; no máximo 4, entrando um a um (sem animação com movimento reduzido).
    - **Desempate** — com empate no 1º lugar, oferece "⚡ Desempate" ou "Fica empatado mesmo". No desempate cada empatado (ordem de cadastro; na dupla, o primeiro faz e o parceiro adivinha) faz 1 vez extra com **1 item difícil**, no fluxo normal (leitura → mímica → conferência) e **com os mesmos tempos da partida**. Só quem faz pontua, num placar à parte (o placar principal não muda). Quem fizer mais leva; se empatar de novo, a vitória é dividida. Só um desempate por partida.
    - **Compartilhar** — `navigator.share` com texto (pódio, prêmios, link do jogo) e, se `navigator.canShare({ files })` aceitar, um PNG 1080×1350 desenhado em canvas (gerado ao abrir a tela, para o share sair no mesmo toque). Sem share nativo: copia o texto e avisa "Copiado! Cola no grupo 😉". Cancelar o share não copia; nada lança.
@@ -140,6 +142,7 @@ test/*.test.js     # node --test
   - `sortear(estado, temas) → estado` (preenche os itens da vez)
   - `registrarVez(estado, resultados) → estado` (resultados = lista de `{ acertou, acertouTime? }`; soma pontos e avança para a próxima vez)
   - `terminou(estado) → boolean`, `placar(estado) → ranking`
+  - `progresso(estado) → { atual, total } | null`, `embaralharOrdem(config, rng?) → config`
   - `criarPartida(config, usados?)`, `usadosValidos(valor)`; desempate: `empatadosNoTopo`, `iniciarDesempate`, `placarDesempate`, `resultadoDesempate`
 - **Telas** — recebem estado e callbacks; não contêm regra de jogo.
 - **`app.js`** — carrega `temas.json`, guarda `estado` e última configuração no `localStorage` a cada mudança, troca de tela.
@@ -156,7 +159,7 @@ test/*.test.js     # node --test
 - Mobile-first, botões grandes, alto contraste.
 - Cores por dificuldade: fácil verde, médio amarelo, difícil vermelho.
 - Animações leves no sorteio e no cronômetro; respeita `prefers-reduced-motion`.
-- Confirmações usam um modal do próprio jogo (`js/modal.js`), nunca `window.confirm`.
+- Confirmações usam um modal do próprio jogo (`js/modal.js`), nunca `window.confirm`. O "voltar" com modal aberto só fecha o modal (ouvinte de `popstate` na fase de captura, antes do roteador, independente da ordem dos imports).
 - Tema claro/escuro via `prefers-color-scheme`.
 
 ## Erros e casos de borda
