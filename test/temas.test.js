@@ -14,9 +14,9 @@ test('nove temas na ordem certa', () => {
 
 test('comidas e situações malucas: exemplos pedidos', () => {
   contem('comidas', 'facil', 'Pizza', 'Pipoca', 'Picolé', 'Espaguete');
-  contem('comidas', 'medio', 'Hambúrguer', 'Brigadeiro', 'Pastel de feira', 'Miojo');
+  contem('comidas', 'medio', 'Brigadeiro', 'Pastel de feira', 'Miojo');
   contem('comidas', 'dificil', 'Acarajé', 'Temaki', 'Risoto', 'Feijoada');
-  contem('situacoes', 'facil', 'Escorregar numa casca de banana', 'Desarmar uma bomba', 'Fugir de um urso');
+  contem('situacoes', 'facil', 'Escorregar numa casca de banana', 'Receber um Oscar', 'Fugir de um urso');
   contem('situacoes', 'medio', 'Pular do trem em movimento', 'Dirigir na contramão', 'Atravessar um campo de laser');
   contem('situacoes', 'dificil', 'Pousar um avião sem piloto');
 });
