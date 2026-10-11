@@ -1,5 +1,6 @@
 import {
   PADRAO, validarConfig, montarConfig, formVazio, formDeConfig, trocarModo, lerCaminho, escreverCaminho, estimarDuracao,
+  errosVisiveis,
 } from '../config.js';
 import { esc, ligar } from '../dom.js';
 import { formatarTempo } from '../tempo.js';
@@ -30,6 +31,7 @@ const botaoSegmento = (grupo, valor, rotulo, ativo) =>
 export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }) {
   let form = configSalva ? formDeConfig(configSalva) : formVazio(temas.map((t) => t.id));
   form.temas = form.temas.filter((id) => temas.some((t) => t.id === id));
+  let tentouComecar = false; // "faltou nome" só aparece depois do primeiro toque em Começar
 
   function timeHtml(time, i) {
     const individual = form.modo === 'individual';
@@ -51,15 +53,19 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
     return `<div class="dupla"><div class="dupla-topo"><span class="muted">Dupla ${i + 1}</span>${remover}</div><div class="linha">${campos}</div></div>`;
   }
 
-  const stepperHtml = (a) => `
+  // No limite o −/+ fica aria-disabled (e não disabled): continua focável, o foco não some no re-render.
+  const stepperHtml = (a) => {
+    const valor = lerCaminho(form.extras, a.caminho);
+    return `
     <div class="stepper">
       <span>${a.rotulo}</span>
       <div class="linha">
-        <button data-acao="menos" data-caminho="${a.caminho}" aria-label="Diminuir ${a.rotulo}">−</button>
-        <span class="valor">${a.fmt(lerCaminho(form.extras, a.caminho))}</span>
-        <button data-acao="mais" data-caminho="${a.caminho}" aria-label="Aumentar ${a.rotulo}">+</button>
+        <button data-acao="menos" data-caminho="${a.caminho}" aria-label="Diminuir ${a.rotulo}" aria-disabled="${valor <= a.min}">−</button>
+        <span class="valor">${a.fmt(valor)}</span>
+        <button data-acao="mais" data-caminho="${a.caminho}" aria-label="Aumentar ${a.rotulo}" aria-disabled="${valor >= a.max}">+</button>
       </div>
     </div>`;
+  };
 
   // Itens na mímica: escondidos (quem faz segura o cartão pra espiar) ou à mostra o tempo todo.
   const esconderHtml = () => `
@@ -97,7 +103,7 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
           ${botaoSegmento('modo', 'duplas', 'Duplas', !individual)}${botaoSegmento('modo', 'individual', 'Individual', individual)}
         </div>
         <p class="muted">${individual
-          ? 'Cada um por si: um faz, todo mundo chuta. Ponto pra quem fez e pra quem acertou.'
+          ? 'Cada um por si (3 ou mais): um faz, todo mundo chuta. Ponto pra quem fez e pra quem acertou.'
           : 'Um faz, o parceiro adivinha. Na vez seguinte da dupla, troca quem faz.'}</p>
       </section>
       <section class="card">
@@ -125,7 +131,7 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
         ${duracaoHtml()}
       </section>
       <div class="rodape">
-        <ul class="erros" data-erros></ul>
+        <ul class="erros" data-erros aria-live="polite"></ul>
         <button class="btn btn-primario" data-acao="comecar">Começar partida</button>
       </div>`;
     atualizarErros();
@@ -135,10 +141,12 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
     }
   }
 
+  // Começar fica "apagado" (aria-disabled, ainda tocável) quando há erro à vista; tocar com erro escondido
+  // ("faltou nome" de campo nunca preenchido) mostra a lista em vez de começar.
   function atualizarErros() {
-    const erros = validarConfig(montarConfig(form));
-    el.querySelector('[data-erros]').innerHTML = erros.map((e) => `<li>${esc(e)}</li>`).join('');
-    el.querySelector('[data-acao="comecar"]').disabled = erros.length > 0;
+    const visiveis = errosVisiveis(validarConfig(montarConfig(form)), tentouComecar);
+    el.querySelector('[data-erros]').innerHTML = visiveis.map((e) => `<li>${esc(e)}</li>`).join('');
+    el.querySelector('[data-acao="comecar"]').setAttribute('aria-disabled', String(visiveis.length > 0));
   }
 
   function marcarTemas(ids) {
@@ -149,7 +157,9 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
 
   function ajustar(caminho, direcao) {
     const a = AJUSTES.find((x) => x.caminho === caminho);
-    const novo = Math.min(a.max, Math.max(a.min, lerCaminho(form.extras, caminho) + direcao * a.passo));
+    const atual = lerCaminho(form.extras, caminho);
+    const novo = Math.min(a.max, Math.max(a.min, atual + direcao * a.passo));
+    if (novo === atual) return; // já no limite
     escreverCaminho(form.extras, caminho, novo);
     render();
   }
@@ -196,7 +206,12 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
     mais: (b) => ajustar(b.dataset.caminho, 1),
     comecar: () => {
       const config = montarConfig(form);
-      if (validarConfig(config).length === 0) aoComecar(config);
+      if (validarConfig(config).length === 0) {
+        aoComecar(config);
+        return;
+      }
+      tentouComecar = true;
+      atualizarErros();
     },
   });
 

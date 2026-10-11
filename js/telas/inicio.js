@@ -7,11 +7,12 @@ export function telaInicio(el, { temPartidaSalva, aoJogar, aoContinuar, aoComoJo
   el.classList.add('inicio');
   el.innerHTML = `
     <header class="card capa entrar">
-      <button class="btn-tema btn-som" data-som></button>
-      <button class="btn-tema" data-acao="tema"></button>
       <div class="emoji" aria-hidden="true">🎭</div>
       <h1>Sorteia Mímica</h1>
       <p class="muted">${esc(escolher(FRASES.subtitulo))}</p>
+      <!-- Depois do h1 no DOM (o foco da tela começa nele): o 1º Tab chega no 🔊/🌙. Na tela ficam no canto. -->
+      <button class="btn-tema btn-som" data-som></button>
+      <button class="btn-tema" data-acao="tema"></button>
     </header>
     <div class="rodape">
       ${temPartidaSalva ? '<button class="btn btn-primario" data-acao="continuar">Continuar partida</button>' : ''}
