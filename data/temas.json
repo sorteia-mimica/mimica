@@ -61,7 +61,7 @@
   },
   {
     "id": "famosos",
-    "nome": "Famosos",
+    "nome": "Famosos e personagens",
     "emoji": "⭐",
     "itens": {
       "facil": ["Neymar", "Silvio Santos", "Cristiano Ronaldo", "Michael Jackson", "Charlie Chaplin", "Usain Bolt", "Mr. Bean", "Freddie Mercury", "Papai Noel", "Mickey Mouse", "Mike Tyson", "Psy", "Isaac Newton", "Saci-Pererê", "Dom Pedro I", "Napoleão", "John Cena", "The Rock", "Bob Marley", "Neil Armstrong", "Bruce Lee", "Xuxa", "Ana Maria Braga", "Joelma", "Shakira", "Mona Lisa", "Mônica", "Magali", "Chapeuzinho Vermelho", "Rainha Elizabeth", "Ivete Sangalo", "Cleópatra", "Rebeca Andrade", "Marilyn Monroe", "Frida Kahlo", "Rihanna", "Fada do Dente", "Dora Aventureira", "Chapolin Colorado", "Kiko", "Tarzan", "Drácula", "Medusa", "Zorro", "Capitão Gancho", "Cupido", "Coelhinho da Páscoa", "Frankenstein", "E.T.", "Chucky"],
