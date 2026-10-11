@@ -62,6 +62,33 @@ export function vezAtual(estado) {
   };
 }
 
+// "Vez N de M" para a tela da vez; null no desempate (vez extra, fora da conta).
+export function progresso(estado) {
+  if (emDesempate(estado)) return null;
+  return { atual: estado.vezIndice + 1, total: totalDeVezes(estado.config) };
+}
+
+function embaralhar(lista, rng) {
+  const copia = [...lista];
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = Math.min(i, Math.floor(rng() * (i + 1)));
+    [copia[i], copia[j]] = [copia[j], copia[i]];
+  }
+  return copia;
+}
+
+// Revanche: nova ordem dos times e, na dupla, sorteia quem começa fazendo. Garante que quem abre a
+// partida muda (quem joga por último tem a vantagem de saber quanto precisa). Não muda a config original.
+export function embaralharOrdem(config, rng = Math.random) {
+  const quemAbre = (times) => times[0].membros[0];
+  const sortearOrdem = () => embaralhar(config.times, rng)
+    .map((t) => ({ ...t, membros: rng() < 0.5 ? [...t.membros] : [...t.membros].reverse() }));
+  let times = sortearOrdem();
+  for (let tentativa = 0; tentativa < 10 && quemAbre(times) === quemAbre(config.times); tentativa++) times = sortearOrdem();
+  if (quemAbre(times) === quemAbre(config.times)) times = [...times.slice(1), times[0]]; // rng teimoso: roda 1
+  return { ...config, times };
+}
+
 export function sortear(estado, temas, rng = Math.random) {
   const { itens, usados } = sortearVez({
     temas,

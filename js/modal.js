@@ -11,8 +11,8 @@ const BLOQUEIO_TOQUE_MS = 300;
 let aberto = null; // { fechar(resposta, porVoltar) }
 let engolirVoltar = false; // o history.back() de quem fechou pelo botão não é um "voltar" do usuário
 
-// Voltar do Android com o modal aberto só fecha o modal. Este módulo é importado antes do corpo do
-// app.js, então este listener roda primeiro e esconde o evento do "segurar voltar" do roteador.
+// Voltar do Android com o modal aberto só fecha o modal. Ouvinte na fase de captura: no window ele roda
+// antes dos ouvintes comuns (o "segurar voltar" do app.js), qualquer que seja a ordem dos imports.
 window.addEventListener('popstate', (ev) => {
   if (engolirVoltar) {
     engolirVoltar = false;
@@ -21,7 +21,7 @@ window.addEventListener('popstate', (ev) => {
     ev.stopImmediatePropagation();
     aberto.fechar(false, true);
   }
-});
+}, { capture: true });
 
 export const modalAberto = () => aberto !== null;
 

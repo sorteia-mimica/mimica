@@ -4,7 +4,7 @@ import { PADRAO } from '../js/config.js';
 import {
   VERSAO_ESTADO, criarPartida, nomeDoTime, vezesPorVolta, totalDeVezes, vezAtual,
   sortear, registrarVez, terminou, placar, retomar, partidaCompativel,
-  usadosValidos, empatadosNoTopo, iniciarDesempate, resultadoDesempate,
+  usadosValidos, empatadosNoTopo, iniciarDesempate, resultadoDesempate, progresso, embaralharOrdem,
 } from '../js/jogo.js';
 import { rngSemente, temaFalso } from './ajuda.js';
 
@@ -302,4 +302,55 @@ test('partidaCompativel: save antigo sem desempate vale; desempate corrompido n�
   ruim({ times: [0, 2], vez: 3, pontos: [0, 0] });
   ruim({ times: [0, 2], vez: 0, pontos: [0] });
   ruim({ times: [0, 2], vez: 0, pontos: [0, 'x'] });
+});
+
+test('progresso: vez N de M na partida; null no desempate', () => {
+  let e = criarPartida(duplas()); // 2 duplas × 2 × 1 volta = 4 vezes
+  assert.deepEqual(progresso(e), { atual: 1, total: 4 });
+  e = registrarVez(comItens(e), acertos(true, false, false));
+  assert.deepEqual(progresso(e), { atual: 2, total: 4 });
+  assert.equal(progresso(iniciarDesempate({ ...criarPartida(duplas()), vezIndice: 4 })), null);
+});
+
+const primeiroAFazer = (config) => vezAtual(criarPartida(config)).quemFaz;
+const ordemDaVolta = (config) => {
+  let e = criarPartida(config);
+  const ordem = [];
+  for (let i = 0; i < vezesPorVolta(config); i++) {
+    ordem.push(vezAtual(e).quemFaz);
+    e = registrarVez(comItens(e), acertos(false, false, false));
+  }
+  return ordem;
+};
+
+test('embaralharOrdem: mesmas pessoas, mesmas duplas, outra pessoa abre a partida', () => {
+  for (let semente = 1; semente <= 40; semente++) {
+    const rng = rngSemente(semente);
+    const ind = individual(4);
+    const novaInd = embaralharOrdem(ind, rng);
+    assert.notEqual(primeiroAFazer(novaInd), primeiroAFazer(ind));
+    assert.deepEqual(novaInd.times.map((t) => t.membros[0]).sort(), ['J1', 'J2', 'J3', 'J4']);
+
+    const dup = duplas();
+    const novaDup = embaralharOrdem(dup, rng);
+    assert.notEqual(primeiroAFazer(novaDup), primeiroAFazer(dup));
+    const pares = (c) => c.times.map((t) => [...t.membros].sort().join('+')).sort();
+    assert.deepEqual(pares(novaDup), pares(dup), 'ninguém troca de dupla');
+    assert.deepEqual(ordemDaVolta(novaDup).sort(), ordemDaVolta(dup).sort(), 'todo mundo ainda faz 1 vez por volta');
+  }
+});
+
+test('embaralharOrdem: com 2 jogadores a ordem inverte; não muda o resto da config nem a original', () => {
+  const c = individual(2);
+  const copia = structuredClone(c);
+  const nova = embaralharOrdem(c, () => 0);
+  assert.deepEqual(nova.times.map((t) => t.membros[0]), ['J2', 'J1']);
+  assert.deepEqual(c, copia);
+  assert.deepEqual({ ...nova, times: null }, { ...c, times: null });
+});
+
+test('embaralharOrdem: no Duplas às vezes quem começa dentro da dupla muda', () => {
+  const trocou = Array.from({ length: 30 }, (_, s) => embaralharOrdem(duplas(), rngSemente(s + 1)))
+    .some((c) => c.times.some((t) => ['Beto', 'Duda'].includes(t.membros[0])));
+  assert.ok(trocou);
 });

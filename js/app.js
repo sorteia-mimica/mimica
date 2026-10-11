@@ -2,7 +2,7 @@ import { criarArmazenamento } from './armazenamento.js';
 import { configUtilizavel } from './config.js';
 import {
   criarPartida, vezAtual, sortear, registrarVez, terminou, placar, nomeDoTime, retomar, partidaCompativel,
-  usadosValidos, empatadosNoTopo, iniciarDesempate, placarDesempate, resultadoDesempate,
+  usadosValidos, empatadosNoTopo, iniciarDesempate, placarDesempate, resultadoDesempate, progresso, embaralharOrdem,
 } from './jogo.js';
 import { premios } from './premios.js';
 import { manterTelaAcesa, liberarTela, desbloquearAudio } from './efeitos.js';
@@ -138,6 +138,7 @@ function irVez() {
     vez,
     modo: estado.config.modo,
     totalVoltas: estado.config.voltas,
+    progresso: progresso(estado),
     placar: placarDaVez(),
     aoSair: irInicio,
     aoSortear: () => {
@@ -153,8 +154,6 @@ function irVez() {
       }
     },
   });
-  // A tela da vez não sabe de desempate: troca o selo "Volta X de Y".
-  if (vez.desempate) raiz.querySelector('.pilula')?.replaceChildren('⚡ Desempate');
 }
 
 function irLeitura() {
@@ -214,6 +213,7 @@ function irFinal() {
   armazenamento.limparPartida();
   mostrar(telaFinal, {
     placar: placar(estado),
+    plural: estado.config.modo === 'duplas',
     premios: premios(estado),
     desempate: resultadoDesempate(estado),
     podeDesempatar: !estado.desempate && empatadosNoTopo(estado).length > 1,
@@ -223,7 +223,8 @@ function irFinal() {
     },
     aoInicio: irInicio,
     aoJogarDeNovo: () => {
-      atualizar(criarPartida(estado.config, estado.usados));
+      // Revanche com outra ordem: quem abriu (ou fechou) a última não repete a vantagem.
+      atualizar(criarPartida(embaralharOrdem(estado.config), estado.usados));
       irVez();
     },
   });

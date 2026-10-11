@@ -2,14 +2,18 @@ import { esc, ligar, placarHtml } from '../dom.js';
 import { FRASES, comNome, escolher } from '../frases.js';
 import { confirmar } from '../modal.js';
 
-export function telaVez(el, { vez, modo, totalVoltas, placar, aoSortear, aoSair }) {
+// `progresso`: { atual, total } da partida (null no desempate, que é vez extra).
+export function telaVez(el, { vez, modo, totalVoltas, progresso, placar, aoSortear, aoSair }) {
   // Quem segura o celular é o recado principal (dá pra ler do outro lado da sala); a piada vem embaixo, menor.
   const papeis = modo === 'duplas'
     ? `<b>${esc(vez.quemFaz)}</b> faz <span aria-hidden="true">→</span><span class="sr-only">e</span> <b>${esc(vez.quemAdivinha)}</b> adivinha`
     : `<b>${esc(vez.quemFaz)}</b> faz · o resto da galera chuta!`;
+  const selo = vez.desempate
+    ? '⚡ Desempate'
+    : `Volta ${vez.volta} de ${totalVoltas}${progresso ? ` · vez ${progresso.atual} de ${progresso.total}` : ''}`;
   el.innerHTML = `
     <div class="linha entre">
-      <span class="pilula">Volta ${vez.volta} de ${totalVoltas}</span>
+      <span class="pilula">${selo}</span>
       <button class="btn btn-pequeno" data-acao="sair" aria-label="Sair (a partida fica salva)">Sair</button>
     </div>
     <section class="card capa celular-com entrar">
