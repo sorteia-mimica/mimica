@@ -4,6 +4,7 @@ import { PADRAO } from '../js/config.js';
 import {
   VERSAO_ESTADO, criarPartida, nomeDoTime, vezesPorVolta, totalDeVezes, vezAtual,
   sortear, registrarVez, terminou, placar, retomar, partidaCompativel,
+  usadosValidos, empatadosNoTopo, iniciarDesempate, resultadoDesempate,
 } from '../js/jogo.js';
 import { rngSemente, temaFalso } from './ajuda.js';
 
@@ -158,4 +159,147 @@ test('partidaCompativel rejeita historico, pontos, usados e itensDaVez corrompid
   ruim({ itensDaVez: 'x' });
   assert.equal(partidaCompativel({ ...ok, itensDaVez: [] }, TEMAS), true);
   assert.equal(partidaCompativel({ ...ok, usados: { 'a:facil': ['x'] } }, TEMAS), true);
+});
+
+// Sem repetir item entre partidas
+
+test('criarPartida semeia os usados da partida anterior (sem dividir referência)', () => {
+  const anteriores = { 'a:facil': ['a-facil-0'] };
+  const e = criarPartida(duplas(), anteriores);
+  assert.deepEqual(e.usados, anteriores);
+  assert.notEqual(e.usados, anteriores);
+  assert.notEqual(e.usados['a:facil'], anteriores['a:facil']);
+  assert.deepEqual(criarPartida(duplas()).usados, {});
+});
+
+test('usadosValidos aproveita o que presta e ignora lixo do storage', () => {
+  assert.deepEqual(usadosValidos(null), {});
+  assert.deepEqual(usadosValidos(undefined), {});
+  assert.deepEqual(usadosValidos('x'), {});
+  assert.deepEqual(usadosValidos([['a:facil', ['x']]]), {});
+  assert.deepEqual(usadosValidos({ 'a:facil': 'x' }), {});
+  assert.deepEqual(usadosValidos({ 'a:facil': ['x', 2] }), {});
+  assert.deepEqual(usadosValidos({ 'a:facil': ['x'], 'b:medio': [] }), { 'a:facil': ['x'], 'b:medio': [] });
+});
+
+test('a partida seguinte não repete os itens da anterior; ao esgotar, reembaralha', () => {
+  const config = duplas({ temas: ['a'] }); // 5 itens por dificuldade, 1 de cada por vez
+  const rng = rngSemente(7);
+  const sorteados = (e) => e.itensDaVez.map((i) => i.texto);
+  let primeira = criarPartida(config);
+  const daPrimeira = [];
+  for (let i = 0; i < 2; i++) {
+    primeira = sortear(primeira, TEMAS, rng);
+    daPrimeira.push(...sorteados(primeira));
+  }
+  let segunda = criarPartida(config, JSON.parse(JSON.stringify(primeira.usados)));
+  const daSegunda = [];
+  for (let i = 0; i < 3; i++) {
+    segunda = sortear(segunda, TEMAS, rng);
+    daSegunda.push(...sorteados(segunda));
+  }
+  assert.equal(new Set([...daPrimeira, ...daSegunda]).size, 15, 'as 5 primeiras vezes cobrem os 15 itens sem repetir');
+  segunda = sortear(segunda, TEMAS, rng); // lista esgotada: recomeça o ciclo
+  assert.equal(segunda.itensDaVez.length, 3);
+  assert.ok(Object.values(segunda.usados).every((l) => l.length === 1));
+});
+
+// Desempate
+
+const empatada = () => {
+  let e = criarPartida(individual(3, { voltas: 1 }));
+  e = registrarVez(comItens(e), acertos(true, false, false)); // J1 +1
+  e = registrarVez(comItens(e), acertos(false, false, false)); // J2 0
+  e = registrarVez(comItens(e), acertos(true, false, false)); // J3 +1
+  return e;
+};
+
+test('empatadosNoTopo lista quem divide o 1º lugar', () => {
+  assert.deepEqual(empatadosNoTopo(empatada()), [0, 2]);
+  assert.deepEqual(empatadosNoTopo({ ...criarPartida(individual(3)), pontos: [1, 5, 2] }), [1]);
+});
+
+test('desempate: cada empatado faz 1 vez extra com 1 item difícil, pontos à parte', () => {
+  let e = iniciarDesempate(empatada());
+  assert.equal(terminou(e), false);
+  assert.deepEqual(e.desempate, { times: [0, 2], vez: 0, pontos: [0, 0] });
+  const v = vezAtual(e);
+  assert.equal(v.desempate, true);
+  assert.equal(v.time, 0);
+  assert.equal(v.quemFaz, 'J1');
+
+  e = sortear(e, TEMAS, rngSemente(4));
+  assert.equal(e.itensDaVez.length, 1);
+  assert.equal(e.itensDaVez[0].dificuldade, 'dificil');
+  // J2 (fora do desempate) acertou: no desempate só quem faz pontua.
+  e = registrarVez(e, [{ acertou: true, acertouTime: 1 }]);
+  assert.deepEqual(e.pontos, [1, 0, 1], 'placar principal intocado');
+  assert.deepEqual(e.desempate.pontos, [4, 0]);
+  assert.equal(e.historico.at(-1).desempate, true);
+  assert.equal(e.historico.at(-1).ganhos, 4);
+  assert.equal(e.vezIndice, 3);
+  assert.equal(vezAtual(e).quemFaz, 'J3');
+  assert.equal(terminou(e), false);
+
+  e = registrarVez(sortear(e, TEMAS, rngSemente(5)), [{ acertou: false }]);
+  assert.equal(terminou(e), true);
+  const r = resultadoDesempate(e);
+  assert.deepEqual(r.vencedores, [0]);
+  assert.deepEqual(r.placar.map((l) => [l.nome, l.pontos, l.posicao]), [['J1', 4, 1], ['J3', 0, 2]]);
+});
+
+test('desempate: se empatar de novo, a vitória é dividida', () => {
+  let e = iniciarDesempate(empatada());
+  e = registrarVez(sortear(e, TEMAS, rngSemente(1)), [{ acertou: true, acertouTime: 2 }]);
+  e = registrarVez(sortear(e, TEMAS, rngSemente(2)), [{ acertou: true, acertouTime: 0 }]);
+  assert.deepEqual(e.desempate.pontos, [4, 4]);
+  assert.deepEqual(resultadoDesempate(e).vencedores, [0, 2]);
+});
+
+test('desempate em duplas: o primeiro da dupla faz, o parceiro adivinha', () => {
+  let e = criarPartida(duplas());
+  for (let i = 0; i < 4; i++) e = registrarVez(comItens(e), acertos(false, false, false));
+  e = iniciarDesempate(e);
+  assert.deepEqual(e.desempate.times, [0, 1]);
+  assert.deepEqual([vezAtual(e).quemFaz, vezAtual(e).quemAdivinha], ['Ana', 'Beto']);
+  e = registrarVez(sortear(e, TEMAS, rngSemente(1)), [{ acertou: true, acertouTime: null }]);
+  assert.deepEqual([vezAtual(e).quemFaz, vezAtual(e).quemAdivinha], ['Caio', 'Duda']);
+  assert.deepEqual(e.desempate.pontos, [4, 0]);
+});
+
+test('iniciarDesempate sem empate, antes do fim ou já desempatado não muda nada', () => {
+  const sem = { ...criarPartida(individual(3, { voltas: 1 })), vezIndice: 3, pontos: [1, 5, 2] };
+  assert.equal(iniciarDesempate(sem), sem);
+  const noMeio = criarPartida(individual(3));
+  assert.equal(iniciarDesempate(noMeio), noMeio);
+  const ja = iniciarDesempate(empatada());
+  assert.equal(iniciarDesempate(ja), ja);
+  assert.equal(resultadoDesempate(sem), null);
+  assert.equal(resultadoDesempate(ja), null, 'sem resultado antes de todos jogarem');
+});
+
+test('desempate sobrevive a JSON, retomar e partidaCompativel', () => {
+  const e = sortear(iniciarDesempate(empatada()), TEMAS, rngSemente(3));
+  const copia = JSON.parse(JSON.stringify(e));
+  assert.deepEqual(copia, e);
+  assert.equal(partidaCompativel(copia, TEMAS), true);
+  const r = retomar(copia);
+  assert.equal(r.itensDaVez, null);
+  assert.deepEqual(vezAtual(r), vezAtual(e));
+});
+
+test('partidaCompativel: save antigo sem desempate vale; desempate corrompido não', () => {
+  const ok = empatada();
+  assert.equal('desempate' in ok, false);
+  assert.equal(partidaCompativel(ok, TEMAS), true);
+  assert.equal(partidaCompativel({ ...ok, desempate: null }, TEMAS), true);
+  const ruim = (desempate) => assert.equal(partidaCompativel({ ...ok, desempate }, TEMAS), false, JSON.stringify(desempate));
+  ruim('x');
+  ruim([]);
+  ruim({ times: [0], vez: 0, pontos: [0] });
+  ruim({ times: [0, 9], vez: 0, pontos: [0, 0] });
+  ruim({ times: [0, 0], vez: 0, pontos: [0, 0] });
+  ruim({ times: [0, 2], vez: 3, pontos: [0, 0] });
+  ruim({ times: [0, 2], vez: 0, pontos: [0] });
+  ruim({ times: [0, 2], vez: 0, pontos: [0, 'x'] });
 });

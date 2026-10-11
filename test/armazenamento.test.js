@@ -34,3 +34,12 @@ test('sem storage ou storage que lança não quebra', () => {
   ruim.limparPartida();
   assert.equal(ruim.carregarPartida(), null);
 });
+
+test('usados ficam numa chave própria e sobrevivem a limparPartida', () => {
+  const s = storageFalso();
+  const a = criarArmazenamento(s);
+  a.salvarUsados({ 'a:facil': ['x'] });
+  a.limparPartida();
+  assert.deepEqual(a.carregarUsados(), { 'a:facil': ['x'] });
+  assert.ok(s.m.has('mimica:usados'));
+});

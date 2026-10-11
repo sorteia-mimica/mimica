@@ -61,6 +61,16 @@ export const FRASES = Object.freeze({
     'Empatou! Revanche já, ou a amizade não sobrevive.',
     'Deu empate. Foi tudo combinado? 🤔',
   ],
+  desempate: [
+    'Ganhou no detalhe! Um item difícil e o troféu é seu ⚡',
+    'Nervos de aço no desempate. Respeita!',
+    'Decidiu no pênalti da mímica. Que frieza!',
+  ],
+  empateEterno: [
+    'Empatou até no desempate. Isso é destino: dividam o troféu 🤝',
+    'Nem o desempate separou. Casem logo.',
+    'Empate duplo! A taça vai ter que ser compartilhada.',
+  ],
   lanterna: [
     '{nome} ficou com a lanterninha. Ilumina o caminho na próxima! 🔦',
     '{nome}, o importante é participar. Dizem.',

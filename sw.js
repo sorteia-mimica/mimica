@@ -1,4 +1,4 @@
-const CACHE = 'mimica-v15';
+const CACHE = 'mimica-v16';
 const ARQUIVOS = [
   "./",
   "index.html",
@@ -9,12 +9,14 @@ const ARQUIVOS = [
   "icons/icon-512.png",
   "js/app.js",
   "js/armazenamento.js",
+  "js/compartilhar.js",
   "js/config.js",
   "js/dom.js",
   "js/efeitos.js",
   "js/frases.js",
   "js/jogo.js",
   "js/modal.js",
+  "js/premios.js",
   "js/sons.js",
   "js/segurar.js",
   "js/sorteio.js",
