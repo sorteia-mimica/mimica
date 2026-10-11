@@ -9,7 +9,7 @@ export function telaComoJogar(el, { aoVoltar }) {
     <section class="card entrar">
       <ol class="lista">
         <li><b>Duplas:</b> um faz a mímica e o parceiro adivinha. Na vez seguinte da dupla, troca quem faz.</li>
-        <li><b>Individual:</b> um faz e todo mundo chuta. Ganham pontos quem fez e quem acertou.</li>
+        <li><b>Individual</b> (3 ou mais): um faz e todo mundo chuta. Ganham pontos quem fez e quem acertou. Com 2 seria empate garantido — aí joga em dupla!</li>
         <li>Os itens da vez vêm de temas diferentes sempre que der — pode (e deve) dizer o tema em voz alta.</li>
         <li>A tela da vez diz em letras garrafais com quem fica o celular 📱. Toque em <b>Sortear</b>, <b>segure o botão</b> pra revelar (só você olha 🙈) e decore os itens.</li>
         <li>Vale gesto, careta e dancinha. Falar, não vale 🤐</li>

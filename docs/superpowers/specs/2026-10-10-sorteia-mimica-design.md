@@ -24,7 +24,7 @@ Sucesso = um grupo consegue configurar uma partida em menos de 1 minuto (modo Pa
 - Item acertado → pontos para a dupla.
 
 ### Individual
-- Mínimo 2 jogadores.
+- Mínimo 3 jogadores. Com 2, quem faz e o único que adivinha ganham os mesmos pontos em todo acerto (empate garantido); a configuração avisa e sugere Duplas ("No individual precisa de 3+ — com 2 é empate garantido. Joga em dupla!"). Config/partida salvas com 2 pela regra antiga ainda abrem (o form ganha um 3º lugar vazio; a partida em andamento continua).
 - Um faz a mímica, todos os outros tentam adivinhar.
 - Item acertado → quem fez **e** quem acertou ganham os pontos do item. Durante a mímica só se marca ✓; depois do tempo (ou ao encerrar a vez) abre a **conferência**, onde dá para corrigir os ✓ e escolher quem acertou cada item.
 
@@ -114,8 +114,8 @@ Formato:
 7. **Resultado da vez** — itens acertados/errados, pontos ganhos; "Próximo".
 8. **Placar final** — ranking com 🏆; frase da capa conforme a margem (`tipoDeVitoria`: apertada até 2 pontos ou 5% do líder → "Na raça!"/"Por um triz"; folgada com 6+ pontos e ≥ 1/4 dos pontos do líder → "Vitória incontestável"); lanterninha via `fraseLanterna` (só com um único último; perdeu por 1–2 pontos → frase de "quase"; dupla concorda no plural, "ficaram"). "Revanche: jogar de novo" (mesma configuração, placar zerado e **ordem sorteada** por `embaralharOrdem`: times embaralhados, na dupla sorteia quem começa fazendo, e quem abriu a partida anterior nunca abre a revanche), "Compartilhar resultado" e "Início".
    - **Prêmios da noite** (`premios(estado)` em `js/premios.js`, puro, só do histórico; vezes de desempate não contam): 🥇 Mímica de ouro (mais pontos numa vez), 🧠 Leitor de mentes (só Individual: quem mais adivinhou), 💀 Item mais cabeludo (último difícil acertado, com quem fez e quem matou), 🐢 Travou geral (mais vezes zeradas), 🎯 Gabarito (vez com tudo certo, só com 2+ itens por vez). Nada de prêmio para ninguém, para todo mundo ou para mais de 3 empatados; no máximo 4, entrando um a um (sem animação com movimento reduzido).
-   - **Desempate** — com empate no 1º lugar, oferece "⚡ Desempate" ou "Fica empatado mesmo". No desempate cada empatado (ordem de cadastro; na dupla, o primeiro faz e o parceiro adivinha) faz 1 vez extra com **1 item difícil**, no fluxo normal (leitura → mímica → conferência) e **com os mesmos tempos da partida**. Só quem faz pontua, num placar à parte (o placar principal não muda). Quem fizer mais leva; se empatar de novo, a vitória é dividida. Só um desempate por partida.
-   - **Compartilhar** — `navigator.share` com texto (pódio, prêmios, link do jogo) e, se `navigator.canShare({ files })` aceitar, um PNG 1080×1350 desenhado em canvas (gerado ao abrir a tela, para o share sair no mesmo toque). Sem share nativo: copia o texto e avisa "Copiado! Cola no grupo 😉". Cancelar o share não copia; nada lança.
+   - **Desempate** — com empate no 1º lugar, oferece "⚡ Desempate" ou "Fica empatado mesmo". No desempate cada empatado (ordem de cadastro; na dupla, o primeiro faz e o parceiro adivinha) faz 1 vez extra com **1 item difícil**, no fluxo normal (leitura → mímica → resultado; no Individual sem a conferência de "quem acertou", já que só quem faz pontua) e **com os mesmos tempos da partida**. Só quem faz pontua, num placar à parte (o placar principal não muda). Quem fizer mais leva; se empatar de novo, a vitória é dividida. Só um desempate por partida. Com a oferta na tela a partida continua salva (recarregar volta ao Início com "Continuar partida", que reabre o final com a oferta); ela só é apagada em "Revanche", "Voltar ao início" ou "Fica empatado mesmo".
+   - **Compartilhar** — `navigator.share` com texto (pódio, prêmios, link do jogo) e, se `navigator.canShare({ files })` aceitar, um PNG 1080×1350 desenhado em canvas (gerado ao abrir a tela, para o share sair no mesmo toque; se o PNG passar de ~1 MB vai como JPEG 92%). Sem share nativo: copia o texto e avisa "Copiado! Cola no grupo 😉". Cancelar o share (ou tocar de novo com ele aberto) não copia; nada lança.
 
 ## Arquitetura
 
@@ -159,14 +159,16 @@ test/*.test.js     # node --test
 - Mobile-first, botões grandes, alto contraste.
 - Cores por dificuldade: fácil verde, médio amarelo, difícil vermelho.
 - Animações leves no sorteio e no cronômetro; respeita `prefers-reduced-motion`.
+- Voltar do navegador/Android: fora do Início há sempre uma entrada do jogo no topo do histórico. Leitura, mímica e conferência seguram o voltar (fica na tela); Config, Como jogar, Vez e Resultado voltam ao Início (a partida fica salva); no Final vale como "Voltar ao início"; no Início sai do site com um voltar só (inclusive com entradas velhas de antes de um reload).
+- Teclado: o foco de cada tela começa no título; no Início os botões 🔊/🌙 vêm logo depois dele (1º Tab). Steppers no limite ficam `aria-disabled` (apagados, ainda focáveis). Celular deitado (altura ≤ 500 px): rodapé fixo enxuto.
 - Confirmações usam um modal do próprio jogo (`js/modal.js`), nunca `window.confirm`. O "voltar" com modal aberto só fecha o modal (ouvinte de `popstate` na fase de captura, antes do roteador, independente da ordem dos imports).
 - Tema claro/escuro via `prefers-color-scheme`.
 
 ## Erros e casos de borda
 
-- Configuração inválida (nomes vazios/duplicados, menos de 2 jogadores/duplas, nenhum tema, mix com 0 itens) → botão "Começar" desabilitado com a mensagem do motivo.
+- Configuração inválida (nomes vazios/duplicados, menos de 2 duplas ou 3 jogadores no Individual, nenhum tema, itens por vez fora de 1 a 6) → mensagem do motivo e "Começar" apagado (`aria-disabled`). "Faltou nome" só aparece depois do primeiro toque em "Começar" (não dá bronca antes de digitar); tocar com erro mostra a lista em vez de começar.
 - Falha ao carregar `temas.json` → mensagem com botão "Tentar de novo".
-- Estado salvo corrompido/incompatível → descartado, volta ao Início.
+- Estado salvo corrompido/incompatível → descartado, volta ao Início. A validação confere cada vez do histórico, `vezIndice` até o total, pontos ≥ 0 e desempate só depois das voltas; se mesmo assim o final não conseguir montar os prêmios, ele aparece sem prêmios.
 
 ## Testes
 
