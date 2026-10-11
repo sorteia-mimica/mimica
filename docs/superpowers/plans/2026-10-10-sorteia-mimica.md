@@ -2376,7 +2376,7 @@ Expected: PASS (todos, incluindo `sw.test.js`).
 
 Jogo de mímica para jogar num celular só: escolha os temas, sorteie, encene e some os pontos.
 
-**Jogar:** https://sorteia-mimica.github.io/mimica/
+**Jogar:** https://sorteia-mimica.github.io/
 
 ## Desenvolvimento
 
@@ -2407,4 +2407,4 @@ git push -u origin main
 gh api -X POST repos/sorteia-mimica/mimica/pages -f "source[branch]=main" -f "source[path]=/"
 gh api repos/sorteia-mimica/mimica/pages --jq '.html_url, .status'
 ```
-Expected: `https://sorteia-mimica.github.io/mimica/`; depois do build do Pages, abrir no celular e verificar que carrega e instala ("Adicionar à tela inicial").
+Expected: `https://sorteia-mimica.github.io/`; depois do build do Pages, abrir no celular e verificar que carrega e instala ("Adicionar à tela inicial").

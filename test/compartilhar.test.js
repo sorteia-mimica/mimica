@@ -23,7 +23,7 @@ test('texto traz pódio com medalhas, prêmios e o link do jogo', () => {
   assert.match(texto, /🥇 Mímica de ouro: Ana/);
   assert.match(texto, /💀 Item mais cabeludo: “Marcação por zona” \(Ana fez e Beto matou a charada\)/);
   assert.ok(texto.trimEnd().endsWith(LINK_DO_JOGO));
-  assert.equal(LINK_DO_JOGO, 'https://sorteia-mimica.github.io/mimica/');
+  assert.equal(LINK_DO_JOGO, 'https://sorteia-mimica.github.io/');
 });
 
 test('sem prêmios não tem seção de prêmios', () => {

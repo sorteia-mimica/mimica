@@ -3,7 +3,7 @@ import { juntarNomes } from './premios.js';
 // Compartilhar o resultado: texto (puro, testado) + imagem PNG gerada no canvas (só no navegador).
 // `resumo` = { placar, premios, desempate: null | { vencedores: [nomes] } }.
 
-export const LINK_DO_JOGO = 'https://sorteia-mimica.github.io/mimica/';
+export const LINK_DO_JOGO = 'https://sorteia-mimica.github.io/';
 const MEDALHAS = { 1: '🥇', 2: '🥈', 3: '🥉' };
 const medalha = (posicao) => MEDALHAS[posicao] ?? `${posicao}º`;
 const pts = (n) => `${n} ${n === 1 ? 'pt' : 'pts'}`;

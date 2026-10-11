@@ -2,7 +2,7 @@
 
 Jogo de mímica para jogar num celular só: escolha os temas, sorteie, encene e some os pontos.
 
-**Jogar:** https://sorteia-mimica.github.io/mimica/
+**Jogar:** https://sorteia-mimica.github.io/
 
 ## Desenvolvimento
 
