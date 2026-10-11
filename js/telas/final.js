@@ -1,15 +1,18 @@
 import { esc, ligar, placarHtml } from '../dom.js';
 import { confete } from '../efeitos.js';
 import { tocarFanfarra } from '../sons.js';
-import { FRASES, comNome, escolher } from '../frases.js';
+import {
+  FRASES, FRASES_VITORIA, comNome, escolher, fraseLanterna, tipoDeVitoria,
+} from '../frases.js';
 import { juntarNomes } from '../premios.js';
 import { compartilharResultado, gerarImagem } from '../compartilhar.js';
 
 const MEDALHAS = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
 // `desempate`: null ou { placar, vencedores } (resultadoDesempate); `podeDesempatar`: empate no topo sem desempate ainda.
+// `plural`: cada linha do placar é uma dupla (concordância: "ficaram").
 export function telaFinal(el, {
-  placar, premios, desempate, podeDesempatar, aoDesempate, aoJogarDeNovo, aoInicio,
+  placar, plural = false, premios, desempate, podeDesempatar, aoDesempate, aoJogarDeNovo, aoInicio,
 }) {
   const nomesDoDesempate = desempate
     ? desempate.vencedores.map((t) => desempate.placar.find((l) => l.time === t).nome)
@@ -24,14 +27,11 @@ export function telaFinal(el, {
   } else {
     capa = empate
       ? { emoji: '🤝', rotulo: 'Empate entre', frase: FRASES.empate }
-      : { emoji: '🏆', rotulo: 'Vitória de', frase: FRASES.vitoria };
+      : { emoji: '🏆', rotulo: 'Vitória de', frase: FRASES_VITORIA[tipoDeVitoria(placar)] }; // texto conforme a margem
   }
 
-  const ultimaPosicao = placar.at(-1)?.posicao ?? 1;
-  const lanternas = placar.filter((l) => l.posicao === ultimaPosicao);
-  const lanterna = ultimaPosicao > 1 && lanternas.length === 1
-    ? `<p class="muted centro">${comNome(escolher(FRASES.lanterna), lanternas[0].nome)}</p>`
-    : '';
+  const fraseDoUltimo = fraseLanterna(placar, { plural });
+  const lanterna = fraseDoUltimo ? `<p class="muted centro">${comNome(fraseDoUltimo, placar.at(-1).nome)}</p>` : '';
   const oferta = podeDesempatar ? `
     <section class="card oferta-desempate entrar" data-oferta>
       <h2>Empate no topo!</h2>
