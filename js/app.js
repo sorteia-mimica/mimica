@@ -2,7 +2,9 @@ import { criarArmazenamento } from './armazenamento.js';
 import { configUtilizavel } from './config.js';
 import {
   criarPartida, vezAtual, sortear, registrarVez, terminou, placar, nomeDoTime, retomar, partidaCompativel,
+  usadosValidos, empatadosNoTopo, iniciarDesempate, placarDesempate, resultadoDesempate,
 } from './jogo.js';
+import { premios } from './premios.js';
 import { manterTelaAcesa, liberarTela, desbloquearAudio } from './efeitos.js';
 import { tocarSorteio } from './sons.js';
 import { telaInicio } from './telas/inicio.js';
@@ -75,7 +77,11 @@ function mostrar(tela, props) {
 function atualizar(novo) {
   estado = novo;
   armazenamento.salvarPartida(estado);
+  armazenamento.salvarUsados(estado.usados); // sobrevive ao fim da partida: a próxima não repete item
 }
+
+// Durante (e depois de) um desempate, o placar que importa na vez/resultado é o dele.
+const placarDaVez = () => (estado.desempate ? placarDesempate(estado) : placar(estado));
 
 function partidaSalva() {
   try {
@@ -122,7 +128,7 @@ function irConfiguracao() {
     aoVoltar: irInicio,
     aoComecar: (config) => {
       armazenamento.salvarConfig(config);
-      atualizar(criarPartida(config));
+      atualizar(criarPartida(config, usadosValidos(armazenamento.carregarUsados())));
       irVez();
     },
   });
@@ -130,11 +136,12 @@ function irConfiguracao() {
 
 function irVez() {
   if (terminou(estado)) return irFinal();
+  const vez = vezAtual(estado);
   mostrar(telaVez, {
-    vez: vezAtual(estado),
+    vez,
     modo: estado.config.modo,
     totalVoltas: estado.config.voltas,
-    placar: placar(estado),
+    placar: placarDaVez(),
     aoSair: irInicio,
     aoSortear: () => {
       try {
@@ -149,6 +156,8 @@ function irVez() {
       }
     },
   });
+  // A tela da vez não sabe de desempate: troca o selo "Volta X de Y".
+  if (vez.desempate) raiz.querySelector('.pilula')?.replaceChildren('⚡ Desempate');
 }
 
 function irLeitura() {
@@ -191,7 +200,7 @@ function registrar(resultados) {
 function irResultado() {
   mostrar(telaResultado, {
     registro: estado.historico.at(-1),
-    placar: placar(estado),
+    placar: placarDaVez(),
     ultimaVez: terminou(estado),
     nomeQuemAcertou: (time) => nomeDoTime(estado.config.times[time]),
     aoProximo: irVez,
@@ -202,9 +211,16 @@ function irFinal() {
   armazenamento.limparPartida();
   mostrar(telaFinal, {
     placar: placar(estado),
+    premios: premios(estado),
+    desempate: resultadoDesempate(estado),
+    podeDesempatar: !estado.desempate && empatadosNoTopo(estado).length > 1,
+    aoDesempate: () => {
+      atualizar(iniciarDesempate(estado));
+      irVez();
+    },
     aoInicio: irInicio,
     aoJogarDeNovo: () => {
-      atualizar(criarPartida(estado.config));
+      atualizar(criarPartida(estado.config, estado.usados));
       irVez();
     },
   });
