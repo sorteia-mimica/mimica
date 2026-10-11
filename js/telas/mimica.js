@@ -102,7 +102,9 @@ export function telaMimica(el, { itens, segundos, esconderItens = true, aoTermin
     });
     lista.addEventListener('keyup', (ev) => {
       const b = alvoEspiar(ev);
-      if (b && TECLAS.includes(ev.key)) espiar(b, false);
+      if (!b || !TECLAS.includes(ev.key)) return;
+      ev.preventDefault(); // Firefox: sem isso o Espaço solto vira clique (detail 0) e a espiada fica aberta
+      espiar(b, false);
     });
     lista.addEventListener('focusout', (ev) => {
       const b = alvoEspiar(ev);

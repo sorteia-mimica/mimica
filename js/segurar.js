@@ -78,7 +78,9 @@ export function ligarSegurar(botao, { ms, aoCompletar }) {
     iniciar();
   });
   botao.addEventListener('keyup', (ev) => {
-    if (TECLAS.includes(ev.key)) soltar();
+    if (!TECLAS.includes(ev.key)) return;
+    ev.preventDefault(); // o Firefox dispara o clique do Espaço ao soltar: sem isso, um toque curto revelaria
+    soltar();
   });
   botao.addEventListener('blur', soltar);
   // Clique sem ponteiro (detail 0) e sem tecla segurada = ativação por leitor de tela: revela direto.
