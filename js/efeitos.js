@@ -53,6 +53,21 @@ export function desbloquearAudio() {
 // O contexto de áudio (null até o primeiro toque); quem sintetiza som usa este.
 export const contextoAudio = () => audio;
 
+// "Tempo!": a tela toda pisca de vermelho (~1 s, 3 pulsos) para quem está longe do celular.
+// Com movimento reduzido o CSS corta a animação e fica só um tom vermelho parado pelo mesmo tempo.
+export function piscarTela(duracao = 1100) {
+  const camada = document.createElement('div');
+  camada.className = 'piscar-tempo';
+  camada.setAttribute('aria-hidden', 'true');
+  document.body.append(camada);
+  const remover = () => camada.remove();
+  const timer = setTimeout(remover, duracao);
+  return () => {
+    clearTimeout(timer);
+    remover();
+  };
+}
+
 // Confete leve (só CSS transform/opacity). Some sozinho em ~2,5 s; nada com movimento reduzido.
 const CORES_CONFETE = ['#8b5cf6', '#c026d3', '#f59e0b', '#22c55e', '#3b82f6', '#ef4444'];
 

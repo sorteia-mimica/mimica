@@ -77,6 +77,9 @@ const arpejo = (freqs, passo, dur, extra = {}) => freqs.map((f, i) => ({ f, dur,
 // Sortear: arpejo subindo.
 export const tocarSorteio = () => tocar(arpejo([523, 659, 784, 1047], 0.07, 0.14, { tipo: 'triangle' }));
 
+// Revelou os itens: "fuuup" subindo, curtinho.
+export const tocarRevelar = () => tocar([{ f: 330, fim: 990, dur: 0.18, tipo: 'triangle', vol: 0.22 }]);
+
 // Cada segundo final: suave na leitura, mais agudo e forte quando urgente.
 export const tocarTique = ({ urgente = false } = {}) =>
   tocar([{ f: urgente ? 1400 : 700, dur: 0.06, tipo: 'square', vol: urgente ? 0.2 : 0.08 }]);

@@ -18,7 +18,8 @@ const AJUSTES = [
 
 const RESUMO_PADRAO = `O clássico que nunca falha: ${PADRAO.voltas} voltas · 1 fácil, 1 médio e 1 difícil por vez · `
   + `${PADRAO.tempoLeitura} s pra decorar · ${formatarTempo(PADRAO.tempoMimica)} de mímica · `
-  + `pontos ${PADRAO.pontos.facil}/${PADRAO.pontos.medio}/${PADRAO.pontos.dificil}.`;
+  + `pontos ${PADRAO.pontos.facil}/${PADRAO.pontos.medio}/${PADRAO.pontos.dificil} · `
+  + 'itens escondidos na mímica (segura pra espiar).';
 
 // Sugestões nos campos de nome, só para dar o tom (não viram nome de ninguém).
 const EXEMPLOS = ['Tia Cleide', 'Primo Jorge', 'Dona Neide', 'Seu Zé', 'Bia do 302', 'Juninho', 'Vó Lurdes', 'Tio do pavê'];
@@ -57,6 +58,15 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
         <button data-acao="menos" data-caminho="${a.caminho}" aria-label="Diminuir ${a.rotulo}">−</button>
         <span class="valor">${a.fmt(lerCaminho(form.extras, a.caminho))}</span>
         <button data-acao="mais" data-caminho="${a.caminho}" aria-label="Aumentar ${a.rotulo}">+</button>
+      </div>
+    </div>`;
+
+  // Itens na mímica: escondidos (quem faz segura o cartão pra espiar) ou à mostra o tempo todo.
+  const esconderHtml = () => `
+    <div class="opcao-esconder">
+      <span id="rotulo-esconder">Itens na mímica</span>
+      <div class="segmentado" role="group" aria-labelledby="rotulo-esconder">
+        ${botaoSegmento('esconder', 'sim', 'Escondidos <small>(segura pra espiar)</small>', form.extras.esconderItens)}${botaoSegmento('esconder', 'nao', 'À mostra', !form.extras.esconderItens)}
       </div>
     </div>`;
 
@@ -105,7 +115,7 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
         <div class="segmentado">
           ${botaoSegmento('regras', 'padrao', 'Padrão', !form.personalizado)}${botaoSegmento('regras', 'personalizado', 'Personalizado', form.personalizado)}
         </div>
-        ${form.personalizado ? AJUSTES.map(stepperHtml).join('') : `<p class="muted">${RESUMO_PADRAO}</p>`}
+        ${form.personalizado ? AJUSTES.map(stepperHtml).join('') + esconderHtml() : `<p class="muted">${RESUMO_PADRAO}</p>`}
       </section>
       <div class="rodape">
         <ul class="erros" data-erros></ul>
@@ -169,6 +179,10 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
     'nenhum-tema': () => marcarTemas([]),
     regras: (b) => {
       form.personalizado = b.dataset.valor === 'personalizado';
+      render();
+    },
+    esconder: (b) => {
+      form.extras.esconderItens = b.dataset.valor === 'sim';
       render();
     },
     menos: (b) => ajustar(b.dataset.caminho, -1),

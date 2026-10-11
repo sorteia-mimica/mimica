@@ -1,6 +1,7 @@
 import { esc, ligar } from '../dom.js';
 import { ligarBotaoSom } from '../sons.js';
 import { FRASES, escolher } from '../frases.js';
+import { confirmar } from '../modal.js';
 
 export function telaInicio(el, { temPartidaSalva, aoJogar, aoContinuar, aoComoJogar }) {
   el.classList.add('inicio');
@@ -27,7 +28,15 @@ export function telaInicio(el, { temPartidaSalva, aoJogar, aoContinuar, aoComoJo
   pintarBotaoTema();
   ligarBotaoSom(el.querySelector('[data-som]'));
   ligar(el, {
-    jogar: aoJogar,
+    jogar: async () => {
+      const novaMesmo = !temPartidaSalva || await confirmar({
+        titulo: 'Começar outra partida?',
+        texto: 'A partida salva vai pro beleléu.',
+        sim: 'Começar outra',
+        nao: 'Deixa quieto',
+      });
+      if (novaMesmo) aoJogar();
+    },
     continuar: aoContinuar,
     como: aoComoJogar,
     tema: () => {

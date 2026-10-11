@@ -310,6 +310,10 @@ p { margin: 0; text-wrap: pretty; }
 }
 .stepper button:active { transform: scale(.92); }
 
+.opcao-esconder { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; margin-top: 4px; border-top: 1px solid var(--border); }
+.opcao-esconder .segmentado { margin-bottom: 0; }
+.opcao-esconder small { display: block; font-weight: 600; font-size: .78rem; }
+
 .erros { color: var(--dificil); margin: 0; padding-left: 20px; font-size: .95rem; font-weight: 600; }
 .erros:empty { display: none; }
 
@@ -383,6 +387,78 @@ p { margin: 0; text-wrap: pretty; }
 }
 .cronometro.alerta { color: var(--dificil); animation: pulsar 1s ease-in-out infinite; }
 .cronometro.fim { color: var(--dificil); animation: tremer .5s ease-in-out 2; }
+/* Últimos 10 s e fim: o cartão do relógio inteiro fica vermelho (dá pra ver de longe). */
+/* position: o 🔊 da mímica é absoluto e fica preso no cartão (sem isso ia pro canto da janela no PC). */
+.relogio { position: relative; transition: background-color .3s, border-color .3s; }
+.relogio.urgente, .relogio.esgotado { background: var(--dificil-bg); border-color: var(--dificil); }
+.relogio.urgente .barra > div, .relogio.esgotado .barra > div { background: color-mix(in srgb, var(--dificil-bg) 60%, var(--surface)); }
+/* "Tempo!": a tela toda pisca de vermelho, 3 pulsos (~1 s). Com movimento reduzido fica um tom parado. */
+.piscar-tempo {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  background: #ef4444;
+  opacity: .3;
+  animation: piscar .36s ease-in-out 3 both;
+}
+@keyframes piscar { 0%, 100% { opacity: 0; } 50% { opacity: .7; } }
+
+/* Leitura e mímica: texto grande para ler de longe e no escuro do bar. */
+.leitura .item .texto, .mimica .item .texto { font-size: clamp(1.8rem, 7.6vw, 2.25rem); line-height: 1.12; }
+.leitura .item .meta, .mimica .item .meta { font-size: 1.02rem; font-weight: 650; }
+.leitura .selo, .mimica .selo { font-size: .92rem; padding: 2px 10px; }
+.leitura .relogio { padding: 10px 18px 14px; gap: 10px; }
+.leitura .cronometro { font-size: 3.6rem; }
+.leitura .item, .mimica .item { padding: 12px 14px 12px 16px; }
+
+/* Mímica com itens escondidos: o cartão é um botão de "segura pra espiar". */
+.espiar {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  padding: 6px 0;
+  min-height: 56px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: pan-y; /* rolar a lista continua valendo; segurar parado espia */
+  border-radius: 12px;
+}
+.espiar .meta, .espiar .texto { display: block; }
+.item.escondido:not(.espiando) .texto { font-size: 1.15rem; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+.item.espiando { box-shadow: 0 0 0 3px var(--cor), var(--shadow-forte); }
+
+/* Passo de privacidade antes da leitura */
+.privacidade { margin-top: 6vh; gap: 12px; }
+.privacidade h1 { font-size: clamp(2rem, 9vw, 2.6rem); overflow-wrap: anywhere; max-width: 100%; }
+.privacidade p { font-size: 1.1rem; }
+.btn-segurar {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 64px;
+  font-size: 1.2rem;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+/* Enche da esquerda pra direita enquanto segura (pintado pelo JS, vale também com movimento reduzido). */
+.segurar-preenche {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgb(255 255 255 / .38);
+  transform-origin: left;
+  transform: scaleX(var(--progresso, 0));
+}
+.btn-segurar.segurando { transform: translateY(3px); }
+.dica-segurar { font-size: .9rem; }
 /* A trilha tem o degradê; uma capa desliza por cima (só transform) escondendo o tempo gasto. */
 .barra {
   position: relative;
@@ -427,11 +503,27 @@ p { margin: 0; text-wrap: pretty; }
 
 .destaque { font-size: 2.6rem; font-weight: 900; line-height: 1.05; letter-spacing: -.02em; color: var(--destaque); }
 .titulo-resultado { font-size: 1.25rem; font-weight: 800; }
-.vez { font-size: 1.7rem; }
-.vez { overflow-wrap: anywhere; }
-.vez b { color: var(--destaque); }
-.seta { display: block; font-size: 1.1rem; color: var(--muted); font-weight: 700; margin: 2px 0; }
-.capa .frase { margin-top: 10px; overflow-wrap: anywhere; }
+/* Vez: bloco "📱 Celular com ANA" em destaque, legível a 2 m. */
+.celular-com {
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  border-color: transparent;
+  color: var(--primary-text);
+  box-shadow: 0 4px 0 var(--primary-borda), var(--shadow-forte);
+  padding: 26px 18px 22px;
+  gap: 10px;
+}
+.vez { display: flex; flex-direction: column; align-items: center; gap: 4px; overflow-wrap: anywhere; max-width: 100%; }
+.celular-rotulo { font-size: 1.15rem; font-weight: 800; letter-spacing: .02em; opacity: .92; }
+.vez-nome { font-size: clamp(2.4rem, 12vw, 3.4rem); line-height: 1.05; font-weight: 900; text-shadow: 0 2px 0 rgb(0 0 0 / .18); }
+.capa .papeis {
+  max-width: 100%;
+  font-size: 1.15rem;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / .16);
+  overflow-wrap: anywhere;
+}
+.frase { font-size: .95rem; overflow-wrap: anywhere; padding: 0 8px; }
 .pilula {
   display: inline-block;
   padding: 4px 12px;
@@ -518,6 +610,35 @@ p { margin: 0; text-wrap: pretty; }
   .app { margin: 24px auto; min-height: calc(100dvh - 48px); }
 }
 
+/* Modal de confirmação (no lugar do window.confirm) */
+.modal-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgb(20 10 40 / .55);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: aparecer .15s ease-out both;
+}
+.modal {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 18px 18px;
+  box-shadow: var(--shadow-forte);
+  animation: entrar .2s ease-out both;
+}
+/* h2 do modal é título de verdade, não o rótulo pequeno de seção. */
+.modal .modal-titulo { font-size: 1.45rem; text-transform: none; letter-spacing: -.01em; color: var(--text); margin: 0; }
+.modal p { color: var(--muted); font-size: 1.05rem; }
+.modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+.modal-botoes .btn { min-height: 52px; padding: 12px; font-size: 1rem; }
+
 /* Animações (só transform e opacity) */
 .entrar { animation: entrar .35s ease-out both; }
 .lista-itens .entrar:nth-child(2) { animation-delay: .08s; }
@@ -539,6 +660,7 @@ p { margin: 0; text-wrap: pretty; }
   55% { opacity: 1; }
   to { opacity: 1; transform: none; }
 }
+@keyframes aparecer { from { opacity: 0; } }
 @keyframes pulsar { 50% { transform: scale(1.07); } }
 @keyframes tremer { 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
 @keyframes flutuar { 50% { transform: translateY(-8px) rotate(-4deg); } }

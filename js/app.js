@@ -101,10 +101,7 @@ function irInicio() {
   liberarTela();
   mostrar(telaInicio, {
     temPartidaSalva: Boolean(partidaSalva()),
-    aoJogar: () => {
-      if (partidaSalva() && !window.confirm('Começar outra? A partida salva vai pro beleléu.')) return;
-      irConfiguracao();
-    },
+    aoJogar: irConfiguracao, // a tela já confirmou (modal) se havia partida salva
     aoComoJogar: () => mostrar(telaComoJogar, { aoVoltar: irInicio }),
     aoContinuar: () => {
       const salvo = partidaSalva();
@@ -152,13 +149,19 @@ function irVez() {
 }
 
 function irLeitura() {
-  mostrar(telaLeitura, { itens: estado.itensDaVez, segundos: estado.config.tempoLeitura, aoFim: irMimica });
+  mostrar(telaLeitura, {
+    itens: estado.itensDaVez,
+    segundos: estado.config.tempoLeitura,
+    quemFaz: vezAtual(estado).quemFaz,
+    aoFim: irMimica,
+  });
 }
 
 function irMimica() {
   mostrar(telaMimica, {
     itens: estado.itensDaVez,
     segundos: estado.config.tempoMimica,
+    esconderItens: estado.config.esconderItens ?? true, // partida salva antes da opção: padrão
     aoTerminar: (marcados) => {
       liberarTela();
       if (estado.config.modo === 'duplas') {
