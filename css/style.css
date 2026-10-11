@@ -730,3 +730,24 @@ p { margin: 0; text-wrap: pretty; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .confete { display: none; }
 }
+
+/* Regras: estimativa de duração da partida. */
+.duracao { margin: 12px 0 0; font-weight: 700; }
+
+/* Gabarito durante a mímica: faixa por cima de tudo (~1,2 s) e a vez acaba sozinha. Bloqueia toques. */
+.gabarito {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-content: center;
+  gap: 4px;
+  padding: 16px;
+  text-align: center;
+  background: rgb(21 128 61 / .92); /* verde fixo: texto branco legível no claro e no escuro */
+  color: #fff;
+  animation: aparecer .15s ease-out both;
+}
+.gabarito p { margin: 0; }
+.gabarito b { font-size: clamp(2.6rem, 13vw, 4.5rem); line-height: 1.05; display: inline-block; animation: pulsar .6s ease-in-out 2; }
+.gabarito .gabarito-sub { font-size: 1.15rem; font-weight: 650; }

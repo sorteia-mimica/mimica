@@ -119,3 +119,7 @@ export const tocarFanfarra = () => tocar([
   { f: 784, dur: 0.6, quando: 0.6, tipo: 'square', vol: 0.18 },
   { f: 1047, dur: 0.6, quando: 0.6, tipo: 'triangle', vol: 0.25 },
 ]);
+
+// Gabarito (todos os ✓ com o relógio rodando): arpejo agudo subindo, logo depois do ding do acerto.
+export const tocarGabarito = () => tocar(arpejo([1047, 1319, 1568, 2093], 0.08, 0.18, { tipo: 'triangle', vol: 0.3 })
+  .map((n) => ({ ...n, quando: n.quando + 0.22 })));

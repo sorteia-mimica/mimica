@@ -2,10 +2,14 @@ import { ROTULO_DIFICULDADE, esc, itemHtml, ligar } from '../dom.js';
 import { criarAnunciadorDeSegundos, formatarTempo, iniciarCronometro } from '../tempo.js';
 import { piscarTela, vibrar } from '../efeitos.js';
 import { confirmar, fecharModal } from '../modal.js';
-import { ligarBotaoSom, tocarAcerto, tocarBuzina, tocarDesmarcar, tocarTique } from '../sons.js';
+import {
+  ligarBotaoSom, tocarAcerto, tocarBuzina, tocarDesmarcar, tocarGabarito, tocarTique,
+} from '../sons.js';
 import { FRASES, escolher } from '../frases.js';
 
 const DICA_ESPIAR = 'Segura pra espiar 👀';
+// Todos os ✓ com o relógio rodando: festa curtinha e a vez acaba sozinha (ninguém fica caçando o botão).
+const GABARITO_MS = 1200;
 const TECLAS = ['Enter', ' '];
 
 // Item escondido: só tema + dificuldade + ✓. O texto entra no DOM só enquanto quem faz segura o cartão
@@ -26,7 +30,9 @@ export function telaMimica(el, { itens, segundos, esconderItens = true, aoTermin
   let restante = segundos;
   let acabou = false;
   let encerrado = false;
+  let gabaritando = false;
   let pararPiscar = () => {};
+  let pararGabarito = () => {};
 
   el.classList.add('mimica');
   el.innerHTML = `
@@ -135,6 +141,24 @@ export function telaMimica(el, { itens, segundos, esconderItens = true, aoTermin
     },
   });
 
+  // Relógio para na hora; a faixa cobre a tela (sem desfazer: na conferência do Individual ainda dá pra corrigir).
+  function gabaritar() {
+    gabaritando = true;
+    parar();
+    const faixa = document.createElement('div');
+    faixa.className = 'gabarito';
+    faixa.setAttribute('role', 'status');
+    faixa.innerHTML = `<p><b>Gabarito!</b> <span aria-hidden="true">🎯</span></p><p class="gabarito-sub">${esc(escolher(FRASES.gabaritoNaHora))}</p>`;
+    document.body.append(faixa);
+    tocarGabarito();
+    vibrar([60, 40, 120]);
+    const timer = setTimeout(encerrar, GABARITO_MS);
+    pararGabarito = () => {
+      clearTimeout(timer);
+      faixa.remove();
+    };
+  }
+
   function encerrar() {
     if (encerrado) return;
     encerrado = true;
@@ -144,13 +168,16 @@ export function telaMimica(el, { itens, segundos, esconderItens = true, aoTermin
 
   ligar(el, {
     marcar: (b) => {
+      if (gabaritando) return;
       const i = Number(b.dataset.item);
       marcados[i] = !marcados[i];
       (marcados[i] ? tocarAcerto : tocarDesmarcar)();
       pintarMarcado(i);
+      if (!acabou && marcados.every(Boolean)) gabaritar();
     },
     // Com tempo sobrando, um toque sem querer não pode acabar com a vez: pede confirmação.
     terminar: async () => {
+      if (gabaritando) return;
       if (!acabou) {
         const sim = await confirmar({
           titulo: 'Encerrar já?',
@@ -168,5 +195,6 @@ export function telaMimica(el, { itens, segundos, esconderItens = true, aoTermin
     parar();
     fecharModal();
     pararPiscar();
+    pararGabarito();
   };
 }
