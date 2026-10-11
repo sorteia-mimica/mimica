@@ -135,3 +135,15 @@ export function trocarModo(form, modo) {
   while (times.length < 2) times.push({ membros: Array(tamanho).fill('') });
   return { ...form, modo, times };
 }
+
+// Tempo extra por vez além de leitura + mímica: passar o celular, sortear, conferir, ler o resultado.
+const TROCA_SEG = 25;
+
+// Estimativa para a tela de configuração: { vezes, minutos }. Conta os lugares (mesmo com nome em branco).
+// Até 15 min arredonda no minuto; acima, de 5 em 5 (mais que isso seria precisão de mentira).
+export function estimarDuracao(config) {
+  const tamanho = config.modo === 'duplas' ? 2 : 1;
+  const vezes = config.times.length * tamanho * config.voltas;
+  const minutos = (vezes * (config.tempoLeitura + config.tempoMimica + TROCA_SEG)) / 60;
+  return { vezes, minutos: minutos < 15 ? Math.max(1, Math.round(minutos)) : Math.round(minutos / 5) * 5 };
+}

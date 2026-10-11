@@ -1,5 +1,5 @@
 import {
-  PADRAO, validarConfig, montarConfig, formVazio, formDeConfig, trocarModo, lerCaminho, escreverCaminho,
+  PADRAO, validarConfig, montarConfig, formVazio, formDeConfig, trocarModo, lerCaminho, escreverCaminho, estimarDuracao,
 } from '../config.js';
 import { esc, ligar } from '../dom.js';
 import { formatarTempo } from '../tempo.js';
@@ -80,6 +80,12 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
       .join('');
   }
 
+  // "12 vezes · ≈ 25 min": o grupo sabe se dá tempo antes da pizza. Muda com jogadores, modo e regras.
+  function duracaoHtml() {
+    const { vezes, minutos } = estimarDuracao(montarConfig(form));
+    return `<p class="duracao" data-duracao><span aria-hidden="true">⏱️</span> ${vezes} ${vezes === 1 ? 'vez' : 'vezes'} · ≈ ${minutos} min de jogo</p>`;
+  }
+
   function render() {
     const individual = form.modo === 'individual';
     const foco = seletorDoFoco();
@@ -116,6 +122,7 @@ export function telaConfiguracao(el, { temas, configSalva, aoVoltar, aoComecar }
           ${botaoSegmento('regras', 'padrao', 'Padrão', !form.personalizado)}${botaoSegmento('regras', 'personalizado', 'Personalizado', form.personalizado)}
         </div>
         ${form.personalizado ? AJUSTES.map(stepperHtml).join('') + esconderHtml() : `<p class="muted">${RESUMO_PADRAO}</p>`}
+        ${duracaoHtml()}
       </section>
       <div class="rodape">
         <ul class="erros" data-erros></ul>

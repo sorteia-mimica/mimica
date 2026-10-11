@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { PADRAO, validarConfig, montarConfig, formVazio, formDeConfig, configUtilizavel, trocarModo, lerCaminho, escreverCaminho } from '../js/config.js';
+import { PADRAO, validarConfig, montarConfig, formVazio, formDeConfig, configUtilizavel, trocarModo, lerCaminho, escreverCaminho, estimarDuracao } from '../js/config.js';
 
 const valida = (extra = {}) => ({
   modo: 'duplas',
@@ -154,4 +154,19 @@ test('formDeConfig: itens à mostra conta como personalizado e faz ida e volta',
   const form = formDeConfig(custom);
   assert.equal(form.personalizado, true);
   assert.deepEqual(montarConfig(form), custom);
+});
+
+test('estimarDuracao: vezes × (leitura + mímica + ~25 s de troca)', () => {
+  // Padrão em duplas: 2 duplas × 2 × 3 voltas = 12 vezes × (10 + 90 + 25) s = 25 min
+  assert.deepEqual(estimarDuracao(valida()), { vezes: 12, minutos: 25 });
+  // 6 jogadores no Individual: 18 vezes × 125 s = 37,5 min → arredonda de 5 em 5
+  const seis = valida({ modo: 'individual', times: ['A', 'B', 'C', 'D', 'E', 'F'].map((n) => ({ membros: [n] })) });
+  assert.deepEqual(estimarDuracao(seis), { vezes: 18, minutos: 40 });
+  // Partida curta: minuto a minuto, nunca 0
+  const curta = valida({ modo: 'individual', times: [{ membros: ['A'] }, { membros: ['B'] }], voltas: 1, tempoMimica: 30, tempoLeitura: 5 });
+  assert.deepEqual(estimarDuracao(curta), { vezes: 2, minutos: 2 });
+});
+
+test('estimarDuracao: conta os slots mesmo com nome em branco', () => {
+  assert.equal(estimarDuracao(montarConfig(formVazio(['futebol']))).vezes, 12);
 });
