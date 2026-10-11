@@ -5,6 +5,7 @@ import {
   usadosValidos, empatadosNoTopo, iniciarDesempate, placarDesempate, resultadoDesempate, progresso, embaralharOrdem,
 } from './jogo.js';
 import { premios } from './premios.js';
+import { voltaSilenciosa } from './voltar.js';
 import { manterTelaAcesa, liberarTela, desbloquearAudio } from './efeitos.js';
 import { tocarSorteio } from './sons.js';
 import { telaInicio } from './telas/inicio.js';
@@ -39,24 +40,43 @@ let limparTela = null;
 // - leitura, mímica e conferência (vez rodando): fica onde está e repõe a entrada;
 // - config, como jogar, vez e resultado: vai ao Início (a partida fica salva);
 // - final: igual ao "Voltar ao início";
-// - Início: sai do site de verdade (um voltar só, mesmo com entradas velhas de antes de um reload).
-// O modal tem a própria entrada e o ouvinte dele (captura) roda antes deste: voltar com modal aberto só fecha o modal.
+// - Início (e erro): não guarda entrada nossa. Ao chegar, as nossas (inclusive as velhas de antes de um
+//   reload) são devolvidas em silêncio; assim o voltar sai do site, mesmo como 1ª entrada do PWA.
+// O modal tem a própria entrada e o ouvinte dele (captura) roda antes deste: voltar com modal aberto só fecha
+// o modal, e as voltas silenciosas (js/voltar.js) também param lá e nunca chegam aqui.
 const FICAR = Symbol('ficar');
 const SAIR = Symbol('sair');
 const TELAS_DA_VEZ = [telaLeitura, telaMimica, telaConferencia];
+const MAX_ENTRADAS_VELHAS = 5;
 let entradaExtra = false;
+let soltando = false; // devolvendo entradas: empilhar agora cairia por baixo da volta
 let aoVoltarNavegador = SAIR;
 
+// Entradas do jogo: a de agora, a do modal e a da versão anterior ({ vez: true }).
+const entradaNossa = (estado) => Boolean(estado?.mimica || estado?.modal || estado?.vez);
+
 function segurarVoltar() {
-  if (entradaExtra) return;
+  if (entradaExtra || soltando) return; // soltando: soltarVoltar() empilha quando terminar
   history.pushState({ mimica: true }, '');
   entradaExtra = true;
+}
+
+async function soltarVoltar() {
+  if (soltando) return;
+  soltando = true;
+  for (let i = 0; i < MAX_ENTRADAS_VELHAS && aoVoltarNavegador === SAIR
+    && (entradaExtra || entradaNossa(history.state)); i++) {
+    entradaExtra = false;
+    await voltaSilenciosa.voltar();
+  }
+  soltando = false;
+  if (aoVoltarNavegador !== SAIR) segurarVoltar(); // saiu do Início enquanto soltava
 }
 
 window.addEventListener('popstate', () => {
   entradaExtra = false; // o voltar gastou a nossa entrada (ou uma velha, de antes de recarregar)
   if (aoVoltarNavegador === FICAR) segurarVoltar();
-  else if (aoVoltarNavegador === SAIR) history.back();
+  else if (aoVoltarNavegador === SAIR) soltarVoltar(); // ainda sobrou entrada velha: devolve
   else aoVoltarNavegador();
 });
 
@@ -66,7 +86,8 @@ function mostrar(tela, props, { voltar } = {}) {
   if (TELAS_DA_VEZ.includes(tela)) aoVoltarNavegador = FICAR;
   else if (tela === telaInicio || tela === telaErro) aoVoltarNavegador = SAIR;
   else aoVoltarNavegador = voltar ?? irInicio;
-  if (aoVoltarNavegador !== SAIR) segurarVoltar();
+  if (aoVoltarNavegador === SAIR) soltarVoltar();
+  else segurarVoltar();
   const el = document.createElement('section');
   el.className = 'tela';
   el.style.pointerEvents = 'none';

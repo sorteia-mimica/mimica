@@ -1,4 +1,5 @@
 import { esc } from './dom.js';
+import { voltaSilenciosa } from './voltar.js';
 
 // Confirmação dentro do jogo (no lugar do window.confirm, que é feio e trava o cronômetro em alguns navegadores).
 // confirmar({ titulo, texto, sim, nao }) → Promise<boolean>. Um modal por vez; abrir outro cancela o anterior.
@@ -9,13 +10,12 @@ import { esc } from './dom.js';
 const BLOQUEIO_TOQUE_MS = 300;
 
 let aberto = null; // { fechar(resposta, porVoltar) }
-let engolirVoltar = false; // o history.back() de quem fechou pelo botão não é um "voltar" do usuário
 
 // Voltar do Android com o modal aberto só fecha o modal. Ouvinte na fase de captura: no window ele roda
 // antes dos ouvintes comuns (o "segurar voltar" do app.js), qualquer que seja a ordem dos imports.
+// Também engole as voltas do próprio jogo (voltaSilenciosa): nenhuma chega ao roteador como "voltar".
 window.addEventListener('popstate', (ev) => {
-  if (engolirVoltar) {
-    engolirVoltar = false;
+  if (voltaSilenciosa.engolir()) {
     ev.stopImmediatePropagation();
   } else if (aberto) {
     ev.stopImmediatePropagation();
@@ -63,12 +63,14 @@ export function confirmar({ titulo, texto = '', sim = 'Sim', nao = 'Cancelar' })
       document.removeEventListener('keydown', teclas, true);
       fundo.remove();
       app?.removeAttribute('inert');
-      if (!porVoltar) {
-        engolirVoltar = true;
-        history.back(); // devolve a entrada do modal
-      }
       if (quemAbriu?.isConnected) quemAbriu.focus({ preventScroll: true });
-      resolver(resposta);
+      if (porVoltar) {
+        resolver(resposta);
+      } else {
+        // Devolve a entrada do modal e só responde depois: se a resposta trocar de tela (e empilhar a
+        // entrada que segura o voltar), o pushState vem depois da volta, não antes.
+        voltaSilenciosa.voltar().then(() => resolver(resposta));
+      }
     }
     const controle = { fechar };
     aberto = controle;

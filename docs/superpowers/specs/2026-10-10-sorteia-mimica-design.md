@@ -159,7 +159,7 @@ test/*.test.js     # node --test
 - Mobile-first, botões grandes, alto contraste.
 - Cores por dificuldade: fácil verde, médio amarelo, difícil vermelho.
 - Animações leves no sorteio e no cronômetro; respeita `prefers-reduced-motion`.
-- Voltar do navegador/Android: fora do Início há sempre uma entrada do jogo no topo do histórico. Leitura, mímica e conferência seguram o voltar (fica na tela); Config, Como jogar, Vez e Resultado voltam ao Início (a partida fica salva); no Final vale como "Voltar ao início"; no Início sai do site com um voltar só (inclusive com entradas velhas de antes de um reload).
+- Voltar do navegador/Android: fora do Início há sempre uma entrada do jogo no topo do histórico; ao chegar no Início ela (e entradas velhas de antes de um reload) é devolvida em silêncio (`js/voltar.js`: a volta só "termina" quando o popstate chega, e o modal só responde depois disso, para nenhum pushState cair por baixo da volta). Leitura, mímica e conferência seguram o voltar (fica na tela); Config, Como jogar, Vez e Resultado voltam ao Início (a partida fica salva); no Final vale como "Voltar ao início"; no Início sai do site com um voltar só (inclusive com entradas velhas de antes de um reload).
 - Teclado: o foco de cada tela começa no título; no Início os botões 🔊/🌙 vêm logo depois dele (1º Tab). Steppers no limite ficam `aria-disabled` (apagados, ainda focáveis). Celular deitado (altura ≤ 500 px): rodapé fixo enxuto.
 - Confirmações usam um modal do próprio jogo (`js/modal.js`), nunca `window.confirm`. O "voltar" com modal aberto só fecha o modal (ouvinte de `popstate` na fase de captura, antes do roteador, independente da ordem dos imports).
 - Tema claro/escuro via `prefers-color-scheme`.
