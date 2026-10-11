@@ -161,6 +161,42 @@ test('partidaCompativel rejeita historico, pontos, usados e itensDaVez corrompid
   assert.equal(partidaCompativel({ ...ok, usados: { 'a:facil': ['x'] } }, TEMAS), true);
 });
 
+test('partidaCompativel confere cada vez do histórico (o final monta prêmios a partir dele)', () => {
+  let ok = criarPartida(individual(3, { voltas: 1 }));
+  ok = registrarVez(comItens(ok), acertos(1, false, true));
+  assert.equal(partidaCompativel(JSON.parse(JSON.stringify(ok)), TEMAS), true);
+  const vez = ok.historico[0];
+  const ruim = (historico) => assert.equal(partidaCompativel({ ...ok, historico }, TEMAS), false, JSON.stringify(historico));
+  ruim([1, 2]);
+  ruim([null]);
+  ruim(['x']);
+  ruim([[]]);
+  ruim([{ ...vez, itens: 'x' }]);
+  ruim([{ ...vez, itens: [null] }]);
+  ruim([{ ...vez, quemFaz: 7 }]);
+  ruim([{ ...vez, ganhos: -1 }]);
+  ruim([{ ...vez, ganhos: 1.5 }]);
+  ruim([{ ...vez, time: 9 }]);
+  ruim([{ ...vez, itens: [{ ...vez.itens[0], acertouTime: 9 }] }]);
+  ruim([{ ...vez, itens: [{ ...vez.itens[0], acertou: 'sim' }] }]);
+  ruim([{ ...vez, itens: [{ ...vez.itens[0], texto: null }] }]);
+  ruim([{ ...vez, itens: [{ ...vez.itens[0], dificuldade: 'absurdo' }] }]);
+});
+
+test('partidaCompativel: vezIndice além do fim e pontos negativos não valem', () => {
+  const ok = criarPartida(duplas()); // 4 vezes
+  assert.equal(partidaCompativel({ ...ok, vezIndice: 4 }, TEMAS), true, 'no fim (vai pro placar final)');
+  assert.equal(partidaCompativel({ ...ok, vezIndice: 5 }, TEMAS), false);
+  assert.equal(partidaCompativel({ ...ok, vezIndice: 999 }, TEMAS), false);
+  assert.equal(partidaCompativel({ ...ok, pontos: [0, -3] }, TEMAS), false);
+});
+
+test('partidaCompativel: individual com 2 salvo antes da regra dos 3+ ainda continua', () => {
+  const antiga = criarPartida(individual(2));
+  assert.equal(partidaCompativel(antiga, TEMAS), true);
+  assert.equal(partidaCompativel(criarPartida(individual(1)), TEMAS), false);
+});
+
 // Sem repetir item entre partidas
 
 test('criarPartida semeia os usados da partida anterior (sem dividir referência)', () => {
@@ -302,6 +338,12 @@ test('partidaCompativel: save antigo sem desempate vale; desempate corrompido n�
   ruim({ times: [0, 2], vez: 3, pontos: [0, 0] });
   ruim({ times: [0, 2], vez: 0, pontos: [0] });
   ruim({ times: [0, 2], vez: 0, pontos: [0, 'x'] });
+});
+
+test('partidaCompativel: desempate só vale depois das voltas', () => {
+  const desempate = { times: [0, 2], vez: 0, pontos: [0, 0] };
+  assert.equal(partidaCompativel({ ...empatada(), desempate }, TEMAS), true);
+  assert.equal(partidaCompativel({ ...empatada(), vezIndice: 0, desempate }, TEMAS), false);
 });
 
 test('progresso: vez N de M na partida; null no desempate', () => {

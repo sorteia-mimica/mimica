@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { PADRAO, validarConfig, montarConfig, formVazio, formDeConfig, configUtilizavel, trocarModo, lerCaminho, escreverCaminho, estimarDuracao } from '../js/config.js';
+import {
+  PADRAO, ERROS, validarConfig, montarConfig, formVazio, formDeConfig, configUtilizavel, trocarModo, lerCaminho, escreverCaminho,
+  estimarDuracao, errosVisiveis,
+} from '../js/config.js';
 
 const valida = (extra = {}) => ({
   modo: 'duplas',
@@ -21,17 +24,21 @@ test('PADRAO tem os valores da spec', () => {
 
 test('config válida não tem erros', () => {
   assert.deepEqual(validarConfig(valida()), []);
-  assert.deepEqual(validarConfig(valida({ modo: 'individual', times: [{ membros: ['Ana'] }, { membros: ['Beto'] }] })), []);
+  assert.deepEqual(validarConfig(valida({ modo: 'individual', times: [{ membros: ['Ana'] }, { membros: ['Beto'] }, { membros: ['Caio'] }] })), []);
 });
 
-test('mínimo de 2 jogadores / 2 duplas', () => {
-  assert.ok(validarConfig(valida({ modo: 'individual', times: [{ membros: ['Ana'] }] })).includes('Precisa de pelo menos 2 jogadores — sozinho é só ensaio.'));
+test('mínimo de 2 duplas / 3 jogadores no individual (com 2, quem faz e quem acerta sempre empatam)', () => {
   assert.ok(validarConfig(valida({ times: [{ membros: ['Ana', 'Beto'] }] })).includes('Precisa de pelo menos 2 duplas — sem rival não tem graça.'));
+  const dois = validarConfig(valida({ modo: 'individual', times: [{ membros: ['Ana'] }, { membros: ['Beto'] }] }));
+  assert.deepEqual(dois, [ERROS.individualMinimo]);
+  assert.match(ERROS.individualMinimo, /3\+.*empate.*dupla/i);
+  assert.ok(validarConfig(valida({ modo: 'individual', times: [{ membros: ['Ana'] }] })).includes(ERROS.individualMinimo));
 });
 
 test('nomes vazios ou dupla incompleta', () => {
-  assert.ok(validarConfig(valida({ times: [{ membros: ['Ana', '  '] }, { membros: ['Caio', 'Duda'] }] })).includes('Faltou nome aí — ninguém joga anônimo 🕵️'));
-  assert.ok(validarConfig(valida({ times: [{ membros: ['Ana'] }, { membros: ['Caio', 'Duda'] }] })).includes('Faltou nome aí — ninguém joga anônimo 🕵️'));
+  assert.ok(validarConfig(valida({ times: [{ membros: ['Ana', '  '] }, { membros: ['Caio', 'Duda'] }] })).includes(ERROS.faltouNome));
+  assert.ok(validarConfig(valida({ times: [{ membros: ['Ana'] }, { membros: ['Caio', 'Duda'] }] })).includes(ERROS.faltouNome));
+  assert.equal(ERROS.faltouNome, 'Faltou nome aí — ninguém joga anônimo 🕵️');
 });
 
 test('nomes repetidos ignorando caixa e espaços', () => {
@@ -50,7 +57,8 @@ test('limites do personalizado', () => {
   assert.ok(validarConfig(valida({ tempoMimica: 315 })).includes('Tempo de mímica: de 30 s a 5 min, de 15 em 15 s.'));
   assert.ok(validarConfig(valida({ tempoLeitura: 4 })).includes('Tempo de leitura: de 5 a 30 s.'));
   assert.ok(validarConfig(valida({ mix: { facil: 4, medio: 0, dificil: 0 } })).includes('Itens por dificuldade: de 0 a 3.'));
-  assert.ok(validarConfig(valida({ mix: { facil: 0, medio: 0, dificil: 0 } })).includes('Itens por vez: de 1 a 6 — sem item não tem mímica.'));
+  assert.ok(validarConfig(valida({ mix: { facil: 0, medio: 0, dificil: 0 } })).includes('Itens por vez: pelo menos 1 — sem item não tem mímica.'));
+  assert.ok(validarConfig(valida({ mix: { facil: 3, medio: 3, dificil: 3 } })).includes('Itens por vez: no máximo 6 — mais que isso ninguém decora.'));
   assert.ok(validarConfig(valida({ pontos: { facil: 0, medio: 2, dificil: 3 } })).includes('Pontos por dificuldade: de 1 a 5.'));
   assert.deepEqual(validarConfig(valida({ voltas: 10, tempoMimica: 300, tempoLeitura: 30, mix: { facil: 3, medio: 0, dificil: 3 }, pontos: { facil: 5, medio: 5, dificil: 5 } })), []);
 });
@@ -85,7 +93,7 @@ test('formVazio: pré-seleciona os temas recebidos (cópia) e sem argumento fica
 });
 
 test('nome longo (24 caracteres) é válido', () => {
-  assert.deepEqual(validarConfig(valida({ modo: 'individual', times: [{ membros: ['Tio do Pavê Gonçalves'.padEnd(24, 'x')] }, { membros: ['Beto'] }] })), []);
+  assert.deepEqual(validarConfig(valida({ modo: 'individual', times: [{ membros: ['Tio do Pavê Gonçalves'.padEnd(24, 'x')] }, { membros: ['Beto'] }, { membros: ['Caio'] }] })), []);
 });
 
 test('formDeConfig detecta personalizado e faz ida e volta', () => {
@@ -101,7 +109,9 @@ test('trocarModo reaproveita os nomes', () => {
   assert.deepEqual(trocarModo(ind, 'duplas').times, [{ membros: ['A', 'B'] }, { membros: ['C', ''] }]);
   const duplas = { ...formVazio(), times: [{ membros: ['A', 'B'] }, { membros: ['C', 'D'] }] };
   assert.deepEqual(trocarModo(duplas, 'individual').times.map((t) => t.membros[0]), ['A', 'B', 'C', 'D']);
-  assert.deepEqual(trocarModo(formVazio(), 'individual').times, [{ membros: [''] }, { membros: [''] }]);
+  assert.deepEqual(trocarModo(formVazio(), 'individual').times, [{ membros: [''] }, { membros: [''] }, { membros: [''] }]);
+  const doisNomes = { ...formVazio(), times: [{ membros: ['A', 'B'] }, { membros: ['', ''] }] };
+  assert.deepEqual(trocarModo(doisNomes, 'individual').times, [{ membros: ['A'] }, { membros: ['B'] }, { membros: [''] }]);
   const mesmo = formVazio();
   assert.equal(trocarModo(mesmo, 'duplas'), mesmo);
 });
@@ -123,6 +133,30 @@ test('configUtilizavel aceita config válida e rejeita lixo salvo', () => {
   assert.equal(configUtilizavel(valida({ times: [{ membros: 'Ana' }, { membros: ['B'] }] })), false);
   assert.equal(configUtilizavel(valida({ temas: 'futebol' })), false);
   assert.equal(configUtilizavel(valida({ voltas: 99 })), false);
+});
+
+test('membro que não é texto: erro de nome (sem TypeError) e config salva descartada', () => {
+  for (const ruim of [null, 7, {}, ['Ana']]) {
+    const config = valida({ times: [{ membros: [ruim, 'Beto'] }, { membros: ['Caio', 'Duda'] }] });
+    assert.doesNotThrow(() => validarConfig(config));
+    assert.ok(validarConfig(config).includes(ERROS.faltouNome), String(ruim));
+    assert.equal(configUtilizavel(config), false, String(ruim));
+  }
+});
+
+test('config salva do individual com 2 (regra antiga) ainda preenche o form, com um 3º lugar vazio', () => {
+  const antiga = valida({ modo: 'individual', times: [{ membros: ['Ana'] }, { membros: ['Beto'] }] });
+  assert.equal(configUtilizavel(antiga), true);
+  const form = formDeConfig(antiga);
+  assert.deepEqual(form.times, [{ membros: ['Ana'] }, { membros: ['Beto'] }, { membros: [''] }]);
+  assert.equal(configUtilizavel(valida({ modo: 'individual', times: [{ membros: ['Ana'] }] })), false);
+});
+
+test('errosVisiveis: "faltou nome" só depois de tentar começar; o resto aparece sempre', () => {
+  const erros = [ERROS.faltouNome, 'Escolhe pelo menos 1 tema pra gente ter o que sortear.'];
+  assert.deepEqual(errosVisiveis(erros, false), ['Escolhe pelo menos 1 tema pra gente ter o que sortear.']);
+  assert.deepEqual(errosVisiveis(erros, true), erros);
+  assert.deepEqual(errosVisiveis([ERROS.faltouNome], false), []);
 });
 
 test('esconderItens: padrão escondido, personalizado pode mostrar', () => {

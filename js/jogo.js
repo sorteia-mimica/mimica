@@ -1,5 +1,5 @@
-import { sortearVez } from './sorteio.js';
-import { validarConfig } from './config.js';
+import { DIFICULDADES, sortearVez } from './sorteio.js';
+import { errosDeConfigSalva } from './config.js';
 
 export const VERSAO_ESTADO = 1;
 
@@ -197,10 +197,12 @@ export function resultadoDesempate(estado) {
 // Ao retomar, a vez em andamento recomeça do sorteio (o cronômetro não sobrevive).
 export const retomar = (estado) => ({ ...estado, itensDaVez: null });
 
-function desempateValido(desempate, totalTimes) {
+function desempateValido(estado, totalTimes) {
+  const { desempate } = estado;
   if (desempate == null) return true; // saves de antes do desempate não têm o campo
   const { times, vez, pontos } = desempate;
   return ehObjetoSimples(desempate)
+    && acabaramAsVoltas(estado) // desempate só existe depois das voltas
     && Array.isArray(times)
     && times.length >= 2
     && times.every((t) => Number.isInteger(t) && t >= 0 && t < totalTimes)
@@ -208,6 +210,23 @@ function desempateValido(desempate, totalTimes) {
     && Number.isInteger(vez) && vez >= 0 && vez <= times.length
     && Array.isArray(pontos) && pontos.length === times.length
     && pontos.every(Number.isInteger);
+}
+
+const ehTimeValido = (t, totalTimes) => Number.isInteger(t) && t >= 0 && t < totalTimes;
+const ehNaoNegativo = (n) => Number.isInteger(n) && n >= 0;
+
+// Cada vez do histórico alimenta prêmios e o resultado: tem de ter a forma que registrarVez grava.
+function vezDoHistoricoValida(vez, totalTimes) {
+  return ehObjetoSimples(vez)
+    && ehTimeValido(vez.time, totalTimes)
+    && typeof vez.quemFaz === 'string'
+    && ehNaoNegativo(vez.ganhos)
+    && Array.isArray(vez.itens)
+    && vez.itens.every((item) => ehObjetoSimples(item)
+      && typeof item.texto === 'string'
+      && DIFICULDADES.includes(item.dificuldade)
+      && typeof item.acertou === 'boolean'
+      && (item.acertouTime === null || ehTimeValido(item.acertouTime, totalTimes)));
 }
 
 // O estado vem do localStorage (pode estar corrompido): qualquer surpresa vira "incompatível", nunca exceção.
@@ -220,18 +239,20 @@ export function partidaCompativel(estado, temas) {
       && config
       && Array.isArray(config.times)
       && config.times.every((t) => t && typeof t === 'object' && Array.isArray(t.membros))
-      && validarConfig(config).length === 0
+      && errosDeConfigSalva(config).length === 0
       && config.temas.every((id) => temas.some((t) => t.id === id))
       && Array.isArray(estado.pontos)
       && estado.pontos.length === config.times.length
-      && estado.pontos.every(Number.isInteger)
+      && estado.pontos.every(ehNaoNegativo)
       && Array.isArray(estado.historico)
+      && estado.historico.every((vez) => vezDoHistoricoValida(vez, config.times.length))
       && ehObjetoSimples(estado.usados)
       && Object.values(estado.usados).every(ehListaDeTextos)
       && (estado.itensDaVez === null || Array.isArray(estado.itensDaVez))
       && Number.isInteger(estado.vezIndice)
       && estado.vezIndice >= 0
-      && desempateValido(estado.desempate, config.times.length),
+      && estado.vezIndice <= totalDeVezes(config)
+      && desempateValido(estado, config.times.length),
     );
   } catch {
     return false;

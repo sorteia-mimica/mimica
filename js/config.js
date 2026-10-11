@@ -27,17 +27,27 @@ export function escreverCaminho(obj, caminho, valor) {
 
 const fora = (v, min, max) => !Number.isInteger(v) || v < min || v > max;
 
+// Mensagens que a tela de configuração trata à parte (ver errosVisiveis).
+export const ERROS = Object.freeze({
+  faltouNome: 'Faltou nome aí — ninguém joga anônimo 🕵️',
+  // Com 2 no Individual, quem faz e o único que adivinha ganham os mesmos pontos em todo acerto.
+  individualMinimo: 'No individual precisa de 3+ — com 2 é empate garantido. Joga em dupla!',
+});
+const MINIMO_INDIVIDUAL = 3;
+
 export function validarConfig(config) {
   const erros = [];
   const duplas = config.modo === 'duplas';
   const times = Array.isArray(config.times) ? config.times : [];
   if (config.modo !== 'duplas' && config.modo !== 'individual') erros.push('Escolhe o modo: duplas ou cada um por si?');
-  if (times.length < 2) erros.push(duplas ? 'Precisa de pelo menos 2 duplas — sem rival não tem graça.' : 'Precisa de pelo menos 2 jogadores — sozinho é só ensaio.');
+  if (duplas && times.length < 2) erros.push('Precisa de pelo menos 2 duplas — sem rival não tem graça.');
+  if (!duplas && times.length < MINIMO_INDIVIDUAL) erros.push(ERROS.individualMinimo);
 
   const tamanho = duplas ? 2 : 1;
-  const nomes = times.flatMap((t) => t.membros ?? []).map((n) => String(n).trim());
+  // Nome que não é texto (storage adulterado) conta como nome faltando.
+  const nomes = times.flatMap((t) => t.membros ?? []).map((n) => (typeof n === 'string' ? n.trim() : ''));
   const incompleto = times.some((t) => (t.membros ?? []).length !== tamanho);
-  if (incompleto || nomes.some((n) => n === '')) erros.push('Faltou nome aí — ninguém joga anônimo 🕵️');
+  if (incompleto || nomes.some((n) => n === '')) erros.push(ERROS.faltouNome);
   const normalizados = nomes.filter(Boolean).map((n) => n.toLocaleLowerCase('pt-BR'));
   if (new Set(normalizados).size !== normalizados.length) erros.push('Tem nome repetido. Põe um sobrenome ou apelido pra diferenciar.');
 
@@ -51,7 +61,8 @@ export function validarConfig(config) {
     erros.push('Itens por dificuldade: de 0 a 3.');
   } else {
     const total = DIFICULDADES.reduce((soma, d) => soma + mix[d], 0);
-    if (total < 1 || total > 6) erros.push('Itens por vez: de 1 a 6 — sem item não tem mímica.');
+    if (total < 1) erros.push('Itens por vez: pelo menos 1 — sem item não tem mímica.');
+    if (total > 6) erros.push('Itens por vez: no máximo 6 — mais que isso ninguém decora.');
   }
   const pontos = config.pontos ?? {};
   if (DIFICULDADES.some((d) => fora(pontos[d], 1, 5))) erros.push('Pontos por dificuldade: de 1 a 5.');
@@ -59,6 +70,10 @@ export function validarConfig(config) {
   if (config.esconderItens !== undefined && typeof config.esconderItens !== 'boolean') erros.push('Itens na mímica: escondidos ou à mostra.');
   return erros;
 }
+
+// "Faltou nome" logo de cara (campos ainda em branco) é bronca antes da hora: só aparece depois de tentar começar.
+export const errosVisiveis = (erros, tentouComecar) =>
+  (tentouComecar ? erros : erros.filter((e) => e !== ERROS.faltouNome));
 
 // `idsTemas`: na primeira partida todos os temas já vêm marcados (o grupo desmarca o que não quiser).
 export function formVazio(idsTemas = []) {
@@ -71,6 +86,14 @@ export function formVazio(idsTemas = []) {
   };
 }
 
+// Erros de uma config salva antes da regra "Individual com 3+": a do Individual com 2 ainda serve
+// (para preencher o form ou continuar a partida); qualquer outro erro não.
+export function errosDeConfigSalva(config) {
+  const erros = validarConfig(config);
+  const antigaComDois = config.modo === 'individual' && config.times.length === 2;
+  return antigaComDois ? erros.filter((e) => e !== ERROS.individualMinimo) : erros;
+}
+
 // A config salva vem do localStorage: só serve se estiver bem formada e passar na validação (nunca lança).
 export function configUtilizavel(config) {
   try {
@@ -78,11 +101,12 @@ export function configUtilizavel(config) {
       config
       && typeof config === 'object'
       && Array.isArray(config.times)
-      && config.times.every((t) => t && typeof t === 'object' && Array.isArray(t.membros))
+      && config.times.every((t) => t && typeof t === 'object' && Array.isArray(t.membros)
+        && t.membros.every((n) => typeof n === 'string'))
       && Array.isArray(config.temas)
       && config.mix && typeof config.mix === 'object'
       && config.pontos && typeof config.pontos === 'object'
-      && validarConfig(config).length === 0,
+      && errosDeConfigSalva(config).length === 0,
     );
   } catch {
     return false;
@@ -98,9 +122,11 @@ export function formDeConfig(config) {
     pontos: { ...config.pontos },
     esconderItens: config.esconderItens ?? PADRAO.esconderItens,
   };
+  const times = config.times.map((t) => ({ membros: [...t.membros] }));
+  if (config.modo === 'individual') while (times.length < MINIMO_INDIVIDUAL) times.push({ membros: [''] });
   return {
     modo: config.modo,
-    times: config.times.map((t) => ({ membros: [...t.membros] })),
+    times,
     temas: [...config.temas],
     personalizado: CAMPOS_EXTRAS.some((c) => lerCaminho(extras, c) !== lerCaminho(PADRAO, c)),
     extras,
@@ -132,7 +158,8 @@ export function trocarModo(form, modo) {
     while (membros.length < tamanho) membros.push('');
     times.push({ membros });
   }
-  while (times.length < 2) times.push({ membros: Array(tamanho).fill('') });
+  const minimo = modo === 'duplas' ? 2 : MINIMO_INDIVIDUAL;
+  while (times.length < minimo) times.push({ membros: Array(tamanho).fill('') });
   return { ...form, modo, times };
 }
 
