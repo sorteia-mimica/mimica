@@ -71,11 +71,11 @@ Nove temas, cada um com 50 itens por dificuldade (150 por tema, 1350 no total), 
 | Filmes/Séries | Inclui desenhos e animes (não têm tema próprio): cerca de 12, ex. Pokémon, Naruto, Bob Esponja, Os Simpsons, Death Note, Demon Slayer |
 | Profissão | — |
 | Animal | — |
-| Comidas 🍔 | Comidas, bebidas e pratos conhecidos no Brasil hoje (brasileiros e de fora). Fácil: pizza, pipoca, picolé, espaguete. Médio: hambúrguer, brigadeiro, pastel de feira, miojo. Difícil (fácil de confundir com parecidos): acarajé, temaki, risoto, feijoada |
+| Comidas 🍔 | Comidas, bebidas e pratos conhecidos no Brasil hoje (brasileiros e de fora). Fácil: pizza, pipoca, picolé, hambúrguer. Médio: misto-quente, brigadeiro, pastel de feira, miojo. Difícil (fácil de confundir com parecidos): acarajé, temaki, risoto, feijoada |
 | Esportes | Sem futebol (futebol tem tema próprio) |
 | Futebol | Mistura jogadores, fundamentos, táticas e coisas do futebol. Evitar itens óbvios (cabecear, carrinho). Fácil: marcação. Médio: caneta, tesoura, pressionar. Difícil: marcação por zona, finalizar no ângulo, Campeonato Brasileiro |
 | Ações do dia a dia | Rotina comum. Fácil: escovar os dentes, lavar louça. Médio: perder o ônibus, procurar a chave, pisar em Lego. Difícil: montar móvel sem manual |
-| Situações malucas 🤪 | Cenas de filme, engraçadas, absurdas ou radicais (não rotina, sem repetir o dia a dia). Fácil: escorregar numa casca de banana, desarmar uma bomba. Médio: pular do trem em movimento, dirigir na contramão. Difícil: pousar um avião sem piloto, viajar no tempo. Nada de tragédia real, crime de verdade ou conteúdo sexual |
+| Situações malucas 🤪 | Cenas de filme, engraçadas, absurdas ou radicais (não rotina, sem repetir o dia a dia). Fácil: escorregar numa casca de banana, receber um Oscar. Médio: desarmar uma bomba, pular do trem em movimento, dirigir na contramão. Difícil: pousar um avião sem piloto, viajar no tempo. Nada de tragédia real, crime de verdade ou conteúdo sexual |
 | Famosos | Fácil: Neymar, Xuxa, Silvio Santos. Médio: Anitta, Faustão, Ayrton Senna. Difícil: Einstein, Chaves, Gretchen |
 
 **Critério de dificuldade** — conta o esforço de fazer a mímica e ser adivinhado, não o quão rara é a palavra (50 itens por dificuldade em cada tema):
