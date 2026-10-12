@@ -18,7 +18,6 @@ test('PADRAO tem os valores da spec', () => {
     voltas: 3, tempoLeitura: 10, tempoMimica: 90,
     mix: { facil: 1, medio: 1, dificil: 1 },
     pontos: { facil: 1, medio: 2, dificil: 4 },
-    esconderItens: true,
   });
 });
 
@@ -159,35 +158,11 @@ test('errosVisiveis: "faltou nome" só depois de tentar começar; o resto aparec
   assert.deepEqual(errosVisiveis([ERROS.faltouNome], false), []);
 });
 
-test('esconderItens: padrão escondido, personalizado pode mostrar', () => {
-  const form = formVazio();
-  form.times = [{ membros: ['Ana', 'Beto'] }, { membros: ['Caio', 'Duda'] }];
-  form.temas = ['animal'];
-  assert.equal(montarConfig(form).esconderItens, true);
-  form.extras.esconderItens = false;
-  assert.equal(montarConfig(form).esconderItens, true); // Padrão ignora extras
-  form.personalizado = true;
-  assert.equal(montarConfig(form).esconderItens, false);
-});
-
-test('esconderItens: só aceita booleano; config antiga sem o campo continua valendo', () => {
-  assert.deepEqual(validarConfig(valida({ esconderItens: false })), []);
-  assert.ok(validarConfig(valida({ esconderItens: 'sim' })).includes('Itens na mímica: escondidos ou à mostra.'));
-  const antiga = valida();
-  delete antiga.esconderItens;
+test('config salva com o antigo esconderItens continua valendo e não vira personalizado', () => {
+  const antiga = valida({ esconderItens: false });
   assert.deepEqual(validarConfig(antiga), []);
   assert.equal(configUtilizavel(antiga), true);
-  const form = formDeConfig(antiga);
-  assert.equal(form.personalizado, false);
-  assert.equal(form.extras.esconderItens, true);
-  assert.equal(montarConfig(form).esconderItens, true);
-});
-
-test('formDeConfig: itens à mostra conta como personalizado e faz ida e volta', () => {
-  const custom = valida({ esconderItens: false });
-  const form = formDeConfig(custom);
-  assert.equal(form.personalizado, true);
-  assert.deepEqual(montarConfig(form), custom);
+  assert.equal(formDeConfig(antiga).personalizado, false);
 });
 
 test('estimarDuracao: vezes × (leitura + mímica + ~25 s de troca)', () => {

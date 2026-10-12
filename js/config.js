@@ -6,15 +6,12 @@ export const PADRAO = Object.freeze({
   tempoMimica: 90,
   mix: Object.freeze({ facil: 1, medio: 1, dificil: 1 }),
   pontos: Object.freeze({ facil: 1, medio: 2, dificil: 4 }),
-  // Na mímica os itens ficam escondidos (segura o cartão pra espiar): ninguém lê por cima do ombro.
-  esconderItens: true,
 });
 
 const CAMPOS_EXTRAS = [
   'voltas', 'tempoLeitura', 'tempoMimica',
   'mix.facil', 'mix.medio', 'mix.dificil',
   'pontos.facil', 'pontos.medio', 'pontos.dificil',
-  'esconderItens',
 ];
 
 export const lerCaminho = (obj, caminho) => caminho.split('.').reduce((o, k) => o?.[k], obj);
@@ -66,8 +63,6 @@ export function validarConfig(config) {
   }
   const pontos = config.pontos ?? {};
   if (DIFICULDADES.some((d) => fora(pontos[d], 1, 5))) erros.push('Pontos por dificuldade: de 1 a 5.');
-  // Campo novo: config salva antes dele não tem o campo e vale o padrão.
-  if (config.esconderItens !== undefined && typeof config.esconderItens !== 'boolean') erros.push('Itens na mímica: escondidos ou à mostra.');
   return erros;
 }
 
@@ -120,7 +115,6 @@ export function formDeConfig(config) {
     tempoMimica: config.tempoMimica,
     mix: { ...config.mix },
     pontos: { ...config.pontos },
-    esconderItens: config.esconderItens ?? PADRAO.esconderItens,
   };
   const times = config.times.map((t) => ({ membros: [...t.membros] }));
   if (config.modo === 'individual') while (times.length < MINIMO_INDIVIDUAL) times.push({ membros: [''] });
@@ -144,7 +138,6 @@ export function montarConfig(form) {
     tempoMimica: base.tempoMimica,
     mix: { ...base.mix },
     pontos: { ...base.pontos },
-    esconderItens: base.esconderItens,
   };
 }
 

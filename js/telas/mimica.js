@@ -1,4 +1,4 @@
-import { ROTULO_DIFICULDADE, esc, itemHtml, ligar } from '../dom.js';
+import { esc, itemHtml, ligar } from '../dom.js';
 import { criarAnunciadorDeSegundos, formatarTempo, iniciarCronometro } from '../tempo.js';
 import { piscarTela, vibrar } from '../efeitos.js';
 import { confirmar, fecharModal } from '../modal.js';
@@ -7,25 +7,11 @@ import {
 } from '../sons.js';
 import { FRASES, escolher } from '../frases.js';
 
-const DICA_ESPIAR = 'Segura pra espiar 👀';
 // Todos os ✓ com o relógio rodando: festa curtinha e a vez acaba sozinha (ninguém fica caçando o botão).
 const GABARITO_MS = 1200;
-const TECLAS = ['Enter', ' '];
+const OCULTO = '🙈 Escondido';
 
-// Item escondido: só tema + dificuldade + ✓. O texto entra no DOM só enquanto quem faz segura o cartão
-// (nem leitor de tela "vaza" o item em voz alta). O ✓ não cita o texto pelo mesmo motivo.
-function itemEscondidoHtml(item, i) {
-  return `
-    <div class="item escondido" data-dificuldade="${esc(item.dificuldade)}">
-      <button class="item-corpo espiar" data-espiar="${i}" aria-pressed="false">
-        <span class="meta">${esc(item.emoji)} ${esc(item.temaNome)} · <span class="selo">${ROTULO_DIFICULDADE[item.dificuldade]}</span></span>
-        <span class="texto" data-texto>${DICA_ESPIAR}</span>
-      </button>
-      <button class="check" data-acao="marcar" data-item="${i}" aria-pressed="false" aria-label="Acertou o item ${i + 1} (${esc(item.temaNome)}, ${ROTULO_DIFICULDADE[item.dificuldade]})">✓</button>
-    </div>`;
-}
-
-export function telaMimica(el, { itens, segundos, esconderItens = true, aoTerminar }) {
+export function telaMimica(el, { itens, segundos, aoTerminar }) {
   const marcados = itens.map(() => false);
   let restante = segundos;
   let acabou = false;
@@ -42,15 +28,12 @@ export function telaMimica(el, { itens, segundos, esconderItens = true, aoTermin
       <div class="cronometro" data-tempo role="timer" aria-live="off">${formatarTempo(segundos)}</div>
       <div class="barra" aria-hidden="true"><div data-barra style="transform:translateX(100%)"></div></div>
     </div>
-    <p class="muted centro" data-aviso aria-live="polite">${esc(escolher(FRASES.mimica))} ${esconderItens
-      ? 'Segura o cartão pra espiar; toca no ✓ quando acertarem.'
-      : 'Toca no ✓ quando acertarem.'}</p>
-    <div class="lista-itens" data-itens>${itens.map((item, i) => (esconderItens
-      ? itemEscondidoHtml(item, i)
-      : itemHtml(item, {
-        animar: false,
-        extra: `<button class="check" data-acao="marcar" data-item="${i}" aria-pressed="false" aria-label="Acertou: ${esc(item.texto)}">✓</button>`,
-      }))).join('')}</div>
+    <p class="muted centro" data-aviso aria-live="polite">${esc(escolher(FRASES.mimica))} Toca no ✓ quando acertarem.</p>
+    <div class="linha linha-esconder"><button class="btn btn-pequeno" data-acao="esconder" aria-pressed="false">🙈 Esconder itens</button></div>
+    <div class="lista-itens" data-itens>${itens.map((item, i) => itemHtml(item, {
+      animar: false,
+      extra: `<button class="check" data-acao="marcar" data-item="${i}" aria-pressed="false" aria-label="Acertou o item ${i + 1}">✓</button>`,
+    })).join('')}</div>
     <div class="rodape fixo"><button class="btn btn-primario" data-acao="terminar">Encerrar a vez</button></div>`;
 
   ligarBotaoSom(el.querySelector('[data-som]'));
@@ -62,57 +45,22 @@ export function telaMimica(el, { itens, segundos, esconderItens = true, aoTermin
   const aviso = el.querySelector('[data-aviso]');
   const botaoTerminar = el.querySelector('[data-acao="terminar"]');
 
-  // ✓ só troca classe e aria-pressed (sem refazer a lista: não derruba uma espiada nem o foco).
+  // ✓ só troca classe e aria-pressed (sem refazer a lista: não derruba o "esconder" nem o foco).
   function pintarMarcado(i) {
     const check = lista.querySelector(`[data-acao="marcar"][data-item="${i}"]`);
     check.setAttribute('aria-pressed', String(marcados[i]));
     check.closest('.item').classList.toggle('acertou', marcados[i]);
   }
 
-  function espiar(botao, ver) {
-    const i = Number(botao.dataset.espiar);
-    botao.setAttribute('aria-pressed', String(ver));
-    botao.closest('.item').classList.toggle('espiando', ver);
-    botao.querySelector('[data-texto]').textContent = ver ? itens[i].texto : DICA_ESPIAR;
-  }
-  const alvoEspiar = (ev) => ev.target.closest?.('[data-espiar]');
-
-  if (esconderItens) {
-    // Dedo/mouse: mostra enquanto segura. Teclado: enquanto Enter/Espaço estão apertados.
-    // Leitor de tela (clique sem ponteiro, detail 0): alterna mostrar/esconder.
-    lista.addEventListener('pointerdown', (ev) => {
-      const b = alvoEspiar(ev);
-      if (!b || ev.button !== 0) return;
-      ev.preventDefault();
-      b.setPointerCapture?.(ev.pointerId);
-      espiar(b, true);
-    });
-    for (const tipo of ['pointerup', 'pointercancel', 'lostpointercapture']) {
-      lista.addEventListener(tipo, (ev) => {
-        const b = alvoEspiar(ev);
-        if (b) espiar(b, false);
-      });
-    }
-    lista.addEventListener('contextmenu', (ev) => { if (alvoEspiar(ev)) ev.preventDefault(); });
-    lista.addEventListener('keydown', (ev) => {
-      const b = alvoEspiar(ev);
-      if (!b || !TECLAS.includes(ev.key)) return;
-      ev.preventDefault();
-      espiar(b, true);
-    });
-    lista.addEventListener('keyup', (ev) => {
-      const b = alvoEspiar(ev);
-      if (!b || !TECLAS.includes(ev.key)) return;
-      ev.preventDefault(); // Firefox: sem isso o Espaço solto vira clique (detail 0) e a espiada fica aberta
-      espiar(b, false);
-    });
-    lista.addEventListener('focusout', (ev) => {
-      const b = alvoEspiar(ev);
-      if (b) espiar(b, false);
-    });
-    lista.addEventListener('click', (ev) => {
-      const b = alvoEspiar(ev);
-      if (b && ev.detail === 0) espiar(b, b.getAttribute('aria-pressed') !== 'true');
+  // Esconde/mostra todos de uma vez (texto sai do DOM: nem leitor de tela "vaza" o item).
+  let ocultos = false;
+  function alternarOcultos(botao) {
+    ocultos = !ocultos;
+    botao.setAttribute('aria-pressed', String(ocultos));
+    botao.textContent = ocultos ? '👀 Mostrar itens' : '🙈 Esconder itens';
+    lista.querySelectorAll('.texto').forEach((t, i) => {
+      t.textContent = ocultos ? OCULTO : itens[i].texto;
+      t.classList.toggle('oculto', ocultos);
     });
   }
 
@@ -169,6 +117,7 @@ export function telaMimica(el, { itens, segundos, esconderItens = true, aoTermin
   }
 
   ligar(el, {
+    esconder: alternarOcultos,
     marcar: (b) => {
       if (gabaritando) return;
       const i = Number(b.dataset.item);

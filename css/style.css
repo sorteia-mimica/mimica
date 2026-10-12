@@ -312,9 +312,6 @@ p { margin: 0; text-wrap: pretty; }
 /* No limite: o botão continua focável (aria-disabled), só fica apagado. */
 .stepper button[aria-disabled="true"] { opacity: .35; cursor: not-allowed; }
 
-.opcao-esconder { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; margin-top: 4px; border-top: 1px solid var(--border); }
-.opcao-esconder .segmentado { margin-bottom: 0; }
-.opcao-esconder small { display: block; font-weight: 600; font-size: .78rem; }
 
 .erros { color: var(--dificil); margin: 0; padding-left: 20px; font-size: .95rem; font-weight: 600; }
 .erros:empty { display: none; }
@@ -414,53 +411,9 @@ p { margin: 0; text-wrap: pretty; }
 .leitura .cronometro { font-size: 3.6rem; }
 .leitura .item, .mimica .item { padding: 12px 14px 12px 16px; }
 
-/* Mímica com itens escondidos: o cartão é um botão de "segura pra espiar". */
-.espiar {
-  appearance: none;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  padding: 6px 0;
-  min-height: 56px;
-  cursor: pointer;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  touch-action: pan-y; /* rolar a lista continua valendo; segurar parado espia */
-  border-radius: 12px;
-}
-.espiar .meta, .espiar .texto { display: block; }
-.item.escondido:not(.espiando) .texto { font-size: 1.15rem; font-weight: 700; color: var(--muted); letter-spacing: 0; }
-.item.espiando { box-shadow: 0 0 0 3px var(--cor), var(--shadow-forte); }
-
-/* Passo de privacidade antes da leitura */
-.privacidade { margin-top: 6vh; gap: 12px; }
-.privacidade h1 { font-size: clamp(2rem, 9vw, 2.6rem); overflow-wrap: anywhere; max-width: 100%; }
-.privacidade p { font-size: 1.1rem; }
-.btn-segurar {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  min-height: 64px;
-  font-size: 1.2rem;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  touch-action: none;
-}
-/* Enche da esquerda pra direita enquanto segura (pintado pelo JS, vale também com movimento reduzido). */
-.segurar-preenche {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: rgb(255 255 255 / .38);
-  transform-origin: left;
-  transform: scaleX(var(--progresso, 0));
-}
-.btn-segurar.segurando { transform: translateY(3px); }
-.dica-segurar { font-size: .9rem; }
+/* Mímica: botão de esconder todos (por padrão os itens ficam à mostra). */
+.linha-esconder { justify-content: flex-end; }
+.mimica .item .texto.oculto { font-size: 1.15rem; font-weight: 700; color: var(--muted); }
 /* A trilha tem o degradê; uma capa desliza por cima (só transform) escondendo o tempo gasto. */
 .barra {
   position: relative;

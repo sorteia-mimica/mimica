@@ -195,7 +195,6 @@ function irLeitura() {
   mostrar(telaLeitura, {
     itens: estado.itensDaVez,
     segundos: estado.config.tempoLeitura,
-    quemFaz: vezAtual(estado).quemFaz,
     aoFim: irMimica,
   });
 }
@@ -204,7 +203,6 @@ function irMimica() {
   mostrar(telaMimica, {
     itens: estado.itensDaVez,
     segundos: estado.config.tempoMimica,
-    esconderItens: estado.config.esconderItens ?? true, // partida salva antes da opção: padrão
     aoTerminar: (marcados) => {
       liberarTela();
       // No desempate só quem faz pontua: no Individual não tem "quem acertou" para conferir.

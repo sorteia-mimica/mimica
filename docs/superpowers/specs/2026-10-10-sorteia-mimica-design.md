@@ -58,7 +58,6 @@ Abre, além do Padrão:
 - Tempo de leitura (5–30 s)
 - Quantidade de itens por dificuldade (0–3 cada, total entre 1 e 6)
 - Pontos por dificuldade (1–5 cada)
-- Itens na mímica: Escondidos (segura pra espiar, padrão) / À mostra
 
 O card Regras (Padrão e Personalizado) mostra a estimativa ao vivo: "N vezes · ≈ X min de jogo" (`estimarDuracao(config)` em `js/config.js`: vezes × (leitura + mímica + 25 s de troca); até 15 min arredonda no minuto, acima de 5 em 5).
 
@@ -110,8 +109,8 @@ Formato:
 1. **Início** — "Jogar", "Como jogar"; "Continuar partida" se houver uma salva.
 2. **Configuração** — modo, nomes, temas, Padrão/Personalizado.
 3. **Vez de jogar** — selo "Volta X de Y · vez N de M" (ou "⚡ Desempate", via `vez.desempate`); bloco grande "📱 Celular com Ana" + "Ana faz → Beto adivinha" (Duplas) ou "Ana faz · o resto chuta" (Individual); frase engraçada menor; placar resumido; botão **Sortear**; "Sair" pede confirmação.
-4. **Leitura** — primeiro um passo de privacidade "Só Ana olha 🙈" com **Segura pra revelar** (~600 ms segurando, barra enchendo; Enter/Espaço segurados; leitor de tela revela direto). Só então aparecem os itens e começa a contagem regressiva do tempo de leitura.
-5. **Mímica** — cronômetro (cartão fica vermelho nos 10 s finais); itens **escondidos** por padrão (só tema, dificuldade e ✓; segura o cartão pra espiar, soltou some) — no Personalizado dá para deixar "À mostra"; quem faz marca só ✓ em cada item (dá para desmarcar). "Encerrar a vez" com tempo sobrando pede confirmação. No fim: tela pisca de vermelho (tom parado com movimento reduzido) + vibração + som. **Gabarito**: marcou todos os ✓ com o relógio rodando → o relógio para, faixa verde "Gabarito! 🎯" (~1,2 s, som + vibração, sem animação com movimento reduzido, sem desfazer) e a vez segue sozinha (conferência no Individual, resultado no Duplas).
+4. **Leitura** — os itens aparecem direto (quem tocou em "Sortear" já está com o celular) e começa a contagem regressiva do tempo de leitura.
+5. **Mímica** — cronômetro (cartão fica vermelho nos 10 s finais); itens à mostra; botão **🙈 Esconder itens** esconde todos de uma vez (só tema, dificuldade e ✓) e **👀 Mostrar itens** volta; quem faz marca só ✓ em cada item (dá para desmarcar). "Encerrar a vez" com tempo sobrando pede confirmação. No fim: tela pisca de vermelho (tom parado com movimento reduzido) + vibração + som. **Gabarito**: marcou todos os ✓ com o relógio rodando → o relógio para, faixa verde "Gabarito! 🎯" (~1,2 s, som + vibração, sem animação com movimento reduzido, sem desfazer) e a vez segue sozinha (conferência no Individual, resultado no Duplas).
 6. **Conferência** (só no Individual) — após o tempo ou o fim da vez: corrige os ✓ e escolhe quem acertou cada item. No Duplas, a mímica vai direto para o resultado.
 7. **Resultado da vez** — itens acertados/errados, pontos ganhos; "Próximo".
 8. **Placar final** — ranking com 🏆; frase da capa conforme a margem (`tipoDeVitoria`: apertada até 2 pontos ou 5% do líder → "Na raça!"/"Por um triz"; folgada com 6+ pontos e ≥ 1/4 dos pontos do líder → "Vitória incontestável"); lanterninha via `fraseLanterna` (só com um único último; perdeu por 1–2 pontos → frase de "quase"; dupla concorda no plural, "ficaram"). "Revanche: jogar de novo" (mesma configuração, placar zerado e **ordem sorteada** por `embaralharOrdem`: times embaralhados, na dupla sorteia quem começa fazendo, e quem abriu a partida anterior nunca abre a revanche), "Compartilhar resultado" e "Início".
