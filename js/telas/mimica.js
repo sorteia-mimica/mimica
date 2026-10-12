@@ -29,7 +29,7 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
       <div class="barra" aria-hidden="true"><div data-barra style="transform:translateX(100%)"></div></div>
     </div>
     <p class="muted centro" data-aviso aria-live="polite">${esc(escolher(FRASES.mimica))} Toca no ✓ quando acertarem.</p>
-    <div class="linha linha-esconder"><button class="btn btn-pequeno" data-acao="esconder" aria-pressed="false">🙈 Esconder itens</button></div>
+    <div class="linha linha-esconder"><button class="btn btn-pequeno" data-acao="esconder" aria-pressed="false"><span>🙈 Esconder itens</span><span>👀 Mostrar itens</span></button></div>
     <div class="lista-itens" data-itens>${itens.map((item, i) => itemHtml(item, {
       animar: false,
       extra: `<button class="check" data-acao="marcar" data-item="${i}" aria-pressed="false" aria-label="Acertou o item ${i + 1}">✓</button>`,
@@ -57,7 +57,6 @@ export function telaMimica(el, { itens, segundos, aoTerminar }) {
   function alternarOcultos(botao) {
     ocultos = !ocultos;
     botao.setAttribute('aria-pressed', String(ocultos));
-    botao.textContent = ocultos ? '👀 Mostrar itens' : '🙈 Esconder itens';
     lista.querySelectorAll('.texto').forEach((t, i) => {
       t.textContent = ocultos ? OCULTO : itens[i].texto;
       t.classList.toggle('oculto', ocultos);

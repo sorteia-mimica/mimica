@@ -413,6 +413,11 @@ p { margin: 0; text-wrap: pretty; }
 
 /* Mímica: botão de esconder todos (por padrão os itens ficam à mostra). */
 .linha-esconder { justify-content: flex-end; }
+/* Os dois rótulos no mesmo lugar (o da vez aparece, o outro só reserva espaço): o botão não muda de tamanho. */
+.linha-esconder .btn { display: inline-grid; }
+.linha-esconder .btn > span { grid-area: 1 / 1; }
+.linha-esconder .btn[aria-pressed="false"] > span:last-child,
+.linha-esconder .btn[aria-pressed="true"] > span:first-child { visibility: hidden; }
 .mimica .item .texto.oculto { font-size: 1.15rem; font-weight: 700; color: var(--muted); }
 /* A trilha tem o degradê; uma capa desliza por cima (só transform) escondendo o tempo gasto. */
 .barra {
